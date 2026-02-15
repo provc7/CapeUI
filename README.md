@@ -28,7 +28,7 @@ npm install
 MONGODB_URI=mongodb+srv://USER:PASS@HOST/DBNAME?retryWrites=true&w=majority
 JWT_SECRET=<generate_a_long_random_secret>
 PORT=3000
-CAPE_API_BASE=http://10.20.8.79:8000
+CAPE_API_BASE=http://you_cape_ip:port
 ```
 
 ## Usage
@@ -58,7 +58,7 @@ http://localhost:3000
 The CAPE API endpoints are configured in `server.js`:
 
 ```javascript
-const CAPE_API_BASE = 'http://10.20.8.79:8000';
+const CAPE_API_BASE = 'http://your_cape_ip:port';
 const CAPE_API_UPLOAD_URL = `${CAPE_API_BASE}/apiv2/tasks/create/file/`;
 ```
 
