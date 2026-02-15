@@ -1,0 +1,4583 @@
+{
+  "statistics": {
+    "processing": [
+      {
+        "name": "CAPE",
+        "time": 0.941
+      },
+      {
+        "name": "AnalysisInfo",
+        "time": 0.017
+      },
+      {
+        "name": "BehaviorAnalysis",
+        "time": 0.002
+      },
+      {
+        "name": "Debug",
+        "time": 0.001
+      },
+      {
+        "name": "NetworkAnalysis",
+        "time": 52.827
+      },
+      {
+        "name": "Procmon",
+        "time": 0.0
+      },
+      {
+        "name": "Sysmon",
+        "time": 0.0
+      },
+      {
+        "name": "UrlAnalysis",
+        "time": 0.0
+      },
+      {
+        "name": "script_log_processing",
+        "time": 0.0
+      },
+      {
+        "name": "ProcessMemory",
+        "time": 0.0
+      }
+    ],
+    "signatures": [
+      {
+        "name": "packer_themida",
+        "time": 0.0
+      },
+      {
+        "name": "stealth_network",
+        "time": 0.0
+      },
+      {
+        "name": "disable_driver_via_blocklist",
+        "time": 0.0
+      },
+      {
+        "name": "disable_driver_via_hvcidisallowedimages",
+        "time": 0.0
+      },
+      {
+        "name": "disable_hypervisor_protected_code_integrity",
+        "time": 0.0
+      },
+      {
+        "name": "pendingfilerenameoperations_Operations",
+        "time": 0.0
+      },
+      {
+        "name": "anomalous_deletefile",
+        "time": 0.0
+      },
+      {
+        "name": "antiav_servicestop",
+        "time": 0.0
+      },
+      {
+        "name": "antidebug_guardpages",
+        "time": 0.0
+      },
+      {
+        "name": "antidebug_outputdebugstring",
+        "time": 0.0
+      },
+      {
+        "name": "antidebug_windows",
+        "time": 0.0
+      },
+      {
+        "name": "antisandbox_cuckoocrash",
+        "time": 0.0
+      },
+      {
+        "name": "antisandbox_foregroundwindows",
+        "time": 0.0
+      },
+      {
+        "name": "mouse_movement_detect",
+        "time": 0.0
+      },
+      {
+        "name": "antisandbox_script_timer",
+        "time": 0.0
+      },
+      {
+        "name": "antisandbox_sleep",
+        "time": 0.0
+      },
+      {
+        "name": "antisandbox_unhook",
+        "time": 0.0
+      },
+      {
+        "name": "antivm_directory_objects",
+        "time": 0.0
+      },
+      {
+        "name": "antivm_generic_system",
+        "time": 0.0
+      },
+      {
+        "name": "antivm_checks_available_memory",
+        "time": 0.0
+      },
+      {
+        "name": "detect_virtualization_via_recent_files",
+        "time": 0.0
+      },
+      {
+        "name": "antivm_vmware_events",
+        "time": 0.0
+      },
+      {
+        "name": "api_spamming",
+        "time": 0.0
+      },
+      {
+        "name": "api_uuidfromstringa",
+        "time": 0.0
+      },
+      {
+        "name": "bcdedit_command",
+        "time": 0.0
+      },
+      {
+        "name": "potential_overwrite_mbr",
+        "time": 0.0
+      },
+      {
+        "name": "suspicious_ioctl_scsipassthough",
+        "time": 0.0
+      },
+      {
+        "name": "suspicious_iocontrol_codes",
+        "time": 0.0
+      },
+      {
+        "name": "browser_needed",
+        "time": 0.0
+      },
+      {
+        "name": "uac_bypass_cmstp",
+        "time": 0.0
+      },
+      {
+        "name": "uac_bypass_eventvwr",
+        "time": 0.0
+      },
+      {
+        "name": "dotnet_code_compile",
+        "time": 0.0
+      },
+      {
+        "name": "queries_computer_name",
+        "time": 0.0
+      },
+      {
+        "name": "queries_user_name",
+        "time": 0.0
+      },
+      {
+        "name": "creates_largekey",
+        "time": 0.0
+      },
+      {
+        "name": "creates_nullvalue",
+        "time": 0.0
+      },
+      {
+        "name": "access_windows_passwords_vault",
+        "time": 0.0
+      },
+      {
+        "name": "lsass_credential_dumping",
+        "time": 0.0
+      },
+      {
+        "name": "critical_process",
+        "time": 0.0
+      },
+      {
+        "name": "cryptopool_domains",
+        "time": 0.0
+      },
+      {
+        "name": "dead_connect",
+        "time": 0.0
+      },
+      {
+        "name": "dead_link",
+        "time": 0.0
+      },
+      {
+        "name": "decoy_document",
+        "time": 0.0
+      },
+      {
+        "name": "decoy_image",
+        "time": 0.0
+      },
+      {
+        "name": "deletes_consolehost_history",
+        "time": 0.0
+      },
+      {
+        "name": "dep_bypass",
+        "time": 0.0
+      },
+      {
+        "name": "dep_disable",
+        "time": 0.0
+      },
+      {
+        "name": "disables_wfp",
+        "time": 0.0
+      },
+      {
+        "name": "add_windows_defender_exclusions",
+        "time": 0.0
+      },
+      {
+        "name": "document_script_exe_drop",
+        "time": 0.0
+      },
+      {
+        "name": "guloader_apis",
+        "time": 0.0
+      },
+      {
+        "name": "driver_load",
+        "time": 0.0
+      },
+      {
+        "name": "dynamic_function_loading",
+        "time": 0.0
+      },
+      {
+        "name": "encrypted_ioc",
+        "time": 0.0
+      },
+      {
+        "name": "process_creation_suspicious_location",
+        "time": 0.0
+      },
+      {
+        "name": "exploit_getbasekerneladdress",
+        "time": 0.0
+      },
+      {
+        "name": "exploit_gethaldispatchtable",
+        "time": 0.0
+      },
+      {
+        "name": "exploit_heapspray",
+        "time": 0.0
+      },
+      {
+        "name": "koadic_apis",
+        "time": 0.0
+      },
+      {
+        "name": "koadic_network_activity",
+        "time": 0.0
+      },
+      {
+        "name": "downloads_from_filehosting",
+        "time": 0.0
+      },
+      {
+        "name": "generic_phish",
+        "time": 0.0
+      },
+      {
+        "name": "http_request",
+        "time": 0.0
+      },
+      {
+        "name": "infostealer_browser",
+        "time": 0.0
+      },
+      {
+        "name": "infostealer_browser_password",
+        "time": 0.0
+      },
+      {
+        "name": "infostealer_cookies",
+        "time": 0.0
+      },
+      {
+        "name": "cryptbot_network",
+        "time": 0.0
+      },
+      {
+        "name": "purplewave_network_activity",
+        "time": 0.0
+      },
+      {
+        "name": "quilclipper_behavior",
+        "time": 0.0
+      },
+      {
+        "name": "raccoon_behavior",
+        "time": 0.0
+      },
+      {
+        "name": "captures_screenshot",
+        "time": 0.0
+      },
+      {
+        "name": "vidar_behavior",
+        "time": 0.0
+      },
+      {
+        "name": "injection_network_traffic",
+        "time": 0.0
+      },
+      {
+        "name": "injection_themeinitapihook",
+        "time": 0.0
+      },
+      {
+        "name": "resumethread_remote_process",
+        "time": 0.0
+      },
+      {
+        "name": "injection_write_exe_process",
+        "time": 0.0
+      },
+      {
+        "name": "injection_write_process",
+        "time": 0.0
+      },
+      {
+        "name": "internet_dropper",
+        "time": 0.0
+      },
+      {
+        "name": "escalate_privilege_via_named_pipe",
+        "time": 0.0
+      },
+      {
+        "name": "ipc_namedpipe",
+        "time": 0.0
+      },
+      {
+        "name": "js_phish",
+        "time": 0.0
+      },
+      {
+        "name": "js_suspicious_redirect",
+        "time": 0.0
+      },
+      {
+        "name": "loader_alien",
+        "time": 0.0
+      },
+      {
+        "name": "execute_binary_via_internet_explorer_exporter",
+        "time": 0.0
+      },
+      {
+        "name": "execute_binary_via_run_exe_helper_utility",
+        "time": 0.0
+      },
+      {
+        "name": "execute_ps_via_syncappvpublishingserver",
+        "time": 0.0
+      },
+      {
+        "name": "malicious_dynamic_function_loading",
+        "time": 0.0
+      },
+      {
+        "name": "encrypt_pcinfo",
+        "time": 0.0
+      },
+      {
+        "name": "encrypt_data_agenttesla_http",
+        "time": 0.0
+      },
+      {
+        "name": "encrypt_data_agentteslat2_http",
+        "time": 0.0
+      },
+      {
+        "name": "encrypt_data_nanocore",
+        "time": 0.0
+      },
+      {
+        "name": "reads_memory_remote_process",
+        "time": 0.0
+      },
+      {
+        "name": "mimics_filetime",
+        "time": 0.0
+      },
+      {
+        "name": "amsi_bypass_via_com_registry",
+        "time": 0.0
+      },
+      {
+        "name": "access_auto_logons_via_registry",
+        "time": 0.0
+      },
+      {
+        "name": "access_boot_key_via_registry",
+        "time": 0.0
+      },
+      {
+        "name": "create_suspicious_lnk_files",
+        "time": 0.0
+      },
+      {
+        "name": "credential_access_via_windows_credential_history",
+        "time": 0.0
+      },
+      {
+        "name": "dll_hijacking_via_microsoft_exchange",
+        "time": 0.0
+      },
+      {
+        "name": "dll_hijacking_via_waas_medic_svc_com_typelib",
+        "time": 0.0
+      },
+      {
+        "name": "execute_file_downloaded_via_openssh",
+        "time": 0.0
+      },
+      {
+        "name": "execute_safe_mode_from_suspicious_process",
+        "time": 0.0
+      },
+      {
+        "name": "execute_scripts_via_microsoft_management_console",
+        "time": 0.0
+      },
+      {
+        "name": "execute_suspicious_processes_via_windows_mssql_service",
+        "time": 0.0
+      },
+      {
+        "name": "execution_from_self_extracting_archive",
+        "time": 0.0
+      },
+      {
+        "name": "ip_address_discovery_via_trusted_program",
+        "time": 0.0
+      },
+      {
+        "name": "load_dll_via_control_panel",
+        "time": 0.0
+      },
+      {
+        "name": "network_connection_via_suspicious_process",
+        "time": 0.0
+      },
+      {
+        "name": "potential_location_discovery_via_unusual_process",
+        "time": 0.0
+      },
+      {
+        "name": "store_executable_registry",
+        "time": 0.0
+      },
+      {
+        "name": "Suspicious_Execution_Via_MicrosoftExchangeTransportAgent",
+        "time": 0.0
+      },
+      {
+        "name": "suspicious_java_execution_via_win_scripts",
+        "time": 0.0
+      },
+      {
+        "name": "Suspicious_Scheduled_Task_Creation_Via_Masqueraded_XML_File",
+        "time": 0.0
+      },
+      {
+        "name": "uses_restart_manager_for_suspicious_activities",
+        "time": 0.0
+      },
+      {
+        "name": "modify_desktop_wallpaper",
+        "time": 0.0
+      },
+      {
+        "name": "move_file_on_reboot",
+        "time": 0.0
+      },
+      {
+        "name": "multiple_useragents",
+        "time": 0.0
+      },
+      {
+        "name": "network_anomaly",
+        "time": 0.0
+      },
+      {
+        "name": "network_bind",
+        "time": 0.0
+      },
+      {
+        "name": "network_cnc_https_archive",
+        "time": 0.0
+      },
+      {
+        "name": "network_cnc_https_free_webshoting",
+        "time": 0.0
+      },
+      {
+        "name": "network_cnc_https_generic",
+        "time": 0.0
+      },
+      {
+        "name": "network_cnc_https_temp_urldns",
+        "time": 0.0
+      },
+      {
+        "name": "network_cnc_https_opensource",
+        "time": 0.0
+      },
+      {
+        "name": "network_cnc_https_pastesite",
+        "time": 0.0
+      },
+      {
+        "name": "network_cnc_https_payload",
+        "time": 0.0
+      },
+      {
+        "name": "network_cnc_https_serviceinterface",
+        "time": 0.0
+      },
+      {
+        "name": "network_cnc_https_socialmedia",
+        "time": 0.0
+      },
+      {
+        "name": "network_cnc_https_telegram",
+        "time": 0.0
+      },
+      {
+        "name": "network_cnc_https_tempstorage",
+        "time": 0.0
+      },
+      {
+        "name": "network_cnc_https_urlshortener",
+        "time": 0.0
+      },
+      {
+        "name": "network_cnc_https_useragent",
+        "time": 0.0
+      },
+      {
+        "name": "network_cnc_smtps_exfil",
+        "time": 0.0
+      },
+      {
+        "name": "network_cnc_smtps_generic",
+        "time": 0.0
+      },
+      {
+        "name": "network_dns_idn",
+        "time": 0.0
+      },
+      {
+        "name": "network_dns_suspicious_querytype",
+        "time": 0.0
+      },
+      {
+        "name": "network_dns_tunneling_request",
+        "time": 0.0
+      },
+      {
+        "name": "network_document_http",
+        "time": 0.0
+      },
+      {
+        "name": "explorer_http",
+        "time": 0.0
+      },
+      {
+        "name": "network_fake_useragent",
+        "time": 0.0
+      },
+      {
+        "name": "legitimate_domain_abuse",
+        "time": 0.0
+      },
+      {
+        "name": "suspicious_communication_trusted_site",
+        "time": 0.0
+      },
+      {
+        "name": "network_tor",
+        "time": 0.0
+      },
+      {
+        "name": "office_cve2017_11882",
+        "time": 0.0
+      },
+      {
+        "name": "office_cve2017_11882_network",
+        "time": 0.0
+      },
+      {
+        "name": "office_cve_2021_40444",
+        "time": 0.0
+      },
+      {
+        "name": "office_cve_2021_40444_m2",
+        "time": 0.0
+      },
+      {
+        "name": "office_flash_load",
+        "time": 0.0
+      },
+      {
+        "name": "office_postscript",
+        "time": 0.0
+      },
+      {
+        "name": "office_suspicious_processes",
+        "time": 0.0
+      },
+      {
+        "name": "office_write_exe",
+        "time": 0.0
+      },
+      {
+        "name": "persistence_via_autodial_dll_registry",
+        "time": 0.0
+      },
+      {
+        "name": "persistence_autorun",
+        "time": 0.0
+      },
+      {
+        "name": "persistence_autorun_tasks",
+        "time": 0.0
+      },
+      {
+        "name": "persistence_bootexecute",
+        "time": 0.0
+      },
+      {
+        "name": "persistence_registry_script",
+        "time": 0.0
+      },
+      {
+        "name": "powershell_network_connection",
+        "time": 0.0
+      },
+      {
+        "name": "powershell_download",
+        "time": 0.0
+      },
+      {
+        "name": "powershell_request",
+        "time": 0.0
+      },
+      {
+        "name": "createtoolhelp32snapshot_module_enumeration",
+        "time": 0.0
+      },
+      {
+        "name": "enumerates_running_processes",
+        "time": 0.0
+      },
+      {
+        "name": "process_interest",
+        "time": 0.0
+      },
+      {
+        "name": "process_needed",
+        "time": 0.0
+      },
+      {
+        "name": "mass_data_encryption",
+        "time": 0.0
+      },
+      {
+        "name": "ransomware_file_modifications",
+        "time": 0.0
+      },
+      {
+        "name": "nemty_network_activity",
+        "time": 0.0
+      },
+      {
+        "name": "nemty_note",
+        "time": 0.0
+      },
+      {
+        "name": "sodinokibi_behavior",
+        "time": 0.0
+      },
+      {
+        "name": "stop_ransomware_registry",
+        "time": 0.0
+      },
+      {
+        "name": "blackrat_apis",
+        "time": 0.0
+      },
+      {
+        "name": "blackrat_network_activity",
+        "time": 0.0
+      },
+      {
+        "name": "blackrat_registry_keys",
+        "time": 0.0
+      },
+      {
+        "name": "dcrat_behavior",
+        "time": 0.0
+      },
+      {
+        "name": "karagany_system_event_objects",
+        "time": 0.0
+      },
+      {
+        "name": "rat_luminosity",
+        "time": 0.0
+      },
+      {
+        "name": "rat_nanocore",
+        "time": 0.0
+      },
+      {
+        "name": "netwire_behavior",
+        "time": 0.0
+      },
+      {
+        "name": "obliquerat_network_activity",
+        "time": 0.0
+      },
+      {
+        "name": "orcusrat_behavior",
+        "time": 0.0
+      },
+      {
+        "name": "trochilusrat_apis",
+        "time": 0.0
+      },
+      {
+        "name": "reads_self",
+        "time": 0.0
+      },
+      {
+        "name": "recon_beacon",
+        "time": 0.0
+      },
+      {
+        "name": "recon_programs",
+        "time": 0.0
+      },
+      {
+        "name": "accesses_recyclebin",
+        "time": 0.0
+      },
+      {
+        "name": "remcos_shell_code_dynamic_wrapper_x",
+        "time": 0.0
+      },
+      {
+        "name": "script_created_process",
+        "time": 0.0
+      },
+      {
+        "name": "script_network_activity",
+        "time": 0.0
+      },
+      {
+        "name": "suspicious_js_script",
+        "time": 0.0
+      },
+      {
+        "name": "javascript_timer",
+        "time": 0.0
+      },
+      {
+        "name": "secure_login_phishing",
+        "time": 0.0
+      },
+      {
+        "name": "securityxploded_modules",
+        "time": 0.0
+      },
+      {
+        "name": "get_clipboard_data",
+        "time": 0.0
+      },
+      {
+        "name": "sets_autoconfig_url",
+        "time": 0.0
+      },
+      {
+        "name": "spoofs_procname",
+        "time": 0.0
+      },
+      {
+        "name": "stack_pivot",
+        "time": 0.0
+      },
+      {
+        "name": "stack_pivot_file_created",
+        "time": 0.0
+      },
+      {
+        "name": "stack_pivot_process_create",
+        "time": 0.0
+      },
+      {
+        "name": "set_clipboard_data",
+        "time": 0.0
+      },
+      {
+        "name": "stealth_childproc",
+        "time": 0.0
+      },
+      {
+        "name": "stealth_file",
+        "time": 0.0
+      },
+      {
+        "name": "stealth_window",
+        "time": 0.0
+      },
+      {
+        "name": "queries_keyboard_layout",
+        "time": 0.0
+      },
+      {
+        "name": "queries_locale_api",
+        "time": 0.0
+      },
+      {
+        "name": "terminates_remote_process",
+        "time": 0.0
+      },
+      {
+        "name": "user_enum",
+        "time": 0.0
+      },
+      {
+        "name": "virus",
+        "time": 0.0
+      },
+      {
+        "name": "neshta_files",
+        "time": 0.0
+      },
+      {
+        "name": "neshta_regkeys",
+        "time": 0.0
+      },
+      {
+        "name": "webmail_phish",
+        "time": 0.0
+      },
+      {
+        "name": "persists_dev_util",
+        "time": 0.0
+      },
+      {
+        "name": "spawns_dev_util",
+        "time": 0.0
+      },
+      {
+        "name": "alters_windows_utility",
+        "time": 0.0
+      },
+      {
+        "name": "overwrites_accessibility_utility",
+        "time": 0.0
+      },
+      {
+        "name": "Potential_Lateral_Movement_Via_SMBEXEC",
+        "time": 0.0
+      },
+      {
+        "name": "potential_WebShell_Via_ScreenConnectServer",
+        "time": 0.0
+      },
+      {
+        "name": "uses_Microsoft_HTML_Help_Executable",
+        "time": 0.0
+      },
+      {
+        "name": "wiper_zeroedbytes",
+        "time": 0.0
+      },
+      {
+        "name": "wmi_create_process",
+        "time": 0.0
+      },
+      {
+        "name": "wmi_script_process",
+        "time": 0.0
+      },
+      {
+        "name": "antianalysis_tls_section",
+        "time": 0.0
+      },
+      {
+        "name": "antivirus_clamav",
+        "time": 0.0
+      },
+      {
+        "name": "antivirus_virustotal",
+        "time": 0.0
+      },
+      {
+        "name": "bad_certs",
+        "time": 0.0
+      },
+      {
+        "name": "bad_ssl_certs",
+        "time": 0.0
+      },
+      {
+        "name": "banker_zeus_p2p",
+        "time": 0.0
+      },
+      {
+        "name": "banker_zeus_url",
+        "time": 0.0
+      },
+      {
+        "name": "binary_yara",
+        "time": 0.0
+      },
+      {
+        "name": "bot_athenahttp",
+        "time": 0.0
+      },
+      {
+        "name": "bot_dirtjumper",
+        "time": 0.0
+      },
+      {
+        "name": "bot_drive",
+        "time": 0.0
+      },
+      {
+        "name": "bot_drive2",
+        "time": 0.0
+      },
+      {
+        "name": "bot_madness",
+        "time": 0.0
+      },
+      {
+        "name": "phishing_kit_detected",
+        "time": 0.0
+      },
+      {
+        "name": "family_proxyback",
+        "time": 0.0
+      },
+      {
+        "name": "flare_capa_antianalysis",
+        "time": 0.0
+      },
+      {
+        "name": "flare_capa_collection",
+        "time": 0.0
+      },
+      {
+        "name": "flare_capa_communication",
+        "time": 0.0
+      },
+      {
+        "name": "flare_capa_compiler",
+        "time": 0.0
+      },
+      {
+        "name": "flare_capa_datamanipulation",
+        "time": 0.0
+      },
+      {
+        "name": "flare_capa_executable",
+        "time": 0.0
+      },
+      {
+        "name": "flare_capa_hostinteraction",
+        "time": 0.0
+      },
+      {
+        "name": "flare_capa_impact",
+        "time": 0.0
+      },
+      {
+        "name": "flare_capa_lib",
+        "time": 0.0
+      },
+      {
+        "name": "flare_capa_linking",
+        "time": 0.0
+      },
+      {
+        "name": "flare_capa_loadcode",
+        "time": 0.0
+      },
+      {
+        "name": "flare_capa_malwarefamily",
+        "time": 0.0
+      },
+      {
+        "name": "flare_capa_nursery",
+        "time": 0.0
+      },
+      {
+        "name": "flare_capa_persistence",
+        "time": 0.0
+      },
+      {
+        "name": "flare_capa_runtime",
+        "time": 0.0
+      },
+      {
+        "name": "flare_capa_targeting",
+        "time": 0.0
+      },
+      {
+        "name": "threatfox",
+        "time": 0.0
+      },
+      {
+        "name": "log4shell",
+        "time": 0.0
+      },
+      {
+        "name": "mimics_extension",
+        "time": 0.0
+      },
+      {
+        "name": "network_country_distribution",
+        "time": 0.0
+      },
+      {
+        "name": "network_cnc_http",
+        "time": 0.003
+      },
+      {
+        "name": "network_ip_exe",
+        "time": 0.0
+      },
+      {
+        "name": "network_dga",
+        "time": 0.0
+      },
+      {
+        "name": "network_dga_fraunhofer",
+        "time": 0.0
+      },
+      {
+        "name": "network_dyndns",
+        "time": 0.002
+      },
+      {
+        "name": "network_excessive_udp",
+        "time": 0.0
+      },
+      {
+        "name": "network_http",
+        "time": 0.001
+      },
+      {
+        "name": "network_icmp",
+        "time": 0.0
+      },
+      {
+        "name": "network_irc",
+        "time": 0.0
+      },
+      {
+        "name": "network_open_proxy",
+        "time": 0.0
+      },
+      {
+        "name": "network_questionable_http_path",
+        "time": 0.0
+      },
+      {
+        "name": "network_questionable_https_path",
+        "time": 0.0
+      },
+      {
+        "name": "network_smtp",
+        "time": 0.0
+      },
+      {
+        "name": "network_torgateway",
+        "time": 0.001
+      },
+      {
+        "name": "origin_langid",
+        "time": 0.0
+      },
+      {
+        "name": "origin_resource_langid",
+        "time": 0.0
+      },
+      {
+        "name": "overlay",
+        "time": 0.0
+      },
+      {
+        "name": "packer_unknown_pe_section_name",
+        "time": 0.0
+      },
+      {
+        "name": "packer_aspack",
+        "time": 0.0
+      },
+      {
+        "name": "packer_aspirecrypt",
+        "time": 0.0
+      },
+      {
+        "name": "packer_bedsprotector",
+        "time": 0.0
+      },
+      {
+        "name": "packer_confuser",
+        "time": 0.0
+      },
+      {
+        "name": "packer_enigma",
+        "time": 0.0
+      },
+      {
+        "name": "packer_entropy",
+        "time": 0.0
+      },
+      {
+        "name": "packer_mpress",
+        "time": 0.0
+      },
+      {
+        "name": "packer_nate",
+        "time": 0.0
+      },
+      {
+        "name": "packer_nspack",
+        "time": 0.0
+      },
+      {
+        "name": "packer_smartassembly",
+        "time": 0.0
+      },
+      {
+        "name": "packer_spices",
+        "time": 0.0
+      },
+      {
+        "name": "packer_themida",
+        "time": 0.0
+      },
+      {
+        "name": "packer_titan",
+        "time": 0.0
+      },
+      {
+        "name": "packer_upx",
+        "time": 0.0
+      },
+      {
+        "name": "packer_vmprotect",
+        "time": 0.0
+      },
+      {
+        "name": "packer_yoda",
+        "time": 0.0
+      },
+      {
+        "name": "pdf_annot_urls_checker",
+        "time": 0.0
+      },
+      {
+        "name": "polymorphic",
+        "time": 0.0
+      },
+      {
+        "name": "punch_plus_plus_pcres",
+        "time": 0.0
+      },
+      {
+        "name": "procmem_yara",
+        "time": 0.0
+      },
+      {
+        "name": "recon_checkip",
+        "time": 0.0
+      },
+      {
+        "name": "static_authenticode",
+        "time": 0.0
+      },
+      {
+        "name": "invalid_authenticode_signature",
+        "time": 0.0
+      },
+      {
+        "name": "static_dotnet_anomaly",
+        "time": 0.0
+      },
+      {
+        "name": "static_java",
+        "time": 0.0
+      },
+      {
+        "name": "static_pdf",
+        "time": 0.0
+      },
+      {
+        "name": "contains_pe_overlay",
+        "time": 0.0
+      },
+      {
+        "name": "static_pe_anomaly",
+        "time": 0.0
+      },
+      {
+        "name": "pe_compile_timestomping",
+        "time": 0.0
+      },
+      {
+        "name": "static_pe_pdbpath",
+        "time": 0.0
+      },
+      {
+        "name": "static_rat_config",
+        "time": 0.0
+      },
+      {
+        "name": "static_versioninfo_anomaly",
+        "time": 0.0
+      },
+      {
+        "name": "suricata_alert",
+        "time": 0.0
+      },
+      {
+        "name": "suspicious_html_body",
+        "time": 0.0
+      },
+      {
+        "name": "suspicious_html_name",
+        "time": 0.0
+      },
+      {
+        "name": "suspicious_html_title",
+        "time": 0.0
+      },
+      {
+        "name": "volatility_devicetree_1",
+        "time": 0.0
+      },
+      {
+        "name": "volatility_handles_1",
+        "time": 0.0
+      },
+      {
+        "name": "volatility_ldrmodules_1",
+        "time": 0.0
+      },
+      {
+        "name": "volatility_ldrmodules_2",
+        "time": 0.0
+      },
+      {
+        "name": "volatility_malfind_1",
+        "time": 0.0
+      },
+      {
+        "name": "volatility_malfind_2",
+        "time": 0.0
+      },
+      {
+        "name": "volatility_modscan_1",
+        "time": 0.0
+      },
+      {
+        "name": "volatility_svcscan_1",
+        "time": 0.0
+      },
+      {
+        "name": "volatility_svcscan_2",
+        "time": 0.0
+      },
+      {
+        "name": "volatility_svcscan_3",
+        "time": 0.0
+      },
+      {
+        "name": "whois_create",
+        "time": 0.0
+      },
+      {
+        "name": "accesses_mailslot",
+        "time": 0.0
+      },
+      {
+        "name": "accesses_netlogon_regkey",
+        "time": 0.0
+      },
+      {
+        "name": "accesses_public_folder",
+        "time": 0.0
+      },
+      {
+        "name": "accesses_sysvol",
+        "time": 0.0
+      },
+      {
+        "name": "writes_sysvol",
+        "time": 0.0
+      },
+      {
+        "name": "adds_admin_user",
+        "time": 0.0
+      },
+      {
+        "name": "adds_user",
+        "time": 0.0
+      },
+      {
+        "name": "overwrites_admin_password",
+        "time": 0.0
+      },
+      {
+        "name": "antianalysis_detectfile",
+        "time": 0.001
+      },
+      {
+        "name": "antianalysis_detectreg",
+        "time": 0.0
+      },
+      {
+        "name": "modify_attachment_manager",
+        "time": 0.0
+      },
+      {
+        "name": "antiav_detectfile",
+        "time": 0.001
+      },
+      {
+        "name": "antiav_detectreg",
+        "time": 0.001
+      },
+      {
+        "name": "antiav_srp",
+        "time": 0.0
+      },
+      {
+        "name": "antiav_whitespace",
+        "time": 0.0
+      },
+      {
+        "name": "antidebug_devices",
+        "time": 0.0
+      },
+      {
+        "name": "antiemu_windefend",
+        "time": 0.0
+      },
+      {
+        "name": "antiemu_wine_reg",
+        "time": 0.0
+      },
+      {
+        "name": "antisandbox_cuckoo_files",
+        "time": 0.0
+      },
+      {
+        "name": "antisandbox_fortinet_files",
+        "time": 0.0
+      },
+      {
+        "name": "antisandbox_joe_anubis_files",
+        "time": 0.0
+      },
+      {
+        "name": "antisandbox_sboxie_mutex",
+        "time": 0.0
+      },
+      {
+        "name": "antisandbox_sunbelt_files",
+        "time": 0.0
+      },
+      {
+        "name": "antisandbox_threattrack_files",
+        "time": 0.0
+      },
+      {
+        "name": "antivm_bochs_keys",
+        "time": 0.0
+      },
+      {
+        "name": "antivm_generic_bios",
+        "time": 0.0
+      },
+      {
+        "name": "antivm_generic_diskreg",
+        "time": 0.0
+      },
+      {
+        "name": "antivm_hyperv_keys",
+        "time": 0.0
+      },
+      {
+        "name": "antivm_parallels_keys",
+        "time": 0.0
+      },
+      {
+        "name": "antivm_recentdocs",
+        "time": 0.0
+      },
+      {
+        "name": "antivm_vbox_devices",
+        "time": 0.0
+      },
+      {
+        "name": "antivm_vbox_files",
+        "time": 0.0
+      },
+      {
+        "name": "antivm_vbox_keys",
+        "time": 0.0
+      },
+      {
+        "name": "antivm_vmware_devices",
+        "time": 0.0
+      },
+      {
+        "name": "antivm_vmware_files",
+        "time": 0.0
+      },
+      {
+        "name": "antivm_vmware_keys",
+        "time": 0.0
+      },
+      {
+        "name": "antivm_vmware_mutexes",
+        "time": 0.0
+      },
+      {
+        "name": "antivm_vpc_files",
+        "time": 0.0
+      },
+      {
+        "name": "antivm_vpc_keys",
+        "time": 0.0
+      },
+      {
+        "name": "antivm_vpc_mutex",
+        "time": 0.0
+      },
+      {
+        "name": "antivm_xen_keys",
+        "time": 0.0
+      },
+      {
+        "name": "asyncrat_mutex",
+        "time": 0.0
+      },
+      {
+        "name": "gulpix_behavior",
+        "time": 0.0
+      },
+      {
+        "name": "ketrican_regkeys",
+        "time": 0.0
+      },
+      {
+        "name": "okrum_mutexes",
+        "time": 0.0
+      },
+      {
+        "name": "banker_cridex",
+        "time": 0.0
+      },
+      {
+        "name": "geodo_banking_trojan",
+        "time": 0.001
+      },
+      {
+        "name": "banker_spyeye_mutexes",
+        "time": 0.0
+      },
+      {
+        "name": "banker_zeus_mutex",
+        "time": 0.0
+      },
+      {
+        "name": "bitcoin_opencl",
+        "time": 0.0
+      },
+      {
+        "name": "accesses_primary_patition",
+        "time": 0.0
+      },
+      {
+        "name": "direct_hdd_access",
+        "time": 0.0
+      },
+      {
+        "name": "enumerates_physical_drives",
+        "time": 0.0
+      },
+      {
+        "name": "physical_drive_access",
+        "time": 0.0
+      },
+      {
+        "name": "bot_russkill",
+        "time": 0.0
+      },
+      {
+        "name": "browser_addon",
+        "time": 0.0
+      },
+      {
+        "name": "chromium_browser_extension_directory",
+        "time": 0.0
+      },
+      {
+        "name": "browser_helper_object",
+        "time": 0.0
+      },
+      {
+        "name": "browser_security",
+        "time": 0.0
+      },
+      {
+        "name": "browser_startpage",
+        "time": 0.0
+      },
+      {
+        "name": "ie_disables_process_tab",
+        "time": 0.0
+      },
+      {
+        "name": "odbcconf_bypass",
+        "time": 0.0
+      },
+      {
+        "name": "squiblydoo_bypass",
+        "time": 0.0
+      },
+      {
+        "name": "squiblytwo_bypass",
+        "time": 0.0
+      },
+      {
+        "name": "bypass_firewall",
+        "time": 0.0
+      },
+      {
+        "name": "checks_uac_status",
+        "time": 0.0
+      },
+      {
+        "name": "uac_bypass_cmstpcom",
+        "time": 0.0
+      },
+      {
+        "name": "uac_bypass_delegateexecute_sdclt",
+        "time": 0.0
+      },
+      {
+        "name": "uac_bypass_fodhelper",
+        "time": 0.0
+      },
+      {
+        "name": "cape_extracted_content",
+        "time": 0.0
+      },
+      {
+        "name": "carberp_mutex",
+        "time": 0.0
+      },
+      {
+        "name": "clears_logs",
+        "time": 0.0
+      },
+      {
+        "name": "cmdline_obfuscation",
+        "time": 0.0
+      },
+      {
+        "name": "cmdline_switches",
+        "time": 0.0
+      },
+      {
+        "name": "cmdline_terminate",
+        "time": 0.0
+      },
+      {
+        "name": "cmdline_forfiles_wildcard",
+        "time": 0.0
+      },
+      {
+        "name": "cmdline_http_link",
+        "time": 0.0
+      },
+      {
+        "name": "cmdline_long_string",
+        "time": 0.0
+      },
+      {
+        "name": "cmdline_reversed_http_link",
+        "time": 0.0
+      },
+      {
+        "name": "long_commandline",
+        "time": 0.0
+      },
+      {
+        "name": "powershell_renamed_commandline",
+        "time": 0.0
+      },
+      {
+        "name": "copies_self",
+        "time": 0.0
+      },
+      {
+        "name": "credwiz_credentialaccess",
+        "time": 0.0
+      },
+      {
+        "name": "enables_wdigest",
+        "time": 0.0
+      },
+      {
+        "name": "vaultcmd_credentialaccess",
+        "time": 0.0
+      },
+      {
+        "name": "file_credential_store_access",
+        "time": 0.0
+      },
+      {
+        "name": "file_credential_store_write",
+        "time": 0.0
+      },
+      {
+        "name": "kerberos_credential_access_via_rubeus",
+        "time": 0.0
+      },
+      {
+        "name": "registry_credential_dumping",
+        "time": 0.0
+      },
+      {
+        "name": "registry_credential_store_access",
+        "time": 0.0
+      },
+      {
+        "name": "registry_lsa_secrets_access",
+        "time": 0.0
+      },
+      {
+        "name": "comsvcs_credentialdump",
+        "time": 0.0
+      },
+      {
+        "name": "cryptomining_stratum_command",
+        "time": 0.0
+      },
+      {
+        "name": "cypherit_mutexes",
+        "time": 0.0
+      },
+      {
+        "name": "darkcomet_regkeys",
+        "time": 0.0
+      },
+      {
+        "name": "datop_loader",
+        "time": 0.0
+      },
+      {
+        "name": "deepfreeze_mutex",
+        "time": 0.0
+      },
+      {
+        "name": "deletes_executed_files",
+        "time": 0.0
+      },
+      {
+        "name": "disables_app_launch",
+        "time": 0.0
+      },
+      {
+        "name": "disables_auto_app_termination",
+        "time": 0.0
+      },
+      {
+        "name": "disables_appv_virtualization",
+        "time": 0.0
+      },
+      {
+        "name": "disables_backups",
+        "time": 0.0
+      },
+      {
+        "name": "disables_browser_warn",
+        "time": 0.0
+      },
+      {
+        "name": "disables_context_menus",
+        "time": 0.0
+      },
+      {
+        "name": "disables_cpl_disable",
+        "time": 0.0
+      },
+      {
+        "name": "disables_crashdumps",
+        "time": 0.0
+      },
+      {
+        "name": "disables_event_logging",
+        "time": 0.0
+      },
+      {
+        "name": "disables_folder_options",
+        "time": 0.0
+      },
+      {
+        "name": "disables_notificationcenter",
+        "time": 0.0
+      },
+      {
+        "name": "disables_power_options",
+        "time": 0.0
+      },
+      {
+        "name": "disables_restore_default_state",
+        "time": 0.0
+      },
+      {
+        "name": "disables_run_command",
+        "time": 0.0
+      },
+      {
+        "name": "disables_smartscreen",
+        "time": 0.0
+      },
+      {
+        "name": "disables_startmenu_search",
+        "time": 0.0
+      },
+      {
+        "name": "disables_system_restore",
+        "time": 0.0
+      },
+      {
+        "name": "disables_uac",
+        "time": 0.0
+      },
+      {
+        "name": "disables_wer",
+        "time": 0.0
+      },
+      {
+        "name": "disables_windows_defender",
+        "time": 0.0
+      },
+      {
+        "name": "disables_windows_defender_logging",
+        "time": 0.0
+      },
+      {
+        "name": "removes_windows_defender_contextmenu",
+        "time": 0.0
+      },
+      {
+        "name": "removes_windows_defender_updates",
+        "time": 0.0
+      },
+      {
+        "name": "windows_defender_powershell",
+        "time": 0.0
+      },
+      {
+        "name": "disables_windows_file_protection",
+        "time": 0.0
+      },
+      {
+        "name": "disables_windowsupdate",
+        "time": 0.0
+      },
+      {
+        "name": "disables_winfirewall",
+        "time": 0.0
+      },
+      {
+        "name": "adfind_domain_enumeration",
+        "time": 0.0
+      },
+      {
+        "name": "domain_enumeration_commands",
+        "time": 0.0
+      },
+      {
+        "name": "andromut_mutexes",
+        "time": 0.0
+      },
+      {
+        "name": "downloader_cabby",
+        "time": 0.0
+      },
+      {
+        "name": "phorpiex_mutexes",
+        "time": 0.0
+      },
+      {
+        "name": "protonbot_mutexes",
+        "time": 0.0
+      },
+      {
+        "name": "driver_filtermanager",
+        "time": 0.0
+      },
+      {
+        "name": "dropper",
+        "time": 0.0
+      },
+      {
+        "name": "dll_archive_execution",
+        "time": 0.0
+      },
+      {
+        "name": "lnk_archive_execution",
+        "time": 0.0
+      },
+      {
+        "name": "script_archive_execution",
+        "time": 0.0
+      },
+      {
+        "name": "excel4_macro_urls",
+        "time": 0.0
+      },
+      {
+        "name": "escalate_privilege_via_ntlm_relay",
+        "time": 0.0
+      },
+      {
+        "name": "spooler_access",
+        "time": 0.0
+      },
+      {
+        "name": "spooler_svc_start",
+        "time": 0.0
+      },
+      {
+        "name": "mapped_drives_uac",
+        "time": 0.0
+      },
+      {
+        "name": "hides_recycle_bin_icon",
+        "time": 0.0
+      },
+      {
+        "name": "apocalypse_stealer_file_behavior",
+        "time": 0.0
+      },
+      {
+        "name": "arkei_files",
+        "time": 0.0
+      },
+      {
+        "name": "azorult_mutexes",
+        "time": 0.0
+      },
+      {
+        "name": "infostealer_bitcoin",
+        "time": 0.0
+      },
+      {
+        "name": "cryptbot_files",
+        "time": 0.0
+      },
+      {
+        "name": "echelon_files",
+        "time": 0.0
+      },
+      {
+        "name": "infostealer_ftp",
+        "time": 0.001
+      },
+      {
+        "name": "infostealer_im",
+        "time": 0.0
+      },
+      {
+        "name": "infostealer_mail",
+        "time": 0.0
+      },
+      {
+        "name": "masslogger_files",
+        "time": 0.0
+      },
+      {
+        "name": "poullight_files",
+        "time": 0.0
+      },
+      {
+        "name": "purplewave_mutexes",
+        "time": 0.0
+      },
+      {
+        "name": "quilclipper_mutexes",
+        "time": 0.0
+      },
+      {
+        "name": "qulab_files",
+        "time": 0.0
+      },
+      {
+        "name": "qulab_mutexes",
+        "time": 0.0
+      },
+      {
+        "name": "asyncrat_mutex",
+        "time": 0.0
+      },
+      {
+        "name": "Evade_Execution_Via_ASPNet_Compiler",
+        "time": 0.0
+      },
+      {
+        "name": "Evade_Execute_Via_DeviceCredentialDeployment",
+        "time": 0.0
+      },
+      {
+        "name": "Evade_Execution_Via_Filter_Manager_Control",
+        "time": 0.0
+      },
+      {
+        "name": "Evade_Execution_Via_Intel_GFXDownloadWrapper",
+        "time": 0.0
+      },
+      {
+        "name": "execute_binary_via_appvlp",
+        "time": 0.0
+      },
+      {
+        "name": "execute_binary_via_pcalua",
+        "time": 0.0
+      },
+      {
+        "name": "Execute_Binary_Via_OpenSSH",
+        "time": 0.0
+      },
+      {
+        "name": "execute_binary_via_pcalua",
+        "time": 0.0
+      },
+      {
+        "name": "Execute_Binary_Via_PesterPSModule",
+        "time": 0.0
+      },
+      {
+        "name": "Execute_Binary_Via_ScriptRunner",
+        "time": 0.0
+      },
+      {
+        "name": "execute_binary_via_ttdinject",
+        "time": 0.0
+      },
+      {
+        "name": "Execute_Binary_Via_VisualStudioLiveShare",
+        "time": 0.0
+      },
+      {
+        "name": "Execute_Msiexec_Via_Explorer",
+        "time": 0.0
+      },
+      {
+        "name": "execute_remote_msi",
+        "time": 0.0
+      },
+      {
+        "name": "execute_suspicious_powershell_via_runscripthelper",
+        "time": 0.0
+      },
+      {
+        "name": "execute_suspicious_powershell_via_sqlps",
+        "time": 0.0
+      },
+      {
+        "name": "Indirect_Command_Execution_Via_ConsoleWindowHost",
+        "time": 0.0
+      },
+      {
+        "name": "Perform_Malicious_Activities_Via_Headless_Browser",
+        "time": 0.0
+      },
+      {
+        "name": "Register_DLL_Via_CertOC",
+        "time": 0.0
+      },
+      {
+        "name": "Register_DLL_Via_MSIEXEC",
+        "time": 0.0
+      },
+      {
+        "name": "Register_DLL_Via_Odbcconf",
+        "time": 0.0
+      },
+      {
+        "name": "Scriptlet_Proxy_Execution_Via_Pubprn",
+        "time": 0.0
+      },
+      {
+        "name": "ie_martian_children",
+        "time": 0.0
+      },
+      {
+        "name": "office_martian_children",
+        "time": 0.0
+      },
+      {
+        "name": "mimics_icon",
+        "time": 0.0
+      },
+      {
+        "name": "masquerade_process_name",
+        "time": 0.0
+      },
+      {
+        "name": "mimikatz_modules",
+        "time": 0.0
+      },
+      {
+        "name": "ms_office_cmd_rce",
+        "time": 0.0
+      },
+      {
+        "name": "mount_copy_to_webdav_share",
+        "time": 0.0
+      },
+      {
+        "name": "potential_protocol_tunneling_via_legit_utilities",
+        "time": 0.0
+      },
+      {
+        "name": "potential_protocol_tunneling_via_qemu",
+        "time": 0.0
+      },
+      {
+        "name": "suspicious_execution_via_dotnet_remoting",
+        "time": 0.0
+      },
+      {
+        "name": "modify_certs",
+        "time": 0.0
+      },
+      {
+        "name": "dotnet_clr_usagelog_regkeys",
+        "time": 0.0
+      },
+      {
+        "name": "modify_hostfile",
+        "time": 0.0
+      },
+      {
+        "name": "modify_oem_information",
+        "time": 0.0
+      },
+      {
+        "name": "modify_security_center_warnings",
+        "time": 0.0
+      },
+      {
+        "name": "modify_uac_prompt",
+        "time": 0.0
+      },
+      {
+        "name": "network_dns_blockchain",
+        "time": 0.0
+      },
+      {
+        "name": "network_dns_opennic",
+        "time": 0.0
+      },
+      {
+        "name": "network_dns_paste_site",
+        "time": 0.0
+      },
+      {
+        "name": "network_dns_reverse_proxy",
+        "time": 0.0
+      },
+      {
+        "name": "network_dns_temp_file_storage",
+        "time": 0.0
+      },
+      {
+        "name": "network_dns_temp_urldns",
+        "time": 0.0
+      },
+      {
+        "name": "network_dns_url_shortener",
+        "time": 0.0
+      },
+      {
+        "name": "network_dns_doh_tls",
+        "time": 0.0
+      },
+      {
+        "name": "suspicious_tld",
+        "time": 0.003
+      },
+      {
+        "name": "network_tor_service",
+        "time": 0.0
+      },
+      {
+        "name": "office_code_page",
+        "time": 0.0
+      },
+      {
+        "name": "office_addinloading",
+        "time": 0.0
+      },
+      {
+        "name": "office_perfkey",
+        "time": 0.0
+      },
+      {
+        "name": "office_macro",
+        "time": 0.0
+      },
+      {
+        "name": "changes_trust_center_settings",
+        "time": 0.0
+      },
+      {
+        "name": "disables_vba_trust_access",
+        "time": 0.0
+      },
+      {
+        "name": "office_macro_autoexecution",
+        "time": 0.0
+      },
+      {
+        "name": "office_macro_ioc",
+        "time": 0.0
+      },
+      {
+        "name": "office_macro_malicious_prediction",
+        "time": 0.0
+      },
+      {
+        "name": "office_macro_suspicious",
+        "time": 0.0
+      },
+      {
+        "name": "rtf_aslr_bypass",
+        "time": 0.0
+      },
+      {
+        "name": "rtf_anomaly_characterset",
+        "time": 0.0
+      },
+      {
+        "name": "rtf_anomaly_version",
+        "time": 0.0
+      },
+      {
+        "name": "rtf_embedded_content",
+        "time": 0.0
+      },
+      {
+        "name": "rtf_embedded_office_file",
+        "time": 0.0
+      },
+      {
+        "name": "rtf_exploit_static",
+        "time": 0.0
+      },
+      {
+        "name": "office_security",
+        "time": 0.0
+      },
+      {
+        "name": "office_anomalous_feature",
+        "time": 0.0
+      },
+      {
+        "name": "office_dde_command",
+        "time": 0.0
+      },
+      {
+        "name": "packer_armadillo_mutex",
+        "time": 0.0
+      },
+      {
+        "name": "packer_armadillo_regkey",
+        "time": 0.0
+      },
+      {
+        "name": "persistence_safeboot",
+        "time": 0.0
+      },
+      {
+        "name": "persistence_ifeo",
+        "time": 0.0
+      },
+      {
+        "name": "persistence_silent_process_exit",
+        "time": 0.0
+      },
+      {
+        "name": "persistence_rdp_registry",
+        "time": 0.0
+      },
+      {
+        "name": "persistence_rdp_shadowing",
+        "time": 0.0
+      },
+      {
+        "name": "persistence_shim_database",
+        "time": 0.0
+      },
+      {
+        "name": "powerpool_mutexes",
+        "time": 0.0
+      },
+      {
+        "name": "powershell_scriptblock_logging",
+        "time": 0.0
+      },
+      {
+        "name": "powershell_command_suspicious",
+        "time": 0.0
+      },
+      {
+        "name": "powershell_renamed",
+        "time": 0.0
+      },
+      {
+        "name": "powershell_reversed",
+        "time": 0.0
+      },
+      {
+        "name": "powershell_variable_obfuscation",
+        "time": 0.0
+      },
+      {
+        "name": "prevents_safeboot",
+        "time": 0.0
+      },
+      {
+        "name": "cmdline_process_discovery",
+        "time": 0.0
+      },
+      {
+        "name": "cryptomix_mutexes",
+        "time": 0.0
+      },
+      {
+        "name": "dharma_mutexes",
+        "time": 0.0
+      },
+      {
+        "name": "ransomware_extensions",
+        "time": 0.002
+      },
+      {
+        "name": "ransomware_files",
+        "time": 0.002
+      },
+      {
+        "name": "fonix_mutexes",
+        "time": 0.0
+      },
+      {
+        "name": "gandcrab_mutexes",
+        "time": 0.0
+      },
+      {
+        "name": "germanwiper_mutexes",
+        "time": 0.0
+      },
+      {
+        "name": "medusalocker_mutexes",
+        "time": 0.0
+      },
+      {
+        "name": "medusalocker_regkeys",
+        "time": 0.0
+      },
+      {
+        "name": "nemty_mutexes",
+        "time": 0.0
+      },
+      {
+        "name": "nemty_regkeys",
+        "time": 0.0
+      },
+      {
+        "name": "pysa_mutexes",
+        "time": 0.0
+      },
+      {
+        "name": "ransomware_radamant",
+        "time": 0.0
+      },
+      {
+        "name": "ransomware_recyclebin",
+        "time": 0.0
+      },
+      {
+        "name": "revil_mutexes",
+        "time": 0.0
+      },
+      {
+        "name": "ransomware_revil_regkey",
+        "time": 0.0
+      },
+      {
+        "name": "satan_mutexes",
+        "time": 0.0
+      },
+      {
+        "name": "snake_ransom_mutexes",
+        "time": 0.0
+      },
+      {
+        "name": "stop_ransom_mutexes",
+        "time": 0.0
+      },
+      {
+        "name": "stop_ransomware_cmd",
+        "time": 0.0
+      },
+      {
+        "name": "rat_beebus_mutexes",
+        "time": 0.0
+      },
+      {
+        "name": "blacknet_mutexes",
+        "time": 0.0
+      },
+      {
+        "name": "blackrat_mutexes",
+        "time": 0.0
+      },
+      {
+        "name": "crat_mutexes",
+        "time": 0.0
+      },
+      {
+        "name": "dcrat_files",
+        "time": 0.0
+      },
+      {
+        "name": "dcrat_mutexes",
+        "time": 0.0
+      },
+      {
+        "name": "rat_fynloski_mutexes",
+        "time": 0.0
+      },
+      {
+        "name": "limerat_mutexes",
+        "time": 0.0
+      },
+      {
+        "name": "limerat_regkeys",
+        "time": 0.0
+      },
+      {
+        "name": "lodarat_file_behavior",
+        "time": 0.0
+      },
+      {
+        "name": "modirat_behavior",
+        "time": 0.0
+      },
+      {
+        "name": "njrat_regkeys",
+        "time": 0.0
+      },
+      {
+        "name": "obliquerat_files",
+        "time": 0.0
+      },
+      {
+        "name": "obliquerat_mutexes",
+        "time": 0.0
+      },
+      {
+        "name": "parallax_mutexes",
+        "time": 0.0
+      },
+      {
+        "name": "rat_pcclient",
+        "time": 0.0
+      },
+      {
+        "name": "rat_plugx_mutexes",
+        "time": 0.0
+      },
+      {
+        "name": "rat_poisonivy_mutexes",
+        "time": 0.0
+      },
+      {
+        "name": "rat_quasar_mutexes",
+        "time": 0.0
+      },
+      {
+        "name": "ratsnif_mutexes",
+        "time": 0.0
+      },
+      {
+        "name": "rat_spynet",
+        "time": 0.0
+      },
+      {
+        "name": "venomrat_mutexes",
+        "time": 0.0
+      },
+      {
+        "name": "warzonerat_files",
+        "time": 0.0
+      },
+      {
+        "name": "warzonerat_regkeys",
+        "time": 0.0
+      },
+      {
+        "name": "xpertrat_files",
+        "time": 0.0
+      },
+      {
+        "name": "xpertrat_mutexes",
+        "time": 0.0
+      },
+      {
+        "name": "rat_xtreme_mutexes",
+        "time": 0.0
+      },
+      {
+        "name": "recon_fingerprint",
+        "time": 0.0
+      },
+      {
+        "name": "remcos_files",
+        "time": 0.0
+      },
+      {
+        "name": "remcos_mutexes",
+        "time": 0.0
+      },
+      {
+        "name": "remcos_regkeys",
+        "time": 0.0
+      },
+      {
+        "name": "rdptcp_key",
+        "time": 0.0
+      },
+      {
+        "name": "uses_rdp_clip",
+        "time": 0.0
+      },
+      {
+        "name": "uses_remote_desktop_session",
+        "time": 0.0
+      },
+      {
+        "name": "removes_networking_icon",
+        "time": 0.0
+      },
+      {
+        "name": "removes_pinned_programs",
+        "time": 0.0
+      },
+      {
+        "name": "removes_security_maintenance_icon",
+        "time": 0.0
+      },
+      {
+        "name": "removes_startmenu_defaults",
+        "time": 0.0
+      },
+      {
+        "name": "removes_username_startmenu",
+        "time": 0.0
+      },
+      {
+        "name": "spicyhotpot_behavior",
+        "time": 0.0
+      },
+      {
+        "name": "sniffer_winpcap",
+        "time": 0.0
+      },
+      {
+        "name": "spreading_autoruninf",
+        "time": 0.0
+      },
+      {
+        "name": "stealth_hidden_extension",
+        "time": 0.0
+      },
+      {
+        "name": "stealth_hiddenreg",
+        "time": 0.0
+      },
+      {
+        "name": "stealth_hide_notifications",
+        "time": 0.0
+      },
+      {
+        "name": "stealth_webhistory",
+        "time": 0.0
+      },
+      {
+        "name": "sysinternals_psexec",
+        "time": 0.0
+      },
+      {
+        "name": "sysinternals_tools",
+        "time": 0.0
+      },
+      {
+        "name": "language_check_registry",
+        "time": 0.0
+      },
+      {
+        "name": "tampers_etw",
+        "time": 0.0
+      },
+      {
+        "name": "lsa_tampering",
+        "time": 0.0
+      },
+      {
+        "name": "tampers_powershell_logging",
+        "time": 0.0
+      },
+      {
+        "name": "targeted_flame",
+        "time": 0.0
+      },
+      {
+        "name": "territorial_disputes_sigs",
+        "time": 0.001
+      },
+      {
+        "name": "trickbot_mutex",
+        "time": 0.0
+      },
+      {
+        "name": "fleercivet_mutex",
+        "time": 0.0
+      },
+      {
+        "name": "lokibot_mutexes",
+        "time": 0.0
+      },
+      {
+        "name": "ursnif_behavior",
+        "time": 0.0
+      },
+      {
+        "name": "uses_adfind",
+        "time": 0.0
+      },
+      {
+        "name": "uses_ms_protocol",
+        "time": 0.0
+      },
+      {
+        "name": "neshta_mutexes",
+        "time": 0.0
+      },
+      {
+        "name": "renamer_mutexes",
+        "time": 0.0
+      },
+      {
+        "name": "owa_web_shell_files",
+        "time": 0.0
+      },
+      {
+        "name": "web_shell_files",
+        "time": 0.0
+      },
+      {
+        "name": "web_shell_processes",
+        "time": 0.0
+      },
+      {
+        "name": "dotnet_csc_build",
+        "time": 0.0
+      },
+      {
+        "name": "mavinject_lolbin",
+        "time": 0.0
+      },
+      {
+        "name": "multiple_explorer_instances",
+        "time": 0.0
+      },
+      {
+        "name": "script_tool_executed",
+        "time": 0.0
+      },
+      {
+        "name": "suspicious_certutil_use",
+        "time": 0.0
+      },
+      {
+        "name": "suspicious_command_tools",
+        "time": 0.0
+      },
+      {
+        "name": "suspicious_mpcmdrun_use",
+        "time": 0.0
+      },
+      {
+        "name": "suspicious_ping_use",
+        "time": 0.0
+      },
+      {
+        "name": "uses_powershell_copyitem",
+        "time": 0.0
+      },
+      {
+        "name": "uses_windows_utilities",
+        "time": 0.0
+      },
+      {
+        "name": "uses_windows_utilities_appcmd",
+        "time": 0.0
+      },
+      {
+        "name": "uses_windows_utilities_csvde_ldifde",
+        "time": 0.0
+      },
+      {
+        "name": "uses_windows_utilities_cipher",
+        "time": 0.0
+      },
+      {
+        "name": "uses_windows_utilities_clickonce",
+        "time": 0.0
+      },
+      {
+        "name": "uses_windows_utilities_curl",
+        "time": 0.0
+      },
+      {
+        "name": "uses_windows_utilities_dsquery",
+        "time": 0.0
+      },
+      {
+        "name": "uses_windows_utilities_esentutl",
+        "time": 0.0
+      },
+      {
+        "name": "uses_windows_utilities_finger",
+        "time": 0.0
+      },
+      {
+        "name": "uses_windows_utilities_mode",
+        "time": 0.0
+      },
+      {
+        "name": "uses_windows_utilities_ntdsutil",
+        "time": 0.0
+      },
+      {
+        "name": "uses_windows_utilities_nltest",
+        "time": 0.0
+      },
+      {
+        "name": "uses_windows_utilities_xcopy",
+        "time": 0.0
+      },
+      {
+        "name": "wmic_command_suspicious",
+        "time": 0.0
+      },
+      {
+        "name": "scrcons_wmi_script_consumer",
+        "time": 0.0
+      },
+      {
+        "name": "allaple_mutexes",
+        "time": 0.0
+      }
+    ],
+    "reporting": [
+      {
+        "name": "BinGraph",
+        "time": 0.0
+      }
+    ]
+  },
+  "target": {
+    "category": "file",
+    "file": {
+      "name": "4501.8ec0a502af1499d.zip",
+      "path": "/opt/CAPEv2/storage/binaries/15a9f3d6068e4fdb851900f4b4b510c5a7e5b703f6aa7173060f74e666333e6e",
+      "guest_paths": "",
+      "size": 160,
+      "crc32": "E78CBBF2",
+      "md5": "e07cdc7cbd8de161bdd4e1f48022a213",
+      "sha1": "93c2a1365c76b5a3433f597e7f9883bdf6aed7ee",
+      "sha256": "15a9f3d6068e4fdb851900f4b4b510c5a7e5b703f6aa7173060f74e666333e6e",
+      "sha512": "16db867a7ebbcf004ddaa07359f012fbe9128c9f13bfae9c215e6dd1678528e6825d99122aea7a3e49ccd10ebb80b5556440cbd48133dda2a0916017c794e036",
+      "rh_hash": null,
+      "ssdeep": "3:HzH1ygFFHIzeKBDip3WROEpuFXNxBa/AQAXFshzYguEbuDlK5fEVJLMGn:Hr1yLrK3WROEsXNHaIshzYguNlK5fEV/",
+      "type": "JSON text data",
+      "yara": [],
+      "cape_yara": [],
+      "clamav": [],
+      "tlsh": "T1EBC08C6E8103682398E15344B80AF2B1BAA250A72E39202A384D0139060CC5EE41B2E7",
+      "sha3_384": "a9a8550df4d7e58b7070f0aec0f9ec7c51d4f2785cbf216bfb5f56a6fd2cc523dc484ec416a0fc0eb8f03e8ff78cec56",
+      "data": null,
+      "die": [],
+      "strings": [
+        "    \"query_status\": \"error\",",
+        "    \"message\": \"Your sample download requests has been ratelimited. Please refer to https:\\/\\/bazaar.abuse.ch\\/faq\\/#api-limit\""
+      ],
+      "virustotal": {
+        "error": true,
+        "msg": "Unable to complete connection to VirusTotal. Status code: 429"
+      },
+      "cape_type_code": 0,
+      "cape_type": ""
+    }
+  },
+  "CAPE": {
+    "payloads": [],
+    "configs": []
+  },
+  "info": {
+    "version": "2.4-CAPE",
+    "started": "2025-11-01 15:44:12",
+    "ended": "2025-11-01 15:48:00",
+    "duration": 228,
+    "id": 7463,
+    "category": "file",
+    "custom": "",
+    "machine": {
+      "id": 6958,
+      "status": "stopping",
+      "name": "cuckoo4",
+      "label": "cuckoo4",
+      "platform": "windows",
+      "manager": "KVM",
+      "started_on": "2025-11-01 15:44:12",
+      "shutdown_on": "2025-11-01 15:47:59"
+    },
+    "package": "exe",
+    "timeout": false,
+    "tlp": null,
+    "parent_sample": null,
+    "options": {},
+    "source_url": null,
+    "route": "",
+    "user_id": 0,
+    "CAPE_current_commit": "4612c4699b865d0f60d8379b7bed86e53ab3bec8"
+  },
+  "behavior": {
+    "processes": []
+  },
+  "debug": {
+    "log": "2025-09-29 17:29:42,299 [root] INFO: Date set to: 20251101T15:44:12, timeout set to: 100\n2025-11-01 15:44:13,122 [root] DEBUG: Starting analyzer from: C:\\4n_zaxu5\n2025-11-01 15:44:13,122 [root] DEBUG: Storing results at: C:\\rKMszn\n2025-11-01 15:44:13,122 [root] DEBUG: Pipe server name: \\\\.\\PIPE\\oeADDNTmAa\n2025-11-01 15:44:13,122 [root] DEBUG: Python path: C:\\Users\\cuckoo1\\AppData\\Local\\Programs\\Python\\Python310-32\n2025-11-01 15:44:13,122 [root] INFO: analysis running as an admin\n2025-11-01 15:44:13,122 [root] INFO: analysis package specified: \"exe\"\n2025-11-01 15:44:13,122 [root] DEBUG: importing analysis package module: \"modules.packages.exe\"...\n2025-11-01 15:44:13,809 [root] DEBUG: imported analysis package \"exe\"\n2025-11-01 15:44:13,856 [root] DEBUG: initializing analysis package \"exe\"...\n2025-11-01 15:44:13,950 [lib.common.common] INFO: wrapping\n2025-11-01 15:44:13,981 [lib.core.compound] INFO: C:\\Users\\cuckoo1\\AppData\\Local\\Temp already exists, skipping creation\n2025-11-01 15:44:14,059 [root] DEBUG: New location of moved file: C:\\Users\\cuckoo1\\AppData\\Local\\Temp\\4501.8ec0a502af1499d.zip\n2025-11-01 15:44:14,106 [root] INFO: Analyzer: Package modules.packages.exe does not specify a DLL option\n2025-11-01 15:44:14,622 [root] INFO: Analyzer: Package modules.packages.exe does not specify a DLL_64 option\n2025-11-01 15:44:14,715 [root] INFO: Analyzer: Package modules.packages.exe does not specify a loader option\n2025-11-01 15:44:14,903 [root] INFO: Analyzer: Package modules.packages.exe does not specify a loader_64 option\n2025-11-01 15:44:17,497 [root] DEBUG: Imported auxiliary module \"modules.auxiliary.amsi\"\n2025-11-01 15:44:17,668 [root] DEBUG: Imported auxiliary module \"modules.auxiliary.browser\"\n2025-11-01 15:44:17,684 [root] DEBUG: Imported auxiliary module \"modules.auxiliary.browsermonitor\"\n2025-11-01 15:44:17,684 [root] DEBUG: Imported auxiliary module \"modules.auxiliary.curtain\"\n2025-11-01 15:44:18,215 [root] DEBUG: Imported auxiliary module \"modules.auxiliary.digisig\"\n2025-11-01 15:44:18,215 [root] DEBUG: Imported auxiliary module \"modules.auxiliary.disguise\"\n2025-11-01 15:44:18,231 [root] DEBUG: Imported auxiliary module \"modules.auxiliary.during_script\"\n2025-11-01 15:44:18,262 [root] DEBUG: Imported auxiliary module \"modules.auxiliary.evtx\"\n2025-11-01 15:44:18,262 [root] DEBUG: Imported auxiliary module \"modules.auxiliary.human\"\n2025-11-01 15:44:18,278 [root] DEBUG: Imported auxiliary module \"modules.auxiliary.permissions\"\n2025-11-01 15:44:18,278 [root] DEBUG: Imported auxiliary module \"modules.auxiliary.pre_script\"\n2025-11-01 15:44:18,278 [root] DEBUG: Imported auxiliary module \"modules.auxiliary.procmon\"\n2025-11-01 15:44:18,293 [root] DEBUG: Imported auxiliary module \"modules.auxiliary.recentfiles\"\n2025-11-01 15:44:18,309 [root] DEBUG: Imported auxiliary module \"modules.auxiliary.sysmon\"\n2025-11-01 15:44:18,309 [root] DEBUG: Imported auxiliary module \"modules.auxiliary.tlsdump\"\n2025-11-01 15:44:18,965 [root] DEBUG: Imported auxiliary module \"modules.auxiliary.usage\"\n2025-11-01 15:44:19,293 [modules.auxiliary.watchdownloads] DEBUG: Could not load auxiliary module WatchDownloads due to 'No module named 'watchdog''\n2025-11-01 15:44:19,372 [root] DEBUG: Imported auxiliary module \"modules.auxiliary.watchdownloads\"\n2025-11-01 15:44:19,403 [root] DEBUG: Initialized auxiliary module \"Browser\"\n2025-11-01 15:44:19,403 [root] DEBUG: attempting to configure 'Browser' from data\n2025-11-01 15:44:19,418 [root] DEBUG: module Browser does not support data configuration, ignoring\n2025-11-01 15:44:19,418 [root] DEBUG: Trying to start auxiliary module \"modules.auxiliary.browser\"...\n2025-11-01 15:44:19,418 [root] DEBUG: Started auxiliary module modules.auxiliary.browser\n2025-11-01 15:44:19,434 [root] DEBUG: Initialized auxiliary module \"Browsermonitor\"\n2025-11-01 15:44:19,434 [root] DEBUG: attempting to configure 'Browsermonitor' from data\n2025-11-01 15:44:19,434 [root] DEBUG: module Browsermonitor does not support data configuration, ignoring\n2025-11-01 15:44:19,434 [root] DEBUG: Trying to start auxiliary module \"modules.auxiliary.browsermonitor\"...\n2025-11-01 15:44:19,434 [root] DEBUG: Started auxiliary module modules.auxiliary.browsermonitor\n2025-11-01 15:44:19,450 [root] DEBUG: Initialized auxiliary module \"Curtain\"\n2025-11-01 15:44:19,450 [root] DEBUG: attempting to configure 'Curtain' from data\n2025-11-01 15:44:19,465 [root] DEBUG: module Curtain does not support data configuration, ignoring\n2025-11-01 15:44:19,465 [root] DEBUG: Trying to start auxiliary module \"modules.auxiliary.curtain\"...\n2025-11-01 15:44:19,465 [root] DEBUG: Started auxiliary module modules.auxiliary.curtain\n2025-11-01 15:44:19,481 [root] DEBUG: Initialized auxiliary module \"DigiSig\"\n2025-11-01 15:44:19,481 [root] DEBUG: attempting to configure 'DigiSig' from data\n2025-11-01 15:44:19,481 [root] DEBUG: module DigiSig does not support data configuration, ignoring\n2025-11-01 15:44:19,497 [root] DEBUG: Trying to start auxiliary module \"modules.auxiliary.digisig\"...\n2025-11-01 15:44:19,497 [modules.auxiliary.digisig] DEBUG: Checking for a digital signature\n2025-11-01 15:44:37,575 [modules.auxiliary.digisig] DEBUG: File format not recognized\n2025-11-01 15:44:37,575 [modules.auxiliary.digisig] INFO: Uploading signature results to aux/DigiSig.json\n2025-11-01 15:44:37,590 [root] DEBUG: Started auxiliary module modules.auxiliary.digisig\n2025-11-01 15:44:37,590 [root] DEBUG: Initialized auxiliary module \"Disguise\"\n2025-11-01 15:44:37,590 [root] DEBUG: attempting to configure 'Disguise' from data\n2025-11-01 15:44:37,590 [root] DEBUG: module Disguise does not support data configuration, ignoring\n2025-11-01 15:44:37,590 [root] DEBUG: Trying to start auxiliary module \"modules.auxiliary.disguise\"...\n2025-11-01 15:44:37,590 [modules.auxiliary.disguise] INFO: Disguising GUID to 5e1ebfbe-7e1a-4b67-ac25-9a636715f7c0\n2025-11-01 15:44:37,590 [root] DEBUG: Started auxiliary module modules.auxiliary.disguise\n2025-11-01 15:44:37,606 [root] DEBUG: Initialized auxiliary module \"Evtx\"\n2025-11-01 15:44:37,606 [root] DEBUG: attempting to configure 'Evtx' from data\n2025-11-01 15:44:37,606 [root] DEBUG: module Evtx does not support data configuration, ignoring\n2025-11-01 15:44:37,606 [root] DEBUG: Trying to start auxiliary module \"modules.auxiliary.evtx\"...\n2025-11-01 15:44:37,622 [modules.auxiliary.evtx] DEBUG: Enabling advanced logging -> auditpol /set /subcategory:\"Security State Change\" /success:enable /failure:enable\n2025-11-01 15:44:37,622 [root] DEBUG: Started auxiliary module modules.auxiliary.evtx\n2025-11-01 15:44:37,622 [root] DEBUG: Initialized auxiliary module \"Human\"\n2025-11-01 15:44:37,622 [root] DEBUG: attempting to configure 'Human' from data\n2025-11-01 15:44:37,637 [root] DEBUG: module Human does not support data configuration, ignoring\n2025-11-01 15:44:37,637 [root] DEBUG: Trying to start auxiliary module \"modules.auxiliary.human\"...\n2025-11-01 15:44:37,637 [root] DEBUG: Started auxiliary module modules.auxiliary.human\n2025-11-01 15:44:37,637 [root] DEBUG: Initialized auxiliary module \"Permissions\"\n2025-11-01 15:44:37,637 [root] DEBUG: attempting to configure 'Permissions' from data\n2025-11-01 15:44:37,653 [root] DEBUG: module Permissions does not support data configuration, ignoring\n2025-11-01 15:44:37,653 [root] DEBUG: Trying to start auxiliary module \"modules.auxiliary.permissions\"...\n2025-11-01 15:44:37,669 [root] DEBUG: Started auxiliary module modules.auxiliary.permissions\n2025-11-01 15:44:37,669 [root] DEBUG: Initialized auxiliary module \"Pre_script\"\n2025-11-01 15:44:37,669 [root] DEBUG: attempting to configure 'Pre_script' from data\n2025-11-01 15:44:37,669 [root] DEBUG: module Pre_script does not support data configuration, ignoring\n2025-11-01 15:44:37,684 [root] DEBUG: Trying to start auxiliary module \"modules.auxiliary.pre_script\"...\n2025-11-01 15:44:37,684 [root] DEBUG: Started auxiliary module modules.auxiliary.pre_script\n2025-11-01 15:44:37,684 [root] DEBUG: Initialized auxiliary module \"Procmon\"\n2025-11-01 15:44:37,700 [root] DEBUG: attempting to configure 'Procmon' from data\n2025-11-01 15:44:37,700 [root] DEBUG: module Procmon does not support data configuration, ignoring\n2025-11-01 15:44:37,700 [root] DEBUG: Trying to start auxiliary module \"modules.auxiliary.procmon\"...\n2025-11-01 15:44:37,700 [root] DEBUG: Started auxiliary module modules.auxiliary.procmon\n2025-11-01 15:44:37,715 [root] DEBUG: Initialized auxiliary module \"RecentFiles\"\n2025-11-01 15:44:37,715 [root] DEBUG: attempting to configure 'RecentFiles' from data\n2025-11-01 15:44:38,325 [root] DEBUG: module RecentFiles does not support data configuration, ignoring\n2025-11-01 15:44:38,340 [root] DEBUG: Trying to start auxiliary module \"modules.auxiliary.recentfiles\"...\n2025-11-01 15:44:38,340 [modules.auxiliary.recentfiles] DEBUG: Wrote 'recentfile' C:\\Users\\cuckoo1\\Documents\\rCPJOKtfsq.docm to disk.\n2025-11-01 15:44:39,668 [modules.auxiliary.evtx] DEBUG: Enabling advanced logging -> auditpol /set /subcategory:\"Security System Extension\" /success:enable /failure:enable\n2025-11-01 15:44:39,841 [modules.auxiliary.evtx] DEBUG: Enabling advanced logging -> auditpol /set /subcategory:\"System Integrity\" /success:enable /failure:enable\n2025-11-01 15:44:40,153 [modules.auxiliary.evtx] DEBUG: Enabling advanced logging -> auditpol /set /subcategory:\"IPsec Driver\" /success:disable /failure:disable\n2025-11-01 15:44:40,325 [modules.auxiliary.evtx] DEBUG: Enabling advanced logging -> auditpol /set /subcategory:\"Other System Events\" /success:disable /failure:enable\n2025-11-01 15:44:40,778 [modules.auxiliary.evtx] DEBUG: Enabling advanced logging -> auditpol /set /subcategory:\"Logon\" /success:enable /failure:enable\n2025-11-01 15:44:40,965 [modules.auxiliary.evtx] DEBUG: Enabling advanced logging -> auditpol /set /subcategory:\"Logoff\" /success:enable /failure:enable\n2025-11-01 15:44:41,153 [modules.auxiliary.evtx] DEBUG: Enabling advanced logging -> auditpol /set /subcategory:\"Account Lockout\" /success:enable /failure:enable\n2025-11-01 15:44:41,387 [modules.auxiliary.evtx] DEBUG: Enabling advanced logging -> auditpol /set /subcategory:\"IPsec Main Mode\" /success:disable /failure:disable\n2025-11-01 15:44:41,528 [modules.auxiliary.evtx] DEBUG: Enabling advanced logging -> auditpol /set /subcategory:\"IPsec Quick Mode\" /success:disable /failure:disable\n2025-11-01 15:44:41,778 [modules.auxiliary.evtx] DEBUG: Enabling advanced logging -> auditpol /set /subcategory:\"IPsec Extended Mode\" /success:disable /failure:disable\n2025-11-01 15:44:42,012 [modules.auxiliary.evtx] DEBUG: Enabling advanced logging -> auditpol /set /subcategory:\"Other Logon/Logoff Events\" /success:enable /failure:enable\n2025-11-01 15:44:42,137 [modules.auxiliary.evtx] DEBUG: Enabling advanced logging -> auditpol /set /subcategory:\"Network Policy Server\" /success:enable /failure:enable\n2025-11-01 15:44:42,278 [modules.auxiliary.evtx] DEBUG: Enabling advanced logging -> auditpol /set /subcategory:\"Special Logon\" /success:enable /failure:enable\n2025-11-01 15:44:42,387 [modules.auxiliary.evtx] DEBUG: Enabling advanced logging -> auditpol /set /subcategory:\"File System\" /success:enable /failure:enable\n2025-11-01 15:44:42,481 [modules.auxiliary.evtx] DEBUG: Enabling advanced logging -> auditpol /set /subcategory:\"Registry\" /success:enable /failure:enable\n2025-11-01 15:44:42,606 [modules.auxiliary.evtx] DEBUG: Enabling advanced logging -> auditpol /set /subcategory:\"Kernel Object\" /success:enable /failure:enable\n2025-11-01 15:44:42,747 [modules.auxiliary.evtx] DEBUG: Enabling advanced logging -> auditpol /set /subcategory:\"SAM\" /success:disable /failure:disable\n2025-11-01 15:44:42,872 [modules.auxiliary.evtx] DEBUG: Enabling advanced logging -> auditpol /set /subcategory:\"Certification Services\" /success:enable /failure:enable\n2025-11-01 15:44:42,981 [modules.auxiliary.evtx] DEBUG: Enabling advanced logging -> auditpol /set /subcategory:\"Handle Manipulation\" /success:disable /failure:disable\n2025-11-01 15:44:43,200 [modules.auxiliary.evtx] DEBUG: Enabling advanced logging -> auditpol /set /subcategory:\"Application Generated\" /success:enable /failure:enable\n2025-11-01 15:44:43,247 [modules.auxiliary.recentfiles] DEBUG: Wrote 'recentfile' C:\\Users\\cuckoo1\\Documents\\OPfzVdSwPJHYzH.doc to disk.\n2025-11-01 15:44:43,278 [modules.auxiliary.recentfiles] DEBUG: Wrote 'recentfile' C:\\Users\\cuckoo1\\Documents\\TWiqYZvOmw.docx to disk.\n2025-11-01 15:44:43,450 [modules.auxiliary.evtx] DEBUG: Enabling advanced logging -> auditpol /set /subcategory:\"File Share\" /success:enable /failure:enable\n2025-11-01 15:44:43,590 [modules.auxiliary.evtx] DEBUG: Enabling advanced logging -> auditpol /set /subcategory:\"Filtering Platform Packet Drop\" /success:disable /failure:disable\n2025-11-01 15:44:43,669 [modules.auxiliary.recentfiles] DEBUG: Wrote 'recentfile' C:\\Users\\cuckoo1\\Documents\\ItlJfiyCayQRNTN.ppt to disk.\n2025-11-01 15:44:43,669 [modules.auxiliary.recentfiles] DEBUG: Wrote 'recentfile' C:\\Users\\cuckoo1\\Documents\\qOWECqdjLc.txt to disk.\n2025-11-01 15:44:43,684 [modules.auxiliary.recentfiles] DEBUG: Wrote 'recentfile' C:\\Users\\cuckoo1\\Documents\\dARGlUSyvTpa.txt to disk.\n2025-11-01 15:44:43,700 [modules.auxiliary.recentfiles] DEBUG: Wrote 'recentfile' C:\\Users\\cuckoo1\\Documents\\iHvfRKtFAIhdN.rtf to disk.\n2025-11-01 15:44:43,700 [modules.auxiliary.recentfiles] DEBUG: Wrote 'recentfile' C:\\Users\\cuckoo1\\Documents\\FWKlEEjycTmmW.doc to disk.\n2025-11-01 15:44:43,715 [modules.auxiliary.recentfiles] DEBUG: Wrote 'recentfile' C:\\Users\\cuckoo1\\Documents\\fwOODOaaCzvtcj.docx to disk.\n2025-11-01 15:44:43,731 [modules.auxiliary.recentfiles] DEBUG: Wrote 'recentfile' C:\\Users\\cuckoo1\\Documents\\DbNRzcGIuq.doc to disk.\n2025-11-01 15:44:43,731 [root] DEBUG: Started auxiliary module modules.auxiliary.recentfiles\n2025-11-01 15:44:43,731 [root] DEBUG: Initialized auxiliary module \"Sysmon\"\n2025-11-01 15:44:43,731 [root] DEBUG: attempting to configure 'Sysmon' from data\n2025-11-01 15:44:43,762 [root] DEBUG: module Sysmon does not support data configuration, ignoring\n2025-11-01 15:44:43,762 [root] DEBUG: Trying to start auxiliary module \"modules.auxiliary.sysmon\"...\n2025-11-01 15:44:43,778 [modules.auxiliary.evtx] DEBUG: Enabling advanced logging -> auditpol /set /subcategory:\"Filtering Platform Connection\" /success:disable /failure:disable\n2025-11-01 15:44:43,950 [modules.auxiliary.evtx] DEBUG: Enabling advanced logging -> auditpol /set /subcategory:\"Other Object Access Events\" /success:disable /failure:disable\n2025-11-01 15:44:44,075 [modules.auxiliary.evtx] DEBUG: Enabling advanced logging -> auditpol /set /subcategory:\"Sensitive Privilege Use\" /success:disable /failure:disable\n2025-11-01 15:44:44,200 [modules.auxiliary.evtx] DEBUG: Enabling advanced logging -> auditpol /set /subcategory:\"Non Sensitive Privilege Use\" /success:disable /failure:disable\n2025-11-01 15:44:44,403 [modules.auxiliary.evtx] DEBUG: Enabling advanced logging -> auditpol /set /subcategory:\"Other Privilege Use Events\" /success:disable /failure:disable\n2025-11-01 15:44:44,715 [modules.auxiliary.evtx] DEBUG: Enabling advanced logging -> auditpol /set /subcategory:\"RPC Events\" /success:enable /failure:enable\n2025-11-01 15:44:45,012 [root] WARNING: Cannot execute auxiliary module modules.auxiliary.sysmon: In order to use the Sysmon functionality, it is required to have the SMaster(64|32).exe file and sysmonconfig-export.xml file in the bin path. Note that the SMaster(64|32).exe files are just the standard Sysmon binaries renamed to avoid anti-analysis detection techniques.\n2025-11-01 15:44:45,012 [root] DEBUG: Initialized auxiliary module \"TLSDumpMasterSecrets\"\n2025-11-01 15:44:45,012 [root] DEBUG: attempting to configure 'TLSDumpMasterSecrets' from data\n2025-11-01 15:44:45,028 [root] DEBUG: module TLSDumpMasterSecrets does not support data configuration, ignoring\n2025-11-01 15:44:45,028 [root] DEBUG: Trying to start auxiliary module \"modules.auxiliary.tlsdump\"...\n2025-11-01 15:44:45,043 [modules.auxiliary.tlsdump] INFO: lsass.exe found, pid 724\n2025-11-01 15:44:45,043 [lib.api.process] INFO: Monitor config for <Process 724 lsass.exe>: C:\\4n_zaxu5\\dll\\724.ini\n2025-11-01 15:44:45,059 [lib.api.process] INFO: Option 'tlsdump' with value '1' sent to monitor\n2025-11-01 15:44:45,075 [modules.auxiliary.evtx] DEBUG: Enabling advanced logging -> auditpol /set /subcategory:\"Audit Policy Change\" /success:enable /failure:enable\n2025-11-01 15:44:45,309 [modules.auxiliary.evtx] DEBUG: Enabling advanced logging -> auditpol /set /subcategory:\"Authentication Policy Change\" /success:enable /failure:enable\n2025-11-01 15:44:45,450 [lib.api.process] INFO: 64-bit DLL to inject is C:\\4n_zaxu5\\dll\\JUAgVqZ.dll, loader C:\\4n_zaxu5\\bin\\bsPKBtsw.exe\n2025-11-01 15:44:45,497 [modules.auxiliary.evtx] DEBUG: Enabling advanced logging -> auditpol /set /subcategory:\"MPSSVC Rule-Level Policy Change\" /success:disable /failure:disable\n2025-11-01 15:44:46,059 [modules.auxiliary.evtx] DEBUG: Enabling advanced logging -> auditpol /set /subcategory:\"Filtering Platform Policy Change\" /success:disable /failure:disable\n2025-11-01 15:44:46,528 [modules.auxiliary.evtx] DEBUG: Enabling advanced logging -> auditpol /set /subcategory:\"Other Policy Change Events\" /success:disable /failure:enable\n2025-11-01 15:44:46,965 [modules.auxiliary.evtx] DEBUG: Enabling advanced logging -> auditpol /set /subcategory:\"User Account Management\" /success:enable /failure:enable\n2025-11-01 15:44:47,200 [modules.auxiliary.evtx] DEBUG: Enabling advanced logging -> auditpol /set /subcategory:\"Computer Account Management\" /success:enable /failure:enable\n2025-11-01 15:44:47,309 [root] DEBUG: Loader: Injecting process 724 with C:\\4n_zaxu5\\dll\\JUAgVqZ.dll.\n2025-11-01 15:44:47,325 [root] DEBUG: Started auxiliary module modules.auxiliary.tlsdump\n2025-11-01 15:44:47,325 [root] DEBUG: Initialized auxiliary module \"Usage\"\n2025-11-01 15:44:47,340 [root] DEBUG: attempting to configure 'Usage' from data\n2025-11-01 15:44:47,340 [root] DEBUG: module Usage does not support data configuration, ignoring\n2025-11-01 15:44:47,340 [root] DEBUG: Trying to start auxiliary module \"modules.auxiliary.usage\"...\n2025-11-01 15:44:47,356 [root] DEBUG: Started auxiliary module modules.auxiliary.usage\n2025-11-01 15:44:47,356 [root] DEBUG: Initialized auxiliary module \"WatchDownloads\"\n2025-11-01 15:44:47,356 [root] DEBUG: attempting to configure 'WatchDownloads' from data\n2025-11-01 15:44:47,356 [root] DEBUG: module WatchDownloads does not support data configuration, ignoring\n2025-11-01 15:44:47,356 [root] DEBUG: Trying to start auxiliary module \"modules.auxiliary.watchdownloads\"...\n2025-11-01 15:44:47,356 [root] DEBUG: Started auxiliary module modules.auxiliary.watchdownloads\n2025-11-01 15:44:47,356 [root] DEBUG: Initialized auxiliary module \"During_script\"\n2025-11-01 15:44:47,356 [root] DEBUG: attempting to configure 'During_script' from data\n2025-11-01 15:44:47,356 [root] DEBUG: module During_script does not support data configuration, ignoring\n2025-11-01 15:44:47,356 [root] DEBUG: Trying to start auxiliary module \"modules.auxiliary.during_script\"...\n2025-11-01 15:44:47,356 [root] DEBUG: Started auxiliary module modules.auxiliary.during_script\n2025-11-01 15:44:48,403 [modules.auxiliary.evtx] DEBUG: Enabling advanced logging -> auditpol /set /subcategory:\"Security Group Management\" /success:enable /failure:enable\n2025-11-01 15:44:48,403 [root] DEBUG: 724: Python path set to 'C:\\Users\\cuckoo1\\AppData\\Local\\Programs\\Python\\Python310-32'.\n2025-11-01 15:44:48,418 [root] DEBUG: 724: Disabling sleep skipping.\n2025-11-01 15:44:48,418 [root] DEBUG: 724: TLS secret dump mode enabled.\n2025-11-01 15:44:48,559 [modules.auxiliary.evtx] DEBUG: Enabling advanced logging -> auditpol /set /subcategory:\"Distribution Group Management\" /success:enable /failure:enable\n2025-11-01 15:44:48,981 [root] DEBUG: 724: RtlInsertInvertedFunctionTable 0x00007FF8BF8E090E, LdrpInvertedFunctionTableSRWLock 0x00007FF8BFA3D500\n2025-11-01 15:44:49,012 [modules.auxiliary.evtx] DEBUG: Enabling advanced logging -> auditpol /set /subcategory:\"Application Group Management\" /success:enable /failure:enable\n2025-11-01 15:44:49,012 [root] DEBUG: 724: Monitor initialised: 64-bit capemon loaded in process 724 at 0x00007FF86FC40000, thread 8128, image base 0x00007FF6E8AF0000, stack from 0x0000000001A73000-0x0000000001A80000\n2025-11-01 15:44:49,028 [root] DEBUG: 724: Commandline: C:\\Windows\\system32\\lsass.exe\n2025-11-01 15:44:49,075 [root] DEBUG: 724: Hooked 5 out of 5 functions\n2025-11-01 15:44:49,090 [root] DEBUG: InjectDllViaThread: Successfully injected Dll into process via RtlCreateUserThread.\n2025-11-01 15:44:49,090 [root] DEBUG: Successfully injected DLL C:\\4n_zaxu5\\dll\\JUAgVqZ.dll.\n2025-11-01 15:44:49,403 [modules.auxiliary.evtx] DEBUG: Enabling advanced logging -> auditpol /set /subcategory:\"Other Account Management Events\" /success:enable /failure:enable\n2025-11-01 15:44:49,512 [root] DEBUG: 724: TLS 1.2 secrets logged to: C:\\rKMszn\\tlsdump\\tlsdump.log\n2025-11-01 15:44:49,731 [modules.auxiliary.evtx] DEBUG: Enabling advanced logging -> auditpol /set /subcategory:\"Directory Service Access\" /success:enable /failure:enable\n2025-11-01 15:44:49,856 [modules.auxiliary.evtx] DEBUG: Enabling advanced logging -> auditpol /set /subcategory:\"Directory Service Changes\" /success:enable /failure:enable\n2025-11-01 15:44:50,090 [modules.auxiliary.evtx] DEBUG: Enabling advanced logging -> auditpol /set /subcategory:\"Directory Service Replication\" /success:disable /failure:enable\n2025-11-01 15:44:50,278 [modules.auxiliary.evtx] DEBUG: Enabling advanced logging -> auditpol /set /subcategory:\"Detailed Directory Service Replication\" /success:disable /failure:disable\n2025-11-01 15:44:50,450 [modules.auxiliary.evtx] DEBUG: Enabling advanced logging -> auditpol /set /subcategory:\"Credential Validation\" /success:enable /failure:enable\n2025-11-01 15:44:50,684 [modules.auxiliary.evtx] DEBUG: Enabling advanced logging -> auditpol /set /subcategory:\"Kerberos Service Ticket Operations\" /success:enable /failure:enable\n2025-11-01 15:44:51,075 [modules.auxiliary.evtx] DEBUG: Enabling advanced logging -> auditpol /set /subcategory:\"Other Account Logon Events\" /success:enable /failure:enable\n2025-11-01 15:44:51,403 [modules.auxiliary.evtx] DEBUG: Enabling advanced logging -> auditpol /set /subcategory:\"Kerberos Authentication Service\" /success:enable /failure:enable\n2025-11-01 15:44:51,528 [modules.auxiliary.evtx] DEBUG: Wiping Application\n2025-11-01 15:44:52,218 [modules.auxiliary.evtx] DEBUG: Wiping HardwareEvents\n2025-11-01 15:44:52,434 [modules.auxiliary.evtx] DEBUG: Wiping Internet Explorer\n2025-11-01 15:44:52,450 [modules.auxiliary.evtx] DEBUG: Wiping Key Management Service\n2025-11-01 15:44:52,481 [modules.auxiliary.evtx] DEBUG: Wiping OAlerts\n2025-11-01 15:44:52,497 [modules.auxiliary.evtx] DEBUG: Wiping Security\n2025-11-01 15:44:52,950 [modules.auxiliary.evtx] DEBUG: Wiping Setup\n2025-11-01 15:44:53,200 [modules.auxiliary.evtx] DEBUG: Wiping System\n2025-11-01 15:44:54,153 [modules.auxiliary.evtx] DEBUG: Wiping Windows PowerShell\n2025-11-01 15:44:54,168 [modules.auxiliary.evtx] DEBUG: Wiping Microsoft-Windows-Sysmon/Operational\n2025-11-01 15:45:08,887 [root] INFO: Restarting WMI Service\n2025-11-01 15:45:10,934 [root] DEBUG: package modules.packages.exe does not support configure, ignoring\n2025-11-01 15:45:10,934 [root] WARNING: configuration error for package modules.packages.exe: error importing data.packages.exe: No module named 'data.packages'\n2025-11-01 15:45:10,934 [lib.common.common] INFO: Submitted file is missing extension, adding .exe\n2025-11-01 15:45:10,934 [lib.core.compound] INFO: C:\\Users\\cuckoo1\\AppData\\Local\\Temp already exists, skipping creation\n2025-11-01 15:45:11,481 [lib.api.process] ERROR: Failed to execute process from path \"C:\\Users\\cuckoo1\\AppData\\Local\\Temp\\4501.8ec0a502af1499d.zip.exe\" with arguments \"None\" (Error: This version of %1 is not compatible with the version of Windows you're running. Check your computer's system information to see whether you need a x86 (32-bit) or x64 (64-bit) version of the program, and then contact the software publisher (ERROR_EXE_MACHINE_TYPE_MISMATCH))\n2025-11-01 15:45:11,481 [root] ERROR: You probably submitted the job with wrong package\nTraceback (most recent call last):\n  File \"C:\\4n_zaxu5\\analyzer.py\", line 620, in run\n    pids = self.package.start(self.target)\n  File \"C:\\4n_zaxu5\\modules\\packages\\exe.py\", line 47, in start\n    return self.execute(path, args, path)\n  File \"C:\\4n_zaxu5\\lib\\common\\abstracts.py\", line 174, in execute\n    raise CuckooPackageError(\"Unable to execute the initial process, analysis aborted\")\nlib.common.exceptions.CuckooPackageError: Unable to execute the initial process, analysis aborted\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"C:\\4n_zaxu5\\analyzer.py\", line 1529, in <module>\n    success = analyzer.run()\n  File \"C:\\4n_zaxu5\\analyzer.py\", line 624, in run\n    raise CuckooError(f'The package \"{self.package_name}\" start function raised an error: {e}') from e\nlib.common.exceptions.CuckooError: The package \"modules.packages.exe\" start function raised an error: Unable to execute the initial process, analysis aborted\n2025-11-01 15:45:11,481 [root] WARNING: Folder at path \"C:\\rKMszn\\debugger\" does not exist, skipping\n2025-11-01 15:45:11,481 [root] INFO: Uploading files at path \"C:\\rKMszn\\tlsdump\"\n2025-11-01 15:45:11,481 [lib.common.results] INFO: Uploading file C:\\rKMszn\\tlsdump\\tlsdump.log to tlsdump\\tlsdump.log; Size is 4384; Max size: 1000000000\n2025-11-01 15:45:11,497 [root] INFO: Analysis completed\n2025-11-01 15:45:18,637 [root] DEBUG: 724: DLL loaded at 0x00007FF8B46B0000: C:\\Windows\\SYSTEM32\\secur32 (0xc000 bytes).\n",
+    "errors": []
+  },
+  "network": {
+    "pcap_sha256": "2bd3199533a1253f50f0b363e6bdf319e859a85530972c61ee8f84fa9184ca99",
+    "hosts": [
+      {
+        "ip": "4.240.189.68",
+        "country_name": "unknown",
+        "asn": "",
+        "asn_name": "",
+        "hostname": "",
+        "inaddrarpa": "",
+        "ports": []
+      },
+      {
+        "ip": "52.123.129.14",
+        "country_name": "unknown",
+        "asn": "",
+        "asn_name": "",
+        "hostname": "",
+        "inaddrarpa": "",
+        "ports": []
+      },
+      {
+        "ip": "104.18.38.233",
+        "country_name": "unknown",
+        "asn": "",
+        "asn_name": "",
+        "hostname": "crt.sectigo.com",
+        "inaddrarpa": "",
+        "ports": []
+      },
+      {
+        "ip": "172.217.24.67",
+        "country_name": "unknown",
+        "asn": "",
+        "asn_name": "",
+        "hostname": "i.pki.goog",
+        "inaddrarpa": "sin10s06-in-f3.1e100.net.",
+        "ports": []
+      }
+    ],
+    "domains": [
+      {
+        "domain": "dns.google",
+        "ip": "8.8.8.8"
+      },
+      {
+        "domain": "i.pki.goog",
+        "ip": "142.251.43.163"
+      },
+      {
+        "domain": "crt.sectigo.com",
+        "ip": "172.64.149.23"
+      },
+      {
+        "domain": "mozilla.map.fastly.net",
+        "ip": "151.101.193.91"
+      },
+      {
+        "domain": "c.pki.goog",
+        "ip": "142.251.43.163"
+      }
+    ],
+    "tcp": [
+      {
+        "src": "192.168.122.203",
+        "sport": 49709,
+        "dst": "23.10.239.251",
+        "dport": 80,
+        "offset": 10157,
+        "time": 1.0133030414581299
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 49711,
+        "dst": "150.171.22.17",
+        "dport": 443,
+        "offset": 48435,
+        "time": 2.2977490425109863
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 49714,
+        "dst": "8.8.4.4",
+        "dport": 443,
+        "offset": 822120,
+        "time": 3.259722948074341
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 49715,
+        "dst": "8.8.8.8",
+        "dport": 443,
+        "offset": 826088,
+        "time": 3.2615668773651123
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 49717,
+        "dst": "216.239.32.29",
+        "dport": 80,
+        "offset": 848032,
+        "time": 3.4052529335021973
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 49719,
+        "dst": "172.217.24.67",
+        "dport": 80,
+        "offset": 855491,
+        "time": 3.4880118370056152
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 49720,
+        "dst": "172.217.24.67",
+        "dport": 80,
+        "offset": 855950,
+        "time": 3.4918110370635986
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 49721,
+        "dst": "172.217.24.67",
+        "dport": 80,
+        "offset": 862241,
+        "time": 3.5136208534240723
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 49723,
+        "dst": "8.8.8.8",
+        "dport": 443,
+        "offset": 881938,
+        "time": 4.187718868255615
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 49725,
+        "dst": "8.8.4.4",
+        "dport": 443,
+        "offset": 898910,
+        "time": 5.4375598430633545
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 49727,
+        "dst": "8.8.4.4",
+        "dport": 443,
+        "offset": 915501,
+        "time": 5.593332052230835
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 49729,
+        "dst": "204.79.197.203",
+        "dport": 443,
+        "offset": 1247636,
+        "time": 6.468526840209961
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 49730,
+        "dst": "150.171.28.10",
+        "dport": 443,
+        "offset": 1268769,
+        "time": 6.511350870132446
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 49733,
+        "dst": "23.8.242.17",
+        "dport": 80,
+        "offset": 1296835,
+        "time": 7.0760838985443115
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 49734,
+        "dst": "13.107.246.72",
+        "dport": 443,
+        "offset": 1313556,
+        "time": 7.4501259326934814
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 49738,
+        "dst": "8.8.8.8",
+        "dport": 443,
+        "offset": 1330872,
+        "time": 7.535331964492798
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 49740,
+        "dst": "8.8.4.4",
+        "dport": 443,
+        "offset": 1348844,
+        "time": 7.578802824020386
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 49739,
+        "dst": "104.18.38.233",
+        "dport": 80,
+        "offset": 1350730,
+        "time": 7.57930588722229
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 49743,
+        "dst": "4.213.25.240",
+        "dport": 443,
+        "offset": 1379273,
+        "time": 14.652870893478394
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 49745,
+        "dst": "20.190.145.143",
+        "dport": 443,
+        "offset": 1393524,
+        "time": 17.408313035964966
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 49747,
+        "dst": "49.44.199.91",
+        "dport": 80,
+        "offset": 1406907,
+        "time": 17.81839895248413
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 49748,
+        "dst": "52.183.220.149",
+        "dport": 443,
+        "offset": 1427547,
+        "time": 19.25423002243042
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 49751,
+        "dst": "49.44.199.91",
+        "dport": 80,
+        "offset": 1460289,
+        "time": 19.877378940582275
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 49753,
+        "dst": "52.183.220.149",
+        "dport": 443,
+        "offset": 1510601,
+        "time": 21.91449785232544
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 49757,
+        "dst": "52.167.17.97",
+        "dport": 443,
+        "offset": 1524868,
+        "time": 23.499048948287964
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 49763,
+        "dst": "34.120.208.123",
+        "dport": 443,
+        "offset": 1558422,
+        "time": 32.064159870147705
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 49767,
+        "dst": "52.183.220.149",
+        "dport": 443,
+        "offset": 1592091,
+        "time": 37.56921601295471
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 49771,
+        "dst": "52.183.220.149",
+        "dport": 443,
+        "offset": 1606196,
+        "time": 38.856302976608276
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 49775,
+        "dst": "23.10.230.236",
+        "dport": 443,
+        "offset": 1613908,
+        "time": 40.407511949539185
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 49777,
+        "dst": "52.183.220.149",
+        "dport": 443,
+        "offset": 1651464,
+        "time": 41.80371594429016
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 49779,
+        "dst": "13.107.213.72",
+        "dport": 443,
+        "offset": 1666161,
+        "time": 44.456298828125
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 49781,
+        "dst": "52.183.220.149",
+        "dport": 443,
+        "offset": 1684389,
+        "time": 45.48828196525574
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 49784,
+        "dst": "52.183.220.149",
+        "dport": 443,
+        "offset": 1824043,
+        "time": 49.36298894882202
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 49787,
+        "dst": "150.171.28.12",
+        "dport": 443,
+        "offset": 1837826,
+        "time": 52.16994094848633
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 49789,
+        "dst": "52.140.118.28",
+        "dport": 443,
+        "offset": 1948347,
+        "time": 57.23379182815552
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 49792,
+        "dst": "52.140.118.28",
+        "dport": 443,
+        "offset": 1966197,
+        "time": 58.261762857437134
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 49793,
+        "dst": "52.140.118.28",
+        "dport": 443,
+        "offset": 1973610,
+        "time": 58.56580400466919
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 49795,
+        "dst": "104.73.166.63",
+        "dport": 443,
+        "offset": 2000416,
+        "time": 59.5670428276062
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 49797,
+        "dst": "20.49.150.241",
+        "dport": 443,
+        "offset": 2020256,
+        "time": 59.84069299697876
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 49799,
+        "dst": "4.240.189.68",
+        "dport": 80,
+        "offset": 2030204,
+        "time": 60.0040340423584
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 49808,
+        "dst": "8.8.8.8",
+        "dport": 443,
+        "offset": 2993490,
+        "time": 76.65229797363281
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 49806,
+        "dst": "150.171.28.11",
+        "dport": 443,
+        "offset": 2997236,
+        "time": 76.6535370349884
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 49804,
+        "dst": "23.58.120.217",
+        "dport": 443,
+        "offset": 3025866,
+        "time": 76.67458391189575
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 49810,
+        "dst": "23.36.27.185",
+        "dport": 80,
+        "offset": 3514294,
+        "time": 80.57916688919067
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 49811,
+        "dst": "172.217.24.67",
+        "dport": 80,
+        "offset": 3519853,
+        "time": 80.6782579421997
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 49812,
+        "dst": "4.240.189.68",
+        "dport": 80,
+        "offset": 3558082,
+        "time": 84.44169187545776
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 49814,
+        "dst": "34.160.144.191",
+        "dport": 443,
+        "offset": 3561571,
+        "time": 94.1358289718628
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 49816,
+        "dst": "34.120.208.123",
+        "dport": 443,
+        "offset": 3923937,
+        "time": 96.77296900749207
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 49818,
+        "dst": "199.232.214.172",
+        "dport": 80,
+        "offset": 3939515,
+        "time": 99.12848401069641
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 49820,
+        "dst": "20.106.86.13",
+        "dport": 443,
+        "offset": 4309510,
+        "time": 100.3762879371643
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 49822,
+        "dst": "23.10.236.142",
+        "dport": 443,
+        "offset": 6044768,
+        "time": 121.88074493408203
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 49824,
+        "dst": "23.57.252.156",
+        "dport": 443,
+        "offset": 6060256,
+        "time": 135.3307650089264
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 49826,
+        "dst": "150.171.28.11",
+        "dport": 80,
+        "offset": 53147308,
+        "time": 142.81101083755493
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 49828,
+        "dst": "8.8.8.8",
+        "dport": 443,
+        "offset": 53157064,
+        "time": 147.05424690246582
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 49830,
+        "dst": "8.8.8.8",
+        "dport": 443,
+        "offset": 53173265,
+        "time": 149.29885983467102
+      }
+    ],
+    "udp": [
+      {
+        "src": "192.168.122.203",
+        "sport": 52408,
+        "dst": "8.8.8.8",
+        "dport": 53,
+        "offset": 121,
+        "time": 0.0006849765777587891
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 63439,
+        "dst": "8.8.8.8",
+        "dport": 53,
+        "offset": 9352,
+        "time": 0.9533250331878662
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 52804,
+        "dst": "8.8.8.8",
+        "dport": 53,
+        "offset": 12045,
+        "time": 1.0483989715576172
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 49828,
+        "dst": "8.8.8.8",
+        "dport": 53,
+        "offset": 16123,
+        "time": 1.6546649932861328
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 58303,
+        "dst": "8.8.8.8",
+        "dport": 53,
+        "offset": 46876,
+        "time": 2.2333269119262695
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 57868,
+        "dst": "8.8.8.8",
+        "dport": 53,
+        "offset": 47082,
+        "time": 2.2350549697875977
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 62493,
+        "dst": "8.8.8.8",
+        "dport": 53,
+        "offset": 47282,
+        "time": 2.236482858657837
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 54857,
+        "dst": "8.8.8.8",
+        "dport": 53,
+        "offset": 50370,
+        "time": 2.2994818687438965
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 52252,
+        "dst": "8.8.8.8",
+        "dport": 53,
+        "offset": 50550,
+        "time": 2.3055429458618164
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 57976,
+        "dst": "8.8.8.8",
+        "dport": 53,
+        "offset": 50726,
+        "time": 2.3076770305633545
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 61475,
+        "dst": "23.58.120.226",
+        "dport": 443,
+        "offset": 57725,
+        "time": 2.316628932952881
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 60032,
+        "dst": "8.8.8.8",
+        "dport": 53,
+        "offset": 820283,
+        "time": 3.226944923400879
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 55858,
+        "dst": "8.8.8.8",
+        "dport": 53,
+        "offset": 820455,
+        "time": 3.2286288738250732
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 50629,
+        "dst": "8.8.8.8",
+        "dport": 53,
+        "offset": 820627,
+        "time": 3.2300188541412354
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 60947,
+        "dst": "8.8.8.8",
+        "dport": 53,
+        "offset": 845634,
+        "time": 3.2759368419647217
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 63577,
+        "dst": "8.8.8.8",
+        "dport": 53,
+        "offset": 845902,
+        "time": 3.288116931915283
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 62286,
+        "dst": "8.8.8.8",
+        "dport": 53,
+        "offset": 846568,
+        "time": 3.326957941055298
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 54140,
+        "dst": "8.8.8.8",
+        "dport": 53,
+        "offset": 846736,
+        "time": 3.333204984664917
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 64860,
+        "dst": "8.8.8.8",
+        "dport": 53,
+        "offset": 847249,
+        "time": 3.345676898956299
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 54683,
+        "dst": "8.8.8.8",
+        "dport": 53,
+        "offset": 854059,
+        "time": 3.4638750553131104
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 50272,
+        "dst": "8.8.8.8",
+        "dport": 53,
+        "offset": 854231,
+        "time": 3.4700708389282227
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 55071,
+        "dst": "8.8.8.8",
+        "dport": 53,
+        "offset": 855405,
+        "time": 3.4874038696289062
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 51392,
+        "dst": "8.8.8.8",
+        "dport": 53,
+        "offset": 898503,
+        "time": 5.366451978683472
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 63534,
+        "dst": "8.8.8.8",
+        "dport": 53,
+        "offset": 1233464,
+        "time": 6.401242017745972
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 58930,
+        "dst": "8.8.8.8",
+        "dport": 53,
+        "offset": 1247312,
+        "time": 6.461208820343018
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 58577,
+        "dst": "23.58.120.226",
+        "dport": 443,
+        "offset": 1250134,
+        "time": 6.478133916854858
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 65394,
+        "dst": "8.8.8.8",
+        "dport": 53,
+        "offset": 1253878,
+        "time": 6.483036994934082
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 51552,
+        "dst": "8.8.8.8",
+        "dport": 53,
+        "offset": 1293139,
+        "time": 6.6304030418396
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 60370,
+        "dst": "8.8.8.8",
+        "dport": 53,
+        "offset": 1295943,
+        "time": 7.007091999053955
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 60052,
+        "dst": "8.8.8.8",
+        "dport": 53,
+        "offset": 1334715,
+        "time": 7.545217990875244
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 59797,
+        "dst": "8.8.8.8",
+        "dport": 53,
+        "offset": 1387567,
+        "time": 16.31651496887207
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 52906,
+        "dst": "8.8.8.8",
+        "dport": 53,
+        "offset": 1398189,
+        "time": 17.518692016601562
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 51103,
+        "dst": "8.8.8.8",
+        "dport": 53,
+        "offset": 1450934,
+        "time": 19.645448923110962
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 61500,
+        "dst": "8.8.8.8",
+        "dport": 53,
+        "offset": 1549226,
+        "time": 31.947646856307983
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 65200,
+        "dst": "8.8.8.8",
+        "dport": 53,
+        "offset": 1555854,
+        "time": 32.040568828582764
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 65203,
+        "dst": "239.255.255.250",
+        "dport": 1900,
+        "offset": 1583311,
+        "time": 34.703699827194214
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 51891,
+        "dst": "8.8.8.8",
+        "dport": 53,
+        "offset": 1598804,
+        "time": 38.73777985572815
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 49333,
+        "dst": "8.8.8.8",
+        "dport": 53,
+        "offset": 1599764,
+        "time": 38.763190031051636
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 53557,
+        "dst": "8.8.8.8",
+        "dport": 53,
+        "offset": 1612999,
+        "time": 40.38218903541565
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 63708,
+        "dst": "8.8.8.8",
+        "dport": 53,
+        "offset": 1676607,
+        "time": 44.67518186569214
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 55146,
+        "dst": "8.8.8.8",
+        "dport": 53,
+        "offset": 1965309,
+        "time": 58.08301901817322
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 57892,
+        "dst": "8.8.8.8",
+        "dport": 53,
+        "offset": 2009220,
+        "time": 59.61506199836731
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 60572,
+        "dst": "8.8.8.8",
+        "dport": 53,
+        "offset": 2019994,
+        "time": 59.834851026535034
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 58840,
+        "dst": "8.8.8.8",
+        "dport": 53,
+        "offset": 2038274,
+        "time": 70.94702386856079
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 50062,
+        "dst": "8.8.8.8",
+        "dport": 53,
+        "offset": 2987932,
+        "time": 76.60477089881897
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 63096,
+        "dst": "8.8.8.8",
+        "dport": 53,
+        "offset": 2989240,
+        "time": 76.61456084251404
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 59757,
+        "dst": "8.8.8.8",
+        "dport": 53,
+        "offset": 2990152,
+        "time": 76.61952495574951
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 53849,
+        "dst": "8.8.8.8",
+        "dport": 53,
+        "offset": 2990744,
+        "time": 76.62200284004211
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 50660,
+        "dst": "8.8.8.8",
+        "dport": 53,
+        "offset": 2991126,
+        "time": 76.62365698814392
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 137,
+        "dst": "192.168.122.255",
+        "dport": 137,
+        "offset": 3514116,
+        "time": 80.57680988311768
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 58549,
+        "dst": "8.8.8.8",
+        "dport": 53,
+        "offset": 3557248,
+        "time": 84.34100294113159
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 50351,
+        "dst": "8.8.8.8",
+        "dport": 53,
+        "offset": 3559205,
+        "time": 90.42862391471863
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 61065,
+        "dst": "8.8.8.8",
+        "dport": 53,
+        "offset": 3560894,
+        "time": 94.11166286468506
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 62584,
+        "dst": "8.8.8.8",
+        "dport": 53,
+        "offset": 3565313,
+        "time": 94.14766383171082
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 61010,
+        "dst": "8.8.8.8",
+        "dport": 53,
+        "offset": 3575009,
+        "time": 94.3413438796997
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 59767,
+        "dst": "8.8.8.8",
+        "dport": 53,
+        "offset": 3861664,
+        "time": 96.20333003997803
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 61929,
+        "dst": "8.8.8.8",
+        "dport": 53,
+        "offset": 3923461,
+        "time": 96.76337099075317
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 49578,
+        "dst": "8.8.8.8",
+        "dport": 53,
+        "offset": 4145169,
+        "time": 100.20710802078247
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 137,
+        "dst": "192.168.122.1",
+        "dport": 137,
+        "offset": 4151617,
+        "time": 100.2186529636383
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 62907,
+        "dst": "8.8.8.8",
+        "dport": 53,
+        "offset": 5751797,
+        "time": 102.2421338558197
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 52770,
+        "dst": "8.8.8.8",
+        "dport": 53,
+        "offset": 5752387,
+        "time": 102.31188797950745
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 49495,
+        "dst": "8.8.8.8",
+        "dport": 53,
+        "offset": 5752748,
+        "time": 102.41992497444153
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 52368,
+        "dst": "8.8.8.8",
+        "dport": 53,
+        "offset": 5753117,
+        "time": 102.44763803482056
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 56886,
+        "dst": "8.8.8.8",
+        "dport": 53,
+        "offset": 5754094,
+        "time": 102.48554801940918
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 57491,
+        "dst": "8.8.8.8",
+        "dport": 53,
+        "offset": 6030267,
+        "time": 108.61555290222168
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 64101,
+        "dst": "8.8.8.8",
+        "dport": 53,
+        "offset": 6044262,
+        "time": 121.85988593101501
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 62965,
+        "dst": "8.8.8.8",
+        "dport": 53,
+        "offset": 6068979,
+        "time": 135.69498085975647
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 52346,
+        "dst": "8.8.8.8",
+        "dport": 53,
+        "offset": 53145686,
+        "time": 142.7812328338623
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 54478,
+        "dst": "8.8.8.8",
+        "dport": 53,
+        "offset": 53145877,
+        "time": 142.78341698646545
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 50000,
+        "dst": "8.8.8.8",
+        "dport": 53,
+        "offset": 53156464,
+        "time": 147.0249149799347
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 138,
+        "dst": "192.168.122.255",
+        "dport": 138,
+        "offset": 53183120,
+        "time": 157.93794298171997
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 62921,
+        "dst": "8.8.8.8",
+        "dport": 53,
+        "offset": 53462716,
+        "time": 204.3080370426178
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 64812,
+        "dst": "8.8.8.8",
+        "dport": 53,
+        "offset": 53463802,
+        "time": 204.4562840461731
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 65383,
+        "dst": "8.8.8.8",
+        "dport": 53,
+        "offset": 53464361,
+        "time": 204.62243700027466
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 58065,
+        "dst": "8.8.8.8",
+        "dport": 53,
+        "offset": 53464736,
+        "time": 204.67411398887634
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 63954,
+        "dst": "8.8.8.8",
+        "dport": 53,
+        "offset": 53465463,
+        "time": 204.89392185211182
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 54665,
+        "dst": "8.8.8.8",
+        "dport": 53,
+        "offset": 53466025,
+        "time": 204.95032787322998
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 53353,
+        "dst": "8.8.8.8",
+        "dport": 53,
+        "offset": 53466651,
+        "time": 205.0693609714508
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 51016,
+        "dst": "8.8.8.8",
+        "dport": 53,
+        "offset": 53467233,
+        "time": 205.19217801094055
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 58622,
+        "dst": "8.8.8.8",
+        "dport": 53,
+        "offset": 53467771,
+        "time": 205.33752298355103
+      }
+    ],
+    "icmp": [
+      {
+        "src": "192.168.122.203",
+        "dst": "8.8.8.8",
+        "type": 3,
+        "data": ""
+      }
+    ],
+    "http": [
+      {
+        "count": 2,
+        "host": "i.pki.goog",
+        "port": 80,
+        "data": "GET /r1.crt HTTP/1.1\r\nHost: i.pki.goog\r\nConnection: keep-alive\r\nUser-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0\r\nAccept-Encoding: gzip, deflate\r\n\r\n",
+        "uri": "http://i.pki.goog/r1.crt",
+        "body": "",
+        "path": "/r1.crt",
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0",
+        "version": "1.1",
+        "method": "GET",
+        "first_seen": 1762011868.03574
+      },
+      {
+        "count": 2,
+        "host": "i.pki.goog",
+        "port": 80,
+        "data": "GET /wr2.crt HTTP/1.1\r\nHost: i.pki.goog\r\nConnection: keep-alive\r\nUser-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0\r\nAccept-Encoding: gzip, deflate\r\n\r\n",
+        "uri": "http://i.pki.goog/wr2.crt",
+        "body": "",
+        "path": "/wr2.crt",
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0",
+        "version": "1.1",
+        "method": "GET",
+        "first_seen": 1762011868.060799
+      },
+      {
+        "count": 1,
+        "host": "i.pki.goog",
+        "port": 80,
+        "data": "GET /r1.crt HTTP/1.1\r\nHost: i.pki.goog\r\nConnection: keep-alive\r\nUser-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0\r\nAccept-Encoding: gzip, deflate\r\nAccept-Language: en-US,en;q=0.9\r\n\r\n",
+        "uri": "http://i.pki.goog/r1.crt",
+        "body": "",
+        "path": "/r1.crt",
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0",
+        "version": "1.1",
+        "method": "GET",
+        "first_seen": 1762011868.061349
+      },
+      {
+        "count": 1,
+        "host": "i.pki.goog",
+        "port": 80,
+        "data": "GET /wr2.crt HTTP/1.1\r\nHost: i.pki.goog\r\nConnection: keep-alive\r\nUser-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0\r\nAccept-Encoding: gzip, deflate\r\nAccept-Language: en-US,en;q=0.9\r\n\r\n",
+        "uri": "http://i.pki.goog/wr2.crt",
+        "body": "",
+        "path": "/wr2.crt",
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0",
+        "version": "1.1",
+        "method": "GET",
+        "first_seen": 1762011868.083665
+      },
+      {
+        "count": 1,
+        "host": "crt.sectigo.com",
+        "port": 80,
+        "data": "GET /SectigoPublicServerAuthenticationRootR46.p7c HTTP/1.1\r\nHost: crt.sectigo.com\r\nConnection: keep-alive\r\nUser-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0\r\nAccept-Encoding: gzip, deflate\r\nAccept-Language: en-US,en;q=0.9\r\n\r\n",
+        "uri": "http://crt.sectigo.com/SectigoPublicServerAuthenticationRootR46.p7c",
+        "body": "",
+        "path": "/SectigoPublicServerAuthenticationRootR46.p7c",
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0",
+        "version": "1.1",
+        "method": "GET",
+        "first_seen": 1762011872.127034
+      },
+      {
+        "count": 1,
+        "host": "crt.sectigo.com",
+        "port": 80,
+        "data": "GET /SectigoPublicServerAuthenticationCAOVR36.crt HTTP/1.1\r\nHost: crt.sectigo.com\r\nConnection: keep-alive\r\nUser-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0\r\nAccept-Encoding: gzip, deflate\r\nAccept-Language: en-US,en;q=0.9\r\n\r\n",
+        "uri": "http://crt.sectigo.com/SectigoPublicServerAuthenticationCAOVR36.crt",
+        "body": "",
+        "path": "/SectigoPublicServerAuthenticationCAOVR36.crt",
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0",
+        "version": "1.1",
+        "method": "GET",
+        "first_seen": 1762011872.356987
+      },
+      {
+        "count": 1,
+        "host": "4.240.189.68",
+        "port": 80,
+        "data": "GET /filestreamingservice/files/ee00f118-1482-46c2-bd9f-10a36deb9b80/pieceshash?cacheHostOrigin=msedge.f.dl.delivery.mp.microsoft.com HTTP/1.1\r\nConnection: Keep-Alive\r\nAccept: */*\r\nAccept-Encoding: gzip, deflate\r\nUser-Agent: Microsoft-Delivery-Optimization/10.0\r\nMS-CV: Apcdq2FEm0+sSJNdAOrwJA.0.2.3.1.1\r\nContent-Length: 0\r\nHost: 4.240.189.68\r\n\r\n",
+        "uri": "http://4.240.189.68/filestreamingservice/files/ee00f118-1482-46c2-bd9f-10a36deb9b80/pieceshash?cacheHostOrigin=msedge.f.dl.delivery.mp.microsoft.com",
+        "body": "",
+        "path": "/filestreamingservice/files/ee00f118-1482-46c2-bd9f-10a36deb9b80/pieceshash?cacheHostOrigin=msedge.f.dl.delivery.mp.microsoft.com",
+        "user-agent": "Microsoft-Delivery-Optimization/10.0",
+        "version": "1.1",
+        "method": "GET",
+        "first_seen": 1762011924.551762
+      },
+      {
+        "count": 1,
+        "host": "c.pki.goog",
+        "port": 80,
+        "data": "GET /r/r4.crl HTTP/1.1\r\nCache-Control: max-age = 3000\r\nConnection: Keep-Alive\r\nAccept: */*\r\nIf-Modified-Since: Thu, 03 Apr 2025 16:14:25 GMT\r\nUser-Agent: Microsoft-CryptoAPI/10.0\r\nHost: c.pki.goog\r\n\r\n",
+        "uri": "http://c.pki.goog/r/r4.crl",
+        "body": "",
+        "path": "/r/r4.crl",
+        "user-agent": "Microsoft-CryptoAPI/10.0",
+        "version": "1.1",
+        "method": "GET",
+        "first_seen": 1762011945.225986
+      },
+      {
+        "count": 1,
+        "host": "4.240.189.68",
+        "port": 80,
+        "data": "GET /filestreamingservice/files/ee00f118-1482-46c2-bd9f-10a36deb9b80?P1=1762616724&P2=404&P3=2&P4=Hyc6EBqvboUdUmGpujTQSxbTt6GLmHbOsWlxj8Ej2IUzsinfphESb2sDqgO0KL%2fBDldHxyq1qrG7Sbdra3e7vg%3d%3d&cacheHostOrigin=msedge.b.tlu.dl.delivery.mp.microsoft.com HTTP/1.1\r\nConnection: Keep-Alive\r\nAccept: */*\r\nRange: bytes=0-1\r\nUser-Agent: Microsoft-Delivery-Optimization/10.0\r\nMS-CV: Apcdq2FEm0+sSJNdAOrwJA.0.2.6.1.1.1\r\nContent-Length: 0\r\nHost: 4.240.189.68\r\n\r\n",
+        "uri": "http://4.240.189.68/filestreamingservice/files/ee00f118-1482-46c2-bd9f-10a36deb9b80?P1=1762616724&P2=404&P3=2&P4=Hyc6EBqvboUdUmGpujTQSxbTt6GLmHbOsWlxj8Ej2IUzsinfphESb2sDqgO0KL%2fBDldHxyq1qrG7Sbdra3e7vg%3d%3d&cacheHostOrigin=msedge.b.tlu.dl.delivery.mp.microsoft.com",
+        "body": "",
+        "path": "/filestreamingservice/files/ee00f118-1482-46c2-bd9f-10a36deb9b80?P1=1762616724&P2=404&P3=2&P4=Hyc6EBqvboUdUmGpujTQSxbTt6GLmHbOsWlxj8Ej2IUzsinfphESb2sDqgO0KL%2fBDldHxyq1qrG7Sbdra3e7vg%3d%3d&cacheHostOrigin=msedge.b.tlu.dl.delivery.mp.microsoft.com",
+        "user-agent": "Microsoft-Delivery-Optimization/10.0",
+        "version": "1.1",
+        "method": "GET",
+        "first_seen": 1762011948.98942
+      }
+    ],
+    "dns": [
+      {
+        "request": "dns.google",
+        "type": "A",
+        "answers": [
+          {
+            "type": "A",
+            "data": "8.8.8.8"
+          },
+          {
+            "type": "A",
+            "data": "8.8.4.4"
+          }
+        ],
+        "first_seen": 1762011867.774191
+      },
+      {
+        "request": "i.pki.goog",
+        "type": "A",
+        "answers": [
+          {
+            "type": "A",
+            "data": "172.217.24.67"
+          },
+          {
+            "type": "CNAME",
+            "data": "pki-goog.l.google.com"
+          }
+        ],
+        "first_seen": 1762011868.011141
+      },
+      {
+        "request": "crt.sectigo.com",
+        "type": "A",
+        "answers": [
+          {
+            "type": "A",
+            "data": "172.64.149.23"
+          },
+          {
+            "type": "CNAME",
+            "data": "crt.comodoca.com.cdn.cloudflare.net"
+          },
+          {
+            "type": "A",
+            "data": "104.18.38.233"
+          }
+        ],
+        "first_seen": 1762011872.092533
+      },
+      {
+        "request": "mozilla.map.fastly.net",
+        "type": "A",
+        "answers": [
+          {
+            "type": "A",
+            "data": "151.101.193.91"
+          },
+          {
+            "type": "A",
+            "data": "151.101.65.91"
+          },
+          {
+            "type": "A",
+            "data": "151.101.129.91"
+          },
+          {
+            "type": "A",
+            "data": "151.101.1.91"
+          }
+        ],
+        "first_seen": 1762011903.298948
+      },
+      {
+        "request": "mozilla.map.fastly.net",
+        "type": "AAAA",
+        "answers": [
+          {
+            "type": "AAAA",
+            "data": "2a04:4e42:200::347"
+          },
+          {
+            "type": "AAAA",
+            "data": "2a04:4e42:400::347"
+          },
+          {
+            "type": "AAAA",
+            "data": "2a04:4e42:600::347"
+          },
+          {
+            "type": "AAAA",
+            "data": "2a04:4e42::347"
+          }
+        ],
+        "first_seen": 1762011903.310918
+      },
+      {
+        "request": "c.pki.goog",
+        "type": "A",
+        "answers": [],
+        "first_seen": 1762011945.204308
+      }
+    ],
+    "smtp": [],
+    "irc": [],
+    "dead_hosts": [
+      [
+        "52.123.129.14",
+        443
+      ]
+    ],
+    "http_ex": [
+      {
+        "src": "192.168.122.203",
+        "sport": 49719,
+        "dst": "172.217.24.67",
+        "dport": 80,
+        "protocol": "http",
+        "method": "GET",
+        "host": "i.pki.goog",
+        "uri": "/r1.crt",
+        "status": 200,
+        "request": "GET /r1.crt HTTP/1.1\r\nHost: i.pki.goog\r\nConnection: keep-alive\r\nUser-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0\r\nAccept-Encoding: gzip, deflate",
+        "response": "HTTP/1.1 200 OK\r\nX-Content-Type-Options: nosniff\r\nCross-Origin-Resource-Policy: cross-origin\r\nContent-Length: 1371\r\nAccept-Ranges: bytes\r\nContent-Security-Policy-Report-Only: require-trusted-types-for 'script'; report-uri https://csp.withgoogle.com/csp/cacerts\r\nCross-Origin-Opener-Policy: same-origin; report-to=\"cacerts\"\r\nReport-To: {\"group\":\"cacerts\",\"max_age\":2592000,\"endpoints\":[{\"url\":\"https://csp.withgoogle.com/csp/report-to/cacerts\"}]}\r\nAccess-Control-Allow-Origin: https://pki.goog\r\nServer: sffe\r\nX-XSS-Protection: 0\r\nDate: Sat, 01 Nov 2025 15:07:43 GMT\r\nExpires: Sat, 01 Nov 2025 15:57:43 GMT\r\nCache-Control: public, max-age=3000\r\nAge: 2205\r\nLast-Modified: Wed, 12 Feb 2025 19:47:36 GMT\r\nContent-Type: application/pkix-cert\r\nVary: Accept-Encoding",
+        "first_seen": 1762011868.025192,
+        "resp": {
+          "md5": "05fed0bf71a8a37663da01e0d852dc40",
+          "sha1": "e58c1cc4913b38634be9106ee3ad8e6b9dd9814a",
+          "sha256": "d947432abde7b7fa90fc2e6b59101b1280e0e1c7e4e40fa3c6887fff57a7f4cf",
+          "preview": [
+            "00000000  30 82 05 57 30 82 03 3f  a0 03 02 01 02 02 0d 02  |0..W0..?........|",
+            "00000010  03 e5 93 6f 31 b0 13 49  88 6b a2 17 30 0d 06 09  |...o1..I.k..0...|",
+            "00000020  2a 86 48 86 f7 0d 01 01  0c 05 00 30 47 31 0b 30  |*.H........0G1.0|"
+          ],
+          "path": "/opt/CAPEv2/storage/analyses/7463/network/d947432abde7b7fa90fc2e6b59101b1280e0e1c7e4e40fa3c6887fff57a7f4cf"
+        }
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 49720,
+        "dst": "172.217.24.67",
+        "dport": 80,
+        "protocol": "http",
+        "method": "GET",
+        "host": "i.pki.goog",
+        "uri": "/r1.crt",
+        "status": 200,
+        "request": "GET /r1.crt HTTP/1.1\r\nHost: i.pki.goog\r\nConnection: keep-alive\r\nUser-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0\r\nAccept-Encoding: gzip, deflate",
+        "response": "HTTP/1.1 200 OK\r\nX-Content-Type-Options: nosniff\r\nCross-Origin-Resource-Policy: cross-origin\r\nContent-Length: 1371\r\nAccept-Ranges: bytes\r\nContent-Security-Policy-Report-Only: require-trusted-types-for 'script'; report-uri https://csp.withgoogle.com/csp/cacerts\r\nCross-Origin-Opener-Policy: same-origin; report-to=\"cacerts\"\r\nReport-To: {\"group\":\"cacerts\",\"max_age\":2592000,\"endpoints\":[{\"url\":\"https://csp.withgoogle.com/csp/report-to/cacerts\"}]}\r\nAccess-Control-Allow-Origin: https://pki.goog\r\nServer: sffe\r\nX-XSS-Protection: 0\r\nDate: Sat, 01 Nov 2025 15:07:43 GMT\r\nExpires: Sat, 01 Nov 2025 15:57:43 GMT\r\nCache-Control: public, max-age=3000\r\nAge: 2205\r\nLast-Modified: Wed, 12 Feb 2025 19:47:36 GMT\r\nContent-Type: application/pkix-cert\r\nVary: Accept-Encoding",
+        "first_seen": 1762011868.031539,
+        "resp": {
+          "md5": "05fed0bf71a8a37663da01e0d852dc40",
+          "sha1": "e58c1cc4913b38634be9106ee3ad8e6b9dd9814a",
+          "sha256": "d947432abde7b7fa90fc2e6b59101b1280e0e1c7e4e40fa3c6887fff57a7f4cf",
+          "preview": [
+            "00000000  30 82 05 57 30 82 03 3f  a0 03 02 01 02 02 0d 02  |0..W0..?........|",
+            "00000010  03 e5 93 6f 31 b0 13 49  88 6b a2 17 30 0d 06 09  |...o1..I.k..0...|",
+            "00000020  2a 86 48 86 f7 0d 01 01  0c 05 00 30 47 31 0b 30  |*.H........0G1.0|"
+          ],
+          "path": "/opt/CAPEv2/storage/analyses/7463/network/d947432abde7b7fa90fc2e6b59101b1280e0e1c7e4e40fa3c6887fff57a7f4cf"
+        }
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 49721,
+        "dst": "172.217.24.67",
+        "dport": 80,
+        "protocol": "http",
+        "method": "GET",
+        "host": "i.pki.goog",
+        "uri": "/r1.crt",
+        "status": 200,
+        "request": "GET /r1.crt HTTP/1.1\r\nHost: i.pki.goog\r\nConnection: keep-alive\r\nUser-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0\r\nAccept-Encoding: gzip, deflate\r\nAccept-Language: en-US,en;q=0.9",
+        "response": "HTTP/1.1 200 OK\r\nX-Content-Type-Options: nosniff\r\nCross-Origin-Resource-Policy: cross-origin\r\nContent-Length: 1371\r\nAccept-Ranges: bytes\r\nContent-Security-Policy-Report-Only: require-trusted-types-for 'script'; report-uri https://csp.withgoogle.com/csp/cacerts\r\nCross-Origin-Opener-Policy: same-origin; report-to=\"cacerts\"\r\nReport-To: {\"group\":\"cacerts\",\"max_age\":2592000,\"endpoints\":[{\"url\":\"https://csp.withgoogle.com/csp/report-to/cacerts\"}]}\r\nAccess-Control-Allow-Origin: https://pki.goog\r\nServer: sffe\r\nX-XSS-Protection: 0\r\nDate: Sat, 01 Nov 2025 15:07:43 GMT\r\nExpires: Sat, 01 Nov 2025 15:57:43 GMT\r\nCache-Control: public, max-age=3000\r\nAge: 2205\r\nLast-Modified: Wed, 12 Feb 2025 19:47:36 GMT\r\nContent-Type: application/pkix-cert\r\nVary: Accept-Encoding",
+        "first_seen": 1762011868.050674,
+        "resp": {
+          "md5": "05fed0bf71a8a37663da01e0d852dc40",
+          "sha1": "e58c1cc4913b38634be9106ee3ad8e6b9dd9814a",
+          "sha256": "d947432abde7b7fa90fc2e6b59101b1280e0e1c7e4e40fa3c6887fff57a7f4cf",
+          "preview": [
+            "00000000  30 82 05 57 30 82 03 3f  a0 03 02 01 02 02 0d 02  |0..W0..?........|",
+            "00000010  03 e5 93 6f 31 b0 13 49  88 6b a2 17 30 0d 06 09  |...o1..I.k..0...|",
+            "00000020  2a 86 48 86 f7 0d 01 01  0c 05 00 30 47 31 0b 30  |*.H........0G1.0|"
+          ],
+          "path": "/opt/CAPEv2/storage/analyses/7463/network/d947432abde7b7fa90fc2e6b59101b1280e0e1c7e4e40fa3c6887fff57a7f4cf"
+        }
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 49719,
+        "dst": "172.217.24.67",
+        "dport": 80,
+        "protocol": "http",
+        "method": "GET",
+        "host": "i.pki.goog",
+        "uri": "/wr2.crt",
+        "status": 200,
+        "request": "GET /wr2.crt HTTP/1.1\r\nHost: i.pki.goog\r\nConnection: keep-alive\r\nUser-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0\r\nAccept-Encoding: gzip, deflate",
+        "response": "HTTP/1.1 200 OK\r\nX-Content-Type-Options: nosniff\r\nCross-Origin-Resource-Policy: cross-origin\r\nContent-Length: 1295\r\nAccept-Ranges: bytes\r\nContent-Security-Policy-Report-Only: require-trusted-types-for 'script'; report-uri https://csp.withgoogle.com/csp/cacerts\r\nCross-Origin-Opener-Policy: same-origin; report-to=\"cacerts\"\r\nReport-To: {\"group\":\"cacerts\",\"max_age\":2592000,\"endpoints\":[{\"url\":\"https://csp.withgoogle.com/csp/report-to/cacerts\"}]}\r\nAccess-Control-Allow-Origin: https://pki.goog\r\nServer: sffe\r\nX-XSS-Protection: 0\r\nDate: Sat, 01 Nov 2025 14:58:54 GMT\r\nExpires: Sat, 01 Nov 2025 15:48:54 GMT\r\nCache-Control: public, max-age=3000\r\nAge: 2734\r\nLast-Modified: Wed, 12 Feb 2025 19:47:36 GMT\r\nContent-Type: application/pkix-cert\r\nVary: Accept-Encoding",
+        "first_seen": 1762011868.060799,
+        "resp": {
+          "md5": "382f516a7f7dfac53971ab46de20559b",
+          "sha1": "66e4161260b100fee0de287a9a5293b4c2224ae6",
+          "sha256": "e6fe22bf45e4f0d3b85c59e02c0f495418e1eb8d3210f788d48cd5e1cb547cd4",
+          "preview": [
+            "00000000  30 82 05 0b 30 82 02 f3  a0 03 02 01 02 02 10 7f  |0...0..........|",
+            "00000010  f0 05 a0 7c 4c de d1 00  ad 9d 66 a5 10 7b 98 30  |...|L.....f..{.0|",
+            "00000020  0d 06 09 2a 86 48 86 f7  0d 01 01 0b 05 00 30 47  |...*.H........0G|"
+          ],
+          "path": "/opt/CAPEv2/storage/analyses/7463/network/e6fe22bf45e4f0d3b85c59e02c0f495418e1eb8d3210f788d48cd5e1cb547cd4"
+        }
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 49720,
+        "dst": "172.217.24.67",
+        "dport": 80,
+        "protocol": "http",
+        "method": "GET",
+        "host": "i.pki.goog",
+        "uri": "/wr2.crt",
+        "status": 200,
+        "request": "GET /wr2.crt HTTP/1.1\r\nHost: i.pki.goog\r\nConnection: keep-alive\r\nUser-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0\r\nAccept-Encoding: gzip, deflate",
+        "response": "HTTP/1.1 200 OK\r\nX-Content-Type-Options: nosniff\r\nCross-Origin-Resource-Policy: cross-origin\r\nContent-Length: 1295\r\nAccept-Ranges: bytes\r\nContent-Security-Policy-Report-Only: require-trusted-types-for 'script'; report-uri https://csp.withgoogle.com/csp/cacerts\r\nCross-Origin-Opener-Policy: same-origin; report-to=\"cacerts\"\r\nReport-To: {\"group\":\"cacerts\",\"max_age\":2592000,\"endpoints\":[{\"url\":\"https://csp.withgoogle.com/csp/report-to/cacerts\"}]}\r\nAccess-Control-Allow-Origin: https://pki.goog\r\nServer: sffe\r\nX-XSS-Protection: 0\r\nDate: Sat, 01 Nov 2025 14:58:54 GMT\r\nExpires: Sat, 01 Nov 2025 15:48:54 GMT\r\nCache-Control: public, max-age=3000\r\nAge: 2734\r\nLast-Modified: Wed, 12 Feb 2025 19:47:36 GMT\r\nContent-Type: application/pkix-cert\r\nVary: Accept-Encoding",
+        "first_seen": 1762011868.06109,
+        "resp": {
+          "md5": "382f516a7f7dfac53971ab46de20559b",
+          "sha1": "66e4161260b100fee0de287a9a5293b4c2224ae6",
+          "sha256": "e6fe22bf45e4f0d3b85c59e02c0f495418e1eb8d3210f788d48cd5e1cb547cd4",
+          "preview": [
+            "00000000  30 82 05 0b 30 82 02 f3  a0 03 02 01 02 02 10 7f  |0...0..........|",
+            "00000010  f0 05 a0 7c 4c de d1 00  ad 9d 66 a5 10 7b 98 30  |...|L.....f..{.0|",
+            "00000020  0d 06 09 2a 86 48 86 f7  0d 01 01 0b 05 00 30 47  |...*.H........0G|"
+          ],
+          "path": "/opt/CAPEv2/storage/analyses/7463/network/e6fe22bf45e4f0d3b85c59e02c0f495418e1eb8d3210f788d48cd5e1cb547cd4"
+        }
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 49721,
+        "dst": "172.217.24.67",
+        "dport": 80,
+        "protocol": "http",
+        "method": "GET",
+        "host": "i.pki.goog",
+        "uri": "/wr2.crt",
+        "status": 200,
+        "request": "GET /wr2.crt HTTP/1.1\r\nHost: i.pki.goog\r\nConnection: keep-alive\r\nUser-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0\r\nAccept-Encoding: gzip, deflate\r\nAccept-Language: en-US,en;q=0.9",
+        "response": "HTTP/1.1 200 OK\r\nX-Content-Type-Options: nosniff\r\nCross-Origin-Resource-Policy: cross-origin\r\nContent-Length: 1295\r\nAccept-Ranges: bytes\r\nContent-Security-Policy-Report-Only: require-trusted-types-for 'script'; report-uri https://csp.withgoogle.com/csp/cacerts\r\nCross-Origin-Opener-Policy: same-origin; report-to=\"cacerts\"\r\nReport-To: {\"group\":\"cacerts\",\"max_age\":2592000,\"endpoints\":[{\"url\":\"https://csp.withgoogle.com/csp/report-to/cacerts\"}]}\r\nAccess-Control-Allow-Origin: https://pki.goog\r\nServer: sffe\r\nX-XSS-Protection: 0\r\nDate: Sat, 01 Nov 2025 14:58:54 GMT\r\nExpires: Sat, 01 Nov 2025 15:48:54 GMT\r\nCache-Control: public, max-age=3000\r\nAge: 2734\r\nLast-Modified: Wed, 12 Feb 2025 19:47:36 GMT\r\nContent-Type: application/pkix-cert\r\nVary: Accept-Encoding",
+        "first_seen": 1762011868.083665,
+        "resp": {
+          "md5": "382f516a7f7dfac53971ab46de20559b",
+          "sha1": "66e4161260b100fee0de287a9a5293b4c2224ae6",
+          "sha256": "e6fe22bf45e4f0d3b85c59e02c0f495418e1eb8d3210f788d48cd5e1cb547cd4",
+          "preview": [
+            "00000000  30 82 05 0b 30 82 02 f3  a0 03 02 01 02 02 10 7f  |0...0..........|",
+            "00000010  f0 05 a0 7c 4c de d1 00  ad 9d 66 a5 10 7b 98 30  |...|L.....f..{.0|",
+            "00000020  0d 06 09 2a 86 48 86 f7  0d 01 01 0b 05 00 30 47  |...*.H........0G|"
+          ],
+          "path": "/opt/CAPEv2/storage/analyses/7463/network/e6fe22bf45e4f0d3b85c59e02c0f495418e1eb8d3210f788d48cd5e1cb547cd4"
+        }
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 49739,
+        "dst": "104.18.38.233",
+        "dport": 80,
+        "protocol": "http",
+        "method": "GET",
+        "host": "crt.sectigo.com",
+        "uri": "/SectigoPublicServerAuthenticationRootR46.p7c",
+        "status": 200,
+        "request": "GET /SectigoPublicServerAuthenticationRootR46.p7c HTTP/1.1\r\nHost: crt.sectigo.com\r\nConnection: keep-alive\r\nUser-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0\r\nAccept-Encoding: gzip, deflate\r\nAccept-Language: en-US,en;q=0.9",
+        "response": "HTTP/1.1 200 OK\r\nDate: Sat, 01 Nov 2025 15:44:32 GMT\r\nContent-Type: application/pkcs7-mime\r\nContent-Length: 4563\r\nConnection: keep-alive\r\nCF-RAY: 997c8398aa3b59c4-DEL\r\nLast-Modified: Tue, 09 Sep 2025 15:20:16 GMT\r\netag: \"adee2369215597e6aed4825fbd8bf81e62b61071\"\r\ncache-control: max-age=86400,s-maxage=14400,public,no-transform,must-revalidate\r\nX-CCACDN-Proxy-ID: mcdpinlb5\r\nX-Frame-Options: SAMEORIGIN\r\nAge: 863\r\ncf-cache-status: HIT\r\nSet-Cookie: __cf_bm=D5xM2XIpv0bCKwlnPnp_7lLsU0AkKauW2Sy3KXfcbg0-1762011872-1.0.1.1-pwaOmAFN_PMnHx2N3IAkESbhd2V_TnBxY67Rj8DjWnnDeFQT_Tzz9YkowNw_ZvqFsm5O3p8PwgS55VFMGCsnzobzuWNIxqJf01dT0SMZ5Oc; path=/; expires=Sat, 01-Nov-25 16:14:32 GMT; domain=.crt.sectigo.com; HttpOnly\r\nVary: Accept-Encoding\r\nServer: cloudflare",
+        "first_seen": 1762011872.114374,
+        "resp": {
+          "md5": "31abfd3b2f5f06c266cdbb1a180260b1",
+          "sha1": "adee2369215597e6aed4825fbd8bf81e62b61071",
+          "sha256": "1983a308af61969ecbbf653184c74ec6f40954848f7ac911d9b22c5f6c1f8914",
+          "preview": [
+            "00000000  30 82 11 cf 06 09 2a 86  48 86 f7 0d 01 07 02 a0  |0.....*.H.......|",
+            "00000010  82 11 c0 30 82 11 bc 02  01 01 31 00 30 0b 06 09  |...0......1.0...|",
+            "00000020  2a 86 48 86 f7 0d 01 07  01 a0 82 11 a4 30 82 05  |*.H..........0..|"
+          ],
+          "path": "/opt/CAPEv2/storage/analyses/7463/network/1983a308af61969ecbbf653184c74ec6f40954848f7ac911d9b22c5f6c1f8914"
+        }
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 49739,
+        "dst": "104.18.38.233",
+        "dport": 80,
+        "protocol": "http",
+        "method": "GET",
+        "host": "crt.sectigo.com",
+        "uri": "/SectigoPublicServerAuthenticationCAOVR36.crt",
+        "status": 200,
+        "request": "GET /SectigoPublicServerAuthenticationCAOVR36.crt HTTP/1.1\r\nHost: crt.sectigo.com\r\nConnection: keep-alive\r\nUser-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0\r\nAccept-Encoding: gzip, deflate\r\nAccept-Language: en-US,en;q=0.9",
+        "response": "HTTP/1.1 200 OK\r\nDate: Sat, 01 Nov 2025 15:44:32 GMT\r\nContent-Type: application/pkix-cert\r\nContent-Length: 1616\r\nConnection: keep-alive\r\nCF-RAY: 997c839a1b3c59c4-DEL\r\nLast-Modified: Mon, 22 Mar 2021 00:00:00 GMT\r\netag: \"321ca056e4e48d57f179a3bddecbc5213b9916c0\"\r\ncache-control: max-age=86400,s-maxage=14400,public,no-transform,must-revalidate\r\nX-CCACDN-Proxy-ID: mcdpinlb2\r\nX-Frame-Options: SAMEORIGIN\r\nAge: 1134\r\ncf-cache-status: HIT\r\nSet-Cookie: __cf_bm=8bDtnVbhZV1cBorgBKWMzPjnU285tXg9iW1MB4ZG1xY-1762011872-1.0.1.1-3l75YA5.mlpEtB.jgBHsDENe15VoCxvERIGaK_qw0dx3kqAhXBI8QuthYpgts1aQKQVjgZct4pXiECHYbfY8AfOF7kfdviMloyvlRixK92g; path=/; expires=Sat, 01-Nov-25 16:14:32 GMT; domain=.crt.sectigo.com; HttpOnly\r\nVary: Accept-Encoding\r\nServer: cloudflare",
+        "first_seen": 1762011872.356987,
+        "resp": {
+          "md5": "007531cad73e46c7981618dd67cf690c",
+          "sha1": "321ca056e4e48d57f179a3bddecbc5213b9916c0",
+          "sha256": "6542d176bed50f193c0ce297ae44ecd8a0a86bec2ede682769344059b4e78530",
+          "preview": [
+            "00000000  30 82 06 4c 30 82 04 34  a0 03 02 01 02 02 10 2c  |0..L0..4.......,|",
+            "00000010  1a 3c 76 e9 43 dd dd ff  19 1b 31 89 0a ed 71 30  |.<v.C.....1...q0|",
+            "00000020  0d 06 09 2a 86 48 86 f7  0d 01 01 0c 05 00 30 5f  |...*.H........0_|"
+          ],
+          "path": "/opt/CAPEv2/storage/analyses/7463/network/6542d176bed50f193c0ce297ae44ecd8a0a86bec2ede682769344059b4e78530"
+        }
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 49799,
+        "dst": "4.240.189.68",
+        "dport": 80,
+        "protocol": "http",
+        "method": "GET",
+        "host": "4.240.189.68",
+        "uri": "/filestreamingservice/files/ee00f118-1482-46c2-bd9f-10a36deb9b80/pieceshash?cacheHostOrigin=msedge.f.dl.delivery.mp.microsoft.com",
+        "status": 200,
+        "request": "GET /filestreamingservice/files/ee00f118-1482-46c2-bd9f-10a36deb9b80/pieceshash?cacheHostOrigin=msedge.f.dl.delivery.mp.microsoft.com HTTP/1.1\r\nConnection: Keep-Alive\r\nAccept: */*\r\nAccept-Encoding: gzip, deflate\r\nUser-Agent: Microsoft-Delivery-Optimization/10.0\r\nMS-CV: Apcdq2FEm0+sSJNdAOrwJA.0.2.3.1.1\r\nContent-Length: 0\r\nHost: 4.240.189.68",
+        "response": "HTTP/1.1 200 OK\r\nServer: nginx\r\nDate: Sat, 01 Nov 2025 15:45:48 GMT\r\nContent-Type: application/octet-stream\r\nContent-Length: 246\r\nConnection: keep-alive\r\ntraceparent: 00-ba8a89061ef6ac7d9b36c8da614cc850-ebc0599d309bf78d-01\r\nCache-Control: public, max-age=17280000\r\nLast-Modified: Tue, 21 Oct 2025 17:27:13 GMT\r\nX-AspNetMvc-Version: 5.3\r\nMS-CorrelationId: 54a1488f-166f-46f4-8b36-d745abc2557e\r\nMS-RequestId: ec398101-d138-4408-be96-51f121fcd29b\r\nMS-CV: nAkdu2sFI0+I5RNIyK9yxA.0.1.1.3.1.1.0\r\nX-AspNet-Version: 4.0.30319\r\nX-Powered-By: ASP.NET\r\nX-Powered-By: ARR/3.0\r\nX-Powered-By: ASP.NET\r\nX-ID: am3-hw-edge-gc120\r\nAge: 231933\r\nCache: HIT\r\nX-Cached-Since: 2025-10-21T18:25:20+00:00\r\nX-SHARD: am3-shard0-default_80\r\nX-CID: 10004\r\nX-CCC: f77788e2-0d27-4333-b3ec-f522719bd63c\r\nContent-Security-Policy: default-src 'self' http: https: data: blob: 'unsafe-inline'\r\nX-XSS-Protection: 1; mode=block\r\nX-Frame-Options: SAMEORIGIN\r\nX-Cache-Status: HIT\r\nAccept-Ranges: bytes",
+        "first_seen": 1762011924.51253,
+        "resp": {
+          "md5": "a1bbca281aa36c7a5296a71c555ddb24",
+          "sha1": "cec78c4f390d6f976c64472e11b846d6c8f15810",
+          "sha256": "235c968480de3eb83c8c429d3dd5c81f766855e9bb08c5a32c4f89b7ca4938ed",
+          "preview": [
+            "00000000  7b 22 4d 61 6a 6f 72 56  65 72 73 69 6f 6e 22 3a  |{\"MajorVersion\":|",
+            "00000010  31 2c 22 4d 69 6e 6f 72  56 65 72 73 69 6f 6e 22  |1,\"MinorVersion\"|",
+            "00000020  3a 30 2c 22 48 61 73 68  4f 66 48 61 73 68 65 73  |:0,\"HashOfHashes|"
+          ],
+          "path": "/opt/CAPEv2/storage/analyses/7463/network/235c968480de3eb83c8c429d3dd5c81f766855e9bb08c5a32c4f89b7ca4938ed"
+        }
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 49811,
+        "dst": "172.217.24.67",
+        "dport": 80,
+        "protocol": "http",
+        "method": "GET",
+        "host": "c.pki.goog",
+        "uri": "/r/r4.crl",
+        "status": 304,
+        "request": "GET /r/r4.crl HTTP/1.1\r\nCache-Control: max-age = 3000\r\nConnection: Keep-Alive\r\nAccept: */*\r\nIf-Modified-Since: Thu, 03 Apr 2025 16:14:25 GMT\r\nUser-Agent: Microsoft-CryptoAPI/10.0\r\nHost: c.pki.goog",
+        "response": "HTTP/1.1 304 Not Modified\r\nDate: Sat, 01 Nov 2025 15:35:52 GMT\r\nExpires: Sat, 01 Nov 2025 16:25:52 GMT\r\nLast-Modified: Thu, 03 Apr 2025 16:14:25 GMT\r\nCache-Control: public, max-age=3000\r\nVary: Accept-Encoding\r\nAge: 593",
+        "first_seen": 1762011945.21612
+      },
+      {
+        "src": "192.168.122.203",
+        "sport": 49812,
+        "dst": "4.240.189.68",
+        "dport": 80,
+        "protocol": "http",
+        "method": "GET",
+        "host": "4.240.189.68",
+        "uri": "/filestreamingservice/files/ee00f118-1482-46c2-bd9f-10a36deb9b80?P1=1762616724&P2=404&P3=2&P4=Hyc6EBqvboUdUmGpujTQSxbTt6GLmHbOsWlxj8Ej2IUzsinfphESb2sDqgO0KL%2fBDldHxyq1qrG7Sbdra3e7vg%3d%3d&cacheHostOrigin=msedge.b.tlu.dl.delivery.mp.microsoft.com",
+        "status": 0,
+        "request": "GET /filestreamingservice/files/ee00f118-1482-46c2-bd9f-10a36deb9b80?P1=1762616724&P2=404&P3=2&P4=Hyc6EBqvboUdUmGpujTQSxbTt6GLmHbOsWlxj8Ej2IUzsinfphESb2sDqgO0KL%2fBDldHxyq1qrG7Sbdra3e7vg%3d%3d&cacheHostOrigin=msedge.b.tlu.dl.delivery.mp.microsoft.com HTTP/1.1\r\nConnection: Keep-Alive\r\nAccept: */*\r\nRange: bytes=0-1\r\nUser-Agent: Microsoft-Delivery-Optimization/10.0\r\nMS-CV: Apcdq2FEm0+sSJNdAOrwJA.0.2.6.1.1.1\r\nContent-Length: 0\r\nHost: 4.240.189.68",
+        "response": "",
+        "first_seen": 1762011948.955288
+      }
+    ],
+    "https_ex": [],
+    "smtp_ex": []
+  },
+  "procmon": null,
+  "sysmon": null,
+  "url_analysis": {},
+  "procmemory": [],
+  "signatures": [
+    {
+      "name": "network_cnc_http",
+      "description": "HTTP traffic contains suspicious features which may be indicative of malware related traffic",
+      "categories": [
+        "network",
+        "c2"
+      ],
+      "severity": 2,
+      "weight": 1,
+      "confidence": 30,
+      "references": [],
+      "data": [
+        {
+          "ip_hostname": "HTTP connection was made to an IP address rather than domain name"
+        },
+        {
+          "suspicious_request": "http://4.240.189.68/filestreamingservice/files/ee00f118-1482-46c2-bd9f-10a36deb9b80/pieceshash?cacheHostOrigin=msedge.f.dl.delivery.mp.microsoft.com"
+        },
+        {
+          "suspicious_request": "http://c.pki.goog/r/r4.crl"
+        },
+        {
+          "suspicious_request": "http://4.240.189.68/filestreamingservice/files/ee00f118-1482-46c2-bd9f-10a36deb9b80?P1=1762616724&P2=404&P3=2&P4=Hyc6EBqvboUdUmGpujTQSxbTt6GLmHbOsWlxj8Ej2IUzsinfphESb2sDqgO0KL%2fBDldHxyq1qrG7Sbdra3e7vg%3d%3d&cacheHostOrigin=msedge.b.tlu.dl.delivery.mp.microsoft.com"
+        }
+      ],
+      "new_data": [],
+      "alert": false,
+      "families": []
+    },
+    {
+      "name": "network_http",
+      "description": "Performs some HTTP requests",
+      "categories": [
+        "network"
+      ],
+      "severity": 2,
+      "weight": 1,
+      "confidence": 30,
+      "references": [],
+      "data": [
+        {
+          "url": "http://i.pki.goog/r1.crt"
+        },
+        {
+          "url": "http://i.pki.goog/wr2.crt"
+        },
+        {
+          "url": "http://crt.sectigo.com/SectigoPublicServerAuthenticationRootR46.p7c"
+        },
+        {
+          "url": "http://crt.sectigo.com/SectigoPublicServerAuthenticationCAOVR36.crt"
+        },
+        {
+          "url": "http://4.240.189.68/filestreamingservice/files/ee00f118-1482-46c2-bd9f-10a36deb9b80/pieceshash?cacheHostOrigin=msedge.f.dl.delivery.mp.microsoft.com"
+        },
+        {
+          "url": "http://c.pki.goog/r/r4.crl"
+        },
+        {
+          "url": "http://4.240.189.68/filestreamingservice/files/ee00f118-1482-46c2-bd9f-10a36deb9b80?P1=1762616724&P2=404&P3=2&P4=Hyc6EBqvboUdUmGpujTQSxbTt6GLmHbOsWlxj8Ej2IUzsinfphESb2sDqgO0KL%2fBDldHxyq1qrG7Sbdra3e7vg%3d%3d&cacheHostOrigin=msedge.b.tlu.dl.delivery.mp.microsoft.com"
+        }
+      ],
+      "new_data": [],
+      "alert": false,
+      "families": []
+    },
+    {
+      "name": "network_questionable_http_path",
+      "description": "Makes a suspicious HTTP request to a commonly exploitable directory with questionable file ext",
+      "categories": [
+        "network"
+      ],
+      "severity": 3,
+      "weight": 1,
+      "confidence": 100,
+      "references": [],
+      "data": [
+        {
+          "url": "http://4.240.189.68/filestreamingservice/files/ee00f118-1482-46c2-bd9f-10a36deb9b80/pieceshash?cacheHostOrigin=msedge.f.dl.delivery.mp.microsoft.com"
+        },
+        {
+          "url": "http://4.240.189.68/filestreamingservice/files/ee00f118-1482-46c2-bd9f-10a36deb9b80?P1=1762616724&P2=404&P3=2&P4=Hyc6EBqvboUdUmGpujTQSxbTt6GLmHbOsWlxj8Ej2IUzsinfphESb2sDqgO0KL%2fBDldHxyq1qrG7Sbdra3e7vg%3d%3d&cacheHostOrigin=msedge.b.tlu.dl.delivery.mp.microsoft.com"
+        }
+      ],
+      "new_data": [],
+      "alert": false,
+      "families": []
+    }
+  ],
+  "malscore": 2.6,
+  "ttps": [
+    {
+      "signature": "network_cnc_http",
+      "ttps": [
+        "T1071"
+      ],
+      "mbcs": [
+        "OB0004",
+        "B0033",
+        "OC0006",
+        "C0002"
+      ]
+    },
+    {
+      "signature": "network_http",
+      "ttps": [
+        "T1071"
+      ],
+      "mbcs": [
+        "OC0006",
+        "C0002"
+      ]
+    },
+    {
+      "signature": "network_questionable_http_path",
+      "ttps": [
+        "T1071"
+      ],
+      "mbcs": [
+        "OC0006",
+        "C0002",
+        "OC0006",
+        "C0002",
+        "OC0006",
+        "C0002"
+      ]
+    }
+  ],
+  "malstatus": null
+}

@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CAPE Superadmin | Reports</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #ec4899;
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Navbar */
+        .navbar {
+            background-color: var(--bg-card);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            backdrop-filter: blur(10px);
+            background-color: rgba(30, 41, 59, 0.8);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.025em;
+        }
+
+        .nav-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--text-main);
+            color: var(--text-main);
+        }
+
+        /* Main Content */
+        .main {
+            flex: 1;
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 1rem;
+            padding: 1.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        /* Search & Filter */
+        .controls {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            background-color: var(--bg-card);
+            padding: 1rem;
+            border-radius: 1rem;
+            border: 1px solid var(--border);
+        }
+
+        .search-box {
+            flex: 1;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            background-color: var(--bg-dark);
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            color: var(--text-main);
+            font-family: inherit;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            width: 1.25rem;
+            height: 1.25rem;
+        }
+
+        /* Data Table */
+        .table-container {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 1rem;
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th {
+            background-color: rgba(15, 23, 42, 0.5);
+            padding: 1rem 1.5rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-bottom: 1px solid var(--border);
+        }
+
+        td {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-main);
+            font-size: 0.875rem;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background-color: rgba(255, 255, 255, 0.02);
+        }
+
+        .file-name {
+            font-weight: 500;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .hash-preview {
+            font-family: monospace;
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            background: rgba(0,0,0,0.2);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .score-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .score-high { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
+        .score-med { background: rgba(245, 158, 11, 0.1); color: var(--warning); }
+        .score-low { background: rgba(16, 185, 129, 0.1); color: var(--success); }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .page-info {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        .page-controls {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        /* Modal */
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(4px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .modal-backdrop.active {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--bg-card);
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            border-radius: 1rem;
+            border: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 1.5rem;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+            overflow-y: auto;
+        }
+
+        .json-viewer {
+            background: #0d1117;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            font-family: monospace;
+            font-size: 0.875rem;
+            white-space: pre-wrap;
+            color: #e6edf3;
+        }
+        
+        .loading-spinner {
+            border: 3px solid rgba(255,255,255,0.1);
+            border-radius: 50%;
+            border-top: 3px solid var(--primary);
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+    </style>
+    <script>
+        (function() {
+            try {
+                const token = localStorage.getItem('capeToken');
+                if (token) {
+                    const payload = JSON.parse(atob(token.split('.')[1]));
+                    if (payload.role === 'student') {
+                        window.location.href = '/';
+                    }
+                }
+            } catch (e) {
+                // Ignore decoding errors
+            }
+        })();
+    </script>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="logo">CAPE Superadmin</div>
+        <div class="nav-actions">
+            <button class="btn btn-outline" onclick="window.location.href='/'">Upload Interface</button>
+            <button class="btn btn-primary" id="refreshBtn">
+                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                Refresh
+            </button>
+        </div>
+    </nav>
+
+    <main class="main">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">Total Reports</div>
+                <div class="stat-value" id="totalReports">-</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Index Name</div>
+                <div class="stat-value" id="indexName" style="font-size: 1.25rem; margin-top: 0.5rem;">-</div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <div class="search-box">
+                <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                <input type="text" class="search-input" id="searchInput" placeholder="Search by filename, SHA256, or MD5...">
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Filename</th>
+                        <th>SHA256</th>
+                        <th>Score</th>
+                        <th>Analyzed At</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="reportsTableBody">
+                    <tr>
+                        <td colspan="5" style="text-align: center; padding: 3rem;">
+                            <div class="loading-spinner"></div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="pagination">
+                <div class="page-info">
+                    Showing <span id="pageStart">0</span> to <span id="pageEnd">0</span> of <span id="pageTotal">0</span> results
+                </div>
+                <div class="page-controls">
+                    <button class="btn btn-outline" id="prevBtn" disabled>Previous</button>
+                    <button class="btn btn-outline" id="nextBtn" disabled>Next</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Report Detail Modal -->
+    <div class="modal-backdrop" id="detailModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">Report Details</h3>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="modalContent"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // State
+        let currentPage = 1;
+        let currentLimit = 20;
+        let totalItems = 0;
+        let searchQuery = '';
+
+        // Elements
+        const tableBody = document.getElementById('reportsTableBody');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const searchInput = document.getElementById('searchInput');
+        const refreshBtn = document.getElementById('refreshBtn');
+        const totalReportsEl = document.getElementById('totalReports');
+        const indexNameEl = document.getElementById('indexName');
+        const pageStartEl = document.getElementById('pageStart');
+        const pageEndEl = document.getElementById('pageEnd');
+        const pageTotalEl = document.getElementById('pageTotal');
+        const detailModal = document.getElementById('detailModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalContent = document.getElementById('modalContent');
+
+        // Auth Token (reuse from main app)
+        function getToken() { return localStorage.getItem('capeToken') || ''; }
+
+        // Fetch Stats
+        async function fetchStats() {
+            try {
+                const res = await fetch('/api/es/stats', {
+                    headers: { 'Authorization': `Bearer ${getToken()}` }
+                });
+                if (!res.ok) throw new Error('Failed to fetch stats');
+                const data = await res.json();
+                totalReportsEl.textContent = data.count.toLocaleString();
+                indexNameEl.textContent = data.index;
+            } catch (err) {
+                console.error(err);
+                totalReportsEl.textContent = 'Error';
+            }
+        }
+
+        // Fetch Reports
+        async function fetchReports() {
+            tableBody.innerHTML = `<tr><td colspan="5" style="text-align: center; padding: 3rem;"><div class="loading-spinner"></div></td></tr>`;
+            
+            try {
+                const params = new URLSearchParams({
+                    page: currentPage,
+                    limit: currentLimit,
+                    q: searchQuery
+                });
+
+                const res = await fetch(`/api/es/reports?${params}`, {
+                    headers: { 'Authorization': `Bearer ${getToken()}` }
+                });
+                
+                if (res.status === 401) {
+                    alert('Please login first via the main interface.');
+                    window.location.href = '/';
+                    return;
+                }
+
+                if (!res.ok) throw new Error('Failed to fetch reports');
+                
+                const data = await res.json();
+                renderTable(data.data);
+                updatePagination(data);
+            } catch (err) {
+                console.error(err);
+                tableBody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--danger);">Failed to load reports. Check console/logs.</td></tr>`;
+            }
+        }
+
+        // Render Table
+        function renderTable(reports) {
+            if (reports.length === 0) {
+                tableBody.innerHTML = `<tr><td colspan="5" style="text-align: center; padding: 2rem; color: var(--text-muted);">No reports found.</td></tr>`;
+                return;
+            }
+
+            tableBody.innerHTML = reports.map(r => {
+                const filename = r.target?.file?.name || 'Unknown';
+                const sha256 = r.target?.file?.sha256 || 'N/A';
+                const score = r.info?.score || 0;
+                const timestamp = r.info?.started || '';
+                const dateStr = timestamp || 'N/A';
+                
+                let scoreClass = 'score-low';
+                if (score >= 7) scoreClass = 'score-high';
+                else if (score >= 4) scoreClass = 'score-med';
+
+                return `
+                    <tr style="cursor: pointer;" onclick="openReport('${r.id}')">
+                        <td>
+                            <div class="file-name">
+                                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                                ${escapeHtml(filename)}
+                            </div>
+                        </td>
+                        <td><span class="hash-preview" title="${sha256}">${sha256.substring(0, 12)}...</span></td>
+                        <td><span class="score-badge ${scoreClass}">${score}</span></td>
+                        <td>${dateStr}</td>
+                        <td>
+                            <button class="btn btn-outline" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;">View</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // Update Pagination
+        function updatePagination(data) {
+            totalItems = data.total;
+            const start = (currentPage - 1) * currentLimit + 1;
+            const end = Math.min(currentPage * currentLimit, totalItems);
+            
+            pageStartEl.textContent = totalItems === 0 ? 0 : start;
+            pageEndEl.textContent = end;
+            pageTotalEl.textContent = totalItems;
+
+            const totalPages = Math.ceil(totalItems / currentLimit);
+            const pageControls = document.querySelector('.page-controls');
+            pageControls.innerHTML = '';
+
+            // Previous Button
+            const prevBtn = document.createElement('button');
+            prevBtn.className = 'btn btn-outline';
+            prevBtn.textContent = 'Previous';
+            prevBtn.disabled = currentPage === 1;
+            prevBtn.onclick = () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    fetchReports();
+                }
+            };
+            pageControls.appendChild(prevBtn);
+
+            // Page Numbers
+            const maxVisiblePages = 5;
+            let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+            let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+
+            if (endPage - startPage + 1 < maxVisiblePages) {
+                startPage = Math.max(1, endPage - maxVisiblePages + 1);
+            }
+
+            if (startPage > 1) {
+                addPageButton(1, pageControls);
+                if (startPage > 2) {
+                    const span = document.createElement('span');
+                    span.textContent = '...';
+                    span.style.padding = '0.5rem';
+                    span.style.color = 'var(--text-muted)';
+                    pageControls.appendChild(span);
+                }
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+                addPageButton(i, pageControls);
+            }
+
+            if (endPage < totalPages) {
+                if (endPage < totalPages - 1) {
+                    const span = document.createElement('span');
+                    span.textContent = '...';
+                    span.style.padding = '0.5rem';
+                    span.style.color = 'var(--text-muted)';
+                    pageControls.appendChild(span);
+                }
+                addPageButton(totalPages, pageControls);
+            }
+
+            // Next Button
+            const nextBtn = document.createElement('button');
+            nextBtn.className = 'btn btn-outline';
+            nextBtn.textContent = 'Next';
+            nextBtn.disabled = currentPage === totalPages || totalPages === 0;
+            nextBtn.onclick = () => {
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    fetchReports();
+                }
+            };
+            pageControls.appendChild(nextBtn);
+        }
+
+        function addPageButton(page, container) {
+            const btn = document.createElement('button');
+            btn.className = `btn ${page === currentPage ? 'btn-primary' : 'btn-outline'}`;
+            btn.textContent = page;
+            btn.style.minWidth = '2.5rem';
+            btn.style.padding = '0.5rem';
+            btn.onclick = () => {
+                if (page !== currentPage) {
+                    currentPage = page;
+                    fetchReports();
+                }
+            };
+            container.appendChild(btn);
+        }
+
+        // Open Report Details
+        async function openReport(id) {
+            detailModal.classList.add('active');
+            modalContent.innerHTML = '<div class="loading-spinner"></div>';
+            modalTitle.textContent = 'Loading...';
+
+            try {
+                const res = await fetch(`/api/es/reports/${id}`, {
+                    headers: { 'Authorization': `Bearer ${getToken()}` }
+                });
+                if (!res.ok) throw new Error('Failed to fetch report details');
+                const data = await res.json();
+                
+                modalTitle.textContent = data.target?.file?.name || 'Report Details';
+                modalContent.innerHTML = `
+                    <div style="margin-bottom: 1rem; display: flex; gap: 0.5rem;">
+                         <button class="btn btn-primary" onclick="window.open('/visualiser.html?report_id=${id}&es=true', '_blank')">Open Visualiser</button>
+                    </div>
+                    <div class="json-viewer">${escapeHtml(JSON.stringify(data, null, 2))}</div>
+                `;
+            } catch (err) {
+                modalContent.innerHTML = `<div style="color: var(--danger);">Error: ${err.message}</div>`;
+            }
+        }
+
+        function closeModal() {
+            detailModal.classList.remove('active');
+        }
+
+        // Utils
+        function escapeHtml(text) {
+            if (!text) return '';
+            return text
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        let debounceTimer;
+        searchInput.addEventListener('input', (e) => {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(() => {
+                searchQuery = e.target.value;
+                currentPage = 1;
+                fetchReports();
+            }, 300);
+        });
+
+        refreshBtn.addEventListener('click', () => {
+            fetchStats();
+            fetchReports();
+        });
+
+        // Close modal on backdrop click
+        detailModal.addEventListener('click', (e) => {
+            if (e.target === detailModal) closeModal();
+        });
+
+        // Init
+        fetchStats();
+        fetchReports();
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,1082 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CAPE Sandbox File Upload</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+            /* prevent full-page scroll; let panes scroll themselves */
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 350px;
+            background: white;
+            padding: 20px;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+            height: 100vh;
+            overflow-y: auto;
+            /* sidebar scrolls independently */
+        }
+
+        .sidebar h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 22px;
+        }
+
+        .submission-item {
+            padding: 15px;
+            margin-bottom: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+
+        .submission-item:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .submission-item.active {
+            border-left-color: #667eea;
+            background: #e7ecff;
+        }
+
+        .submission-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .submission-filename {
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .submission-time {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .submission-actions {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-left: 8px;
+        }
+
+        .submission-delete {
+            appearance: none;
+            border: none;
+            background: transparent;
+            color: #999;
+            font-weight: 700;
+            font-size: 16px;
+            line-height: 1;
+            padding: 2px 6px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s, transform 0.05s;
+        }
+
+        .submission-delete:hover {
+            background: #ffe7e7;
+            color: #d32f2f;
+        }
+
+        .submission-delete:active {
+            transform: scale(0.95);
+        }
+
+        .submission-info {
+            font-size: 12px;
+            color: #888;
+            margin-top: 5px;
+        }
+
+        .task-id-display {
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-top: 5px;
+        }
+
+        .status-badge.pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-badge.processing {
+            background: #cfe2ff;
+            color: #084298;
+        }
+
+        .status-badge.completed {
+            background: #d1e7dd;
+            color: #0f5132;
+        }
+
+        .status-badge.reported {
+            background: #d1e7dd;
+            color: #0f5132;
+        }
+
+        .status-badge.error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: #999;
+            padding: 40px 20px;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            padding: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-y: auto;
+            /* main area scrolls independently */
+        }
+
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        input[type="file"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px dashed #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        input[type="file"]:hover {
+            border-color: #667eea;
+            background-color: #f8f9ff;
+        }
+
+        select,
+        input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        select:focus,
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            flex: 1;
+            padding: 14px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-reset {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .btn-reset:hover {
+            background: #e0e0e0;
+        }
+
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            display: none;
+            font-size: 14px;
+        }
+
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            display: block;
+        }
+
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            display: block;
+        }
+
+        .status.loading {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+            display: block;
+        }
+
+        /* Task Status Details */
+        .task-details {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .task-details.visible {
+            display: block;
+        }
+
+        .task-details h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .task-details-item {
+            margin-bottom: 10px;
+            padding: 10px;
+            background: white;
+            border-radius: 6px;
+        }
+
+        .task-details-label {
+            font-weight: 600;
+            color: #666;
+            font-size: 12px;
+            margin-bottom: 4px;
+        }
+
+        .task-details-value {
+            color: #333;
+            font-size: 14px;
+            word-break: break-word;
+        }
+
+        pre {
+            background: #f0f0f0;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h2>Submission History</h2>
+        <div id="submissionList">
+            <div class="empty-state">No submissions yet</div>
+        </div>
+    </div>
+
+    <!-- Auth Modal -->
+    <div id="authModal"
+        style="position:fixed; inset:0; background:rgba(0,0,0,0.45); display:none; align-items:center; justify-content:center; z-index:100;">
+        <div
+            style="background:#fff; border-radius:10px; width:360px; max-width:90vw; padding:20px; box-shadow:0 10px 30px rgba(0,0,0,0.25);">
+            <h3 style="margin-bottom:12px; color:#333;">Login required</h3>
+            <p id="authReason" style="font-size:13px; color:#666; margin-bottom:12px;">Please login to continue.</p>
+            <div style="display:flex; flex-direction:column; gap:10px;">
+                <input id="authEmail" type="text" placeholder="Username or Roll Number"
+                    style="padding:10px; border:1px solid #ddd; border-radius:8px; font-size:14px;">
+                <input id="authPassword" type="password" placeholder="Password"
+                    style="padding:10px; border:1px solid #ddd; border-radius:8px; font-size:14px;">
+            </div>
+            <div style="display:flex; gap:10px; margin-top:16px;">
+                <button id="btnLogin"
+                    style="flex:1; padding:10px 12px; border:none; background:#667eea; color:#fff; border-radius:8px; font-weight:600; cursor:pointer;">Login</button>
+                <button id="btnCancelLogin"
+                    style="flex:1; padding:10px 12px; border:none; background:#e0e0e0; color:#333; border-radius:8px; font-weight:600; cursor:pointer;">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Auth Gate (Login Page) -->
+    <div id="authGate"
+        style="position:fixed; inset:0; background:linear-gradient(135deg, #667eea 0%, #764ba2 100%); display:none; align-items:center; justify-content:center; z-index:90;">
+        <div
+            style="background:#ffffff; border-radius:12px; width:420px; max-width:92vw; padding:28px; box-shadow:0 20px 60px rgba(0,0,0,0.35); text-align:center;">
+            <h2 style="color:#333; margin-bottom:8px;">Welcome</h2>
+            <p style="color:#666; font-size:14px; margin-bottom:18px;">Please sign in to access the CAPE upload portal.
+            </p>
+            <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:12px;">
+                <input id="gateEmail" type="text" placeholder="Username or Roll Number"
+                    style="padding:10px; border:1px solid #ddd; border-radius:8px; font-size:14px;">
+                <input id="gatePassword" type="password" placeholder="Password"
+                    style="padding:10px; border:1px solid #ddd; border-radius:8px; font-size:14px;">
+            </div>
+            <div style="display:flex; gap:10px;">
+                <button id="gateLogin"
+                    style="flex:1; padding:10px 12px; border:none; background:#667eea; color:#fff; border-radius:8px; font-weight:600; cursor:pointer;">Login</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Logout Button (visible when authenticated) -->
+    <button id="btnLogout"
+        style="position:fixed; top:10px; right:12px; padding:8px 12px; border:none; background:#f44336; color:#fff; border-radius:6px; font-weight:600; cursor:pointer; display:none; z-index:95;">Logout</button>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="container">
+            <h1>CAPE Sandbox Upload</h1>
+            <p class="subtitle">Upload a file for malware analysis</p>
+
+            <form id="uploadForm">
+                <div class="form-group">
+                    <label for="fileInput">Select File:</label>
+                    <input type="file" id="fileInput" name="file" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="package">Package:</label>
+                    <select id="package" name="package" required>
+                        <option value="auto">auto</option>
+                        <option value="exe">exe</option>
+                        <option value="dll">dll</option>
+                        <option value="zip">zip</option>
+                        <option value="apk">apk</option>
+                        <option value="office">office</option>
+                        <option value="pdf">pdf</option>
+                        <option value="browser">browser</option>
+                        <option value="chrome">chrome</option>
+                        <option value="firefox">firefox</option>
+                        <option value="ie">ie</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="timeout">Timeout (seconds):</label>
+                    <input type="number" id="timeout" name="timeout" value="300" min="100" max="300" required>
+                </div>
+
+                <div class="form-group" id="priorityGroup" style="display:none;">
+                    <label for="priority">Priority:</label>
+                    <input type="number" id="priority" name="priority" value="1" min="1" max="10" required>
+                </div>
+
+                <div class="button-group">
+                    <button type="submit" class="btn-submit" id="submitBtn">Submit for Analysis</button>
+                    <button type="button" class="btn-reset" id="resetBtn">Reset</button>
+                </div>
+
+                <div id="status" class="status"></div>
+            </form>
+
+            <!-- Task Status Details -->
+            <div id="taskDetails" class="task-details">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <h3>Task Status</h3>
+                    <span style="
+                        background-color: #764ba2;
+                        color: white;
+                        padding: 3px 8px;
+                        border-radius: 10px;
+                        font-size: 0.85em;
+                        font-weight: bold;
+                        margin-bottom: 14px;
+                    " class="task-id-display-badge"></span>
+                </div>
+                <div id="taskDetailsContent"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('uploadForm');
+        const fileInput = document.getElementById('fileInput');
+        const submitBtn = document.getElementById('submitBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const statusDiv = document.getElementById('status');
+        const submissionList = document.getElementById('submissionList');
+        const taskDetails = document.getElementById('taskDetails');
+        const taskDetailsContent = document.getElementById('taskDetailsContent');
+        const taskIdDisplayBadge = document.querySelector('.task-id-display-badge');
+        const authModal = document.getElementById('authModal');
+        const authReason = document.getElementById('authReason');
+        const authUsername = document.getElementById('authEmail'); // keeping ID same for now
+        const authPassword = document.getElementById('authPassword');
+        const btnLogin = document.getElementById('btnLogin');
+        const btnCancelLogin = document.getElementById('btnCancelLogin');
+        const authGate = document.getElementById('authGate');
+        const gateUsername = document.getElementById('gateEmail'); // keeping ID same for now
+        const gatePassword = document.getElementById('gatePassword');
+        const gateLogin = document.getElementById('gateLogin');
+        const btnLogout = document.getElementById('btnLogout');
+
+        // Auth token helpers
+        function getToken() { return localStorage.getItem('capeToken') || ''; }
+        function getUserRole() { return localStorage.getItem('capeRole') || ''; }
+        function setToken(t, role) {
+            if (t) localStorage.setItem('capeToken', t);
+            if (role) localStorage.setItem('capeRole', role);
+            hideLoginModal(); hideAuthGate(); showLogout(); togglePriority();
+        }
+        function clearToken() { localStorage.removeItem('capeToken'); localStorage.removeItem('capeRole'); showAuthGate(); hideLogout(); togglePriority(); }
+        function showLoginModal(reason) { authReason.textContent = reason || 'Please login to continue.'; authModal.style.display = 'flex'; }
+        function hideLoginModal() { authModal.style.display = 'none'; authPassword.value = ''; }
+        function showAuthGate() { authGate.style.display = 'flex'; }
+        function hideAuthGate() { authGate.style.display = 'none'; }
+        function showLogout() { btnLogout.style.display = ''; }
+        function hideLogout() { btnLogout.style.display = 'none'; }
+
+        // Show priority field only for admin/root
+        function togglePriority() {
+            const priorityGroup = document.getElementById('priorityGroup');
+            const role = getUserRole();
+            if (role === 'admin') {
+                priorityGroup.style.display = '';
+            } else {
+                priorityGroup.style.display = 'none';
+                document.getElementById('priority').value = '1';
+            }
+        }
+
+        // Initialize gate visibility
+        if (!getToken()) { showAuthGate(); hideLogout(); } else { hideAuthGate(); showLogout(); }
+        togglePriority();
+
+        btnCancelLogin.addEventListener('click', () => hideLoginModal());
+        btnLogin.addEventListener('click', async () => {
+            try {
+                console.log('Attempting login with:', { username: authUsername.value });
+                const resp = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: authUsername.value, password: authPassword.value })
+                });
+                const data = await resp.json();
+                if (!resp.ok) return alert(data.error || 'Login failed');
+                setToken(data.accessToken, data.user?.role);
+                renderSubmissions();
+            } catch (e) { alert('Login error: ' + e.message); }
+        });
+        gateLogin.addEventListener('click', async () => {
+            try {
+                console.log('Attempting gate login with:', { username: gateUsername.value });
+                const resp = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: gateUsername.value, password: gatePassword.value })
+                });
+                const data = await resp.json();
+                if (!resp.ok) return alert(data.error || 'Login failed');
+                setToken(data.accessToken, data.user?.role);
+                renderSubmissions();
+            } catch (e) { alert('Login error: ' + e.message); }
+        });
+        btnLogout.addEventListener('click', () => { clearToken(); });
+
+        // Polling state for auto-refresh with exponential backoff
+        let activePoll = {
+            taskId: null,
+            submissionIndex: null,
+            timerId: null,
+            intervalMs: 10000 // start at 10s
+        };
+
+        const POLL_MIN_MS = 10000; // 10s
+        const POLL_MAX_MS = 30000; // 30s cap
+        const POLL_GROWTH = 1.8;   // exponential factor
+
+        function isTerminalStatus(status) {
+            if (!status) return false;
+            const s = String(status).toLowerCase();
+            return s.includes('reported') || s.includes('completed') || s.includes('success') || s.includes('error') || s.includes('failed') || s.includes('timedout');
+        }
+
+        function stopPolling() {
+            if (activePoll.timerId) {
+                clearTimeout(activePoll.timerId);
+            }
+            activePoll = { taskId: null, submissionIndex: null, timerId: null, intervalMs: POLL_MIN_MS };
+        }
+
+        function scheduleNextPoll() {
+            if (!activePoll.taskId) return;
+            // Skip polling when tab hidden
+            if (document.hidden) {
+                activePoll.timerId = setTimeout(scheduleNextPoll, activePoll.intervalMs);
+                return;
+            }
+            activePoll.timerId = setTimeout(async () => {
+                await loadTaskStatus(activePoll.taskId, activePoll.submissionIndex, { fromPoll: true });
+                // Increase interval with cap
+                activePoll.intervalMs = Math.min(POLL_MAX_MS, Math.ceil(activePoll.intervalMs * POLL_GROWTH));
+                scheduleNextPoll();
+            }, activePoll.intervalMs);
+        }
+
+        function startPolling(taskId, submissionIndex) {
+            stopPolling();
+            activePoll.taskId = taskId;
+            activePoll.submissionIndex = submissionIndex;
+            activePoll.intervalMs = POLL_MIN_MS;
+            scheduleNextPoll();
+        }
+
+        // Pause/resume behavior when tab visibility changes
+        document.addEventListener('visibilitychange', () => {
+            if (!activePoll.taskId) return;
+            if (!document.hidden && !activePoll.timerId) {
+                // If resumed and no timer scheduled, schedule one now
+                scheduleNextPoll();
+            }
+        });
+
+        // Load submissions from API
+        async function loadSubmissions() {
+            const token = getToken();
+            if (!token) return [];
+            try {
+                const resp = await fetch('/api/submissions', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (!resp.ok) throw new Error('Failed to fetch submissions');
+                return await resp.json();
+            } catch (error) {
+                console.error('Error loading submissions:', error);
+                return [];
+            }
+        }
+
+        // Update submission status via API
+        async function updateSubmissionStatus(taskId, status) {
+            const token = getToken();
+            if (!token) return;
+            try {
+                await fetch(`/api/submissions/${taskId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ status })
+                });
+            } catch (error) {
+                console.error('Error updating submission status:', error);
+            }
+        }
+
+        // Render submissions list
+        async function renderSubmissions() {
+            const submissions = await loadSubmissions();
+
+            if (!Array.isArray(submissions) || submissions.length === 0) {
+                submissionList.innerHTML = `
+                    <div class="empty-state">No submissions yet</div>
+                `;
+                return;
+            } submissionList.innerHTML = submissions.map((sub, index) => `
+                <div class="submission-item" data-index="${index}">
+                    <div class="submission-item-header">
+                        <div class="submission-filename" title="${sub.filename}">${sub.filename}</div>
+                        <div style="display:flex; align-items:center; gap:8px;">
+                            <div class="submission-time">${formatTime(sub.timestamp)}</div>
+                            <div class="submission-actions">
+                                <button class="submission-delete" title="Remove" data-index="${index}" aria-label="Remove">×</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="submission-info">
+                        ${sub.taskId ? `<span class="task-id-display">Task ID: ${sub.taskId}</span> | ` : ''}Package: ${sub.package} | Timeout: ${sub.timeout}s | Priority: ${sub.priority}
+                    </div>
+                    ${sub.taskId ? `<span class="status-badge ${getStatusClass(sub.status)}">${sub.status || 'Unknown'}</span>` : ''}
+                </div>
+            `).join('');
+
+            // Add click listeners
+            submissionList.querySelectorAll('.submission-item').forEach(item => {
+                item.addEventListener('click', async () => {
+                    const submissions = await loadSubmissions();
+                    const index = parseInt(item.dataset.index);
+                    const submission = submissions[index];
+
+                    // Remove active class from all items
+                    document.querySelectorAll('.submission-item').forEach(i => i.classList.remove('active'));
+                    item.classList.add('active');
+
+                    // Load task status
+                    if (!getToken()) {
+                        showLoginModal('Please login to view task status.');
+                        return;
+                    }
+                    if (submission.taskId) {
+                        loadTaskStatus(submission.taskId, index);
+                        startPolling(submission.taskId, index);
+                    }
+                });
+            });
+
+            // Delete buttons
+            submissionList.querySelectorAll('.submission-delete').forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    e.stopPropagation();
+                    const idx = parseInt(btn.getAttribute('data-index'));
+                    const submissions = await loadSubmissions();
+                    const sub = submissions[idx];
+                    const label = sub?.filename || `submission #${idx + 1}`;
+                    if (confirm(`Do you really want to remove ${label}?`)) {
+                        // If currently selected, clear details and stop polling
+                        const active = document.querySelector('.submission-item.active');
+                        if (active && parseInt(active.dataset.index) === idx) {
+                            stopPolling();
+                            taskDetails.classList.remove('visible');
+                            taskDetailsContent.innerHTML = '';
+                        }
+
+                        // Delete from MongoDB via API
+                        try {
+                            const deleteResp = await fetch(`/api/submissions/${sub.taskId}`, {
+                                method: 'DELETE',
+                                headers: {
+                                    'Authorization': `Bearer ${getToken()}`
+                                }
+                            });
+
+                            if (!deleteResp.ok) {
+                                console.error('Error deleting submission:', await deleteResp.text());
+                            }
+                        } catch (error) {
+                            console.error('Error deleting submission:', error);
+                        }
+                        renderSubmissions();
+                    }
+                });
+            });
+        }
+
+        function getStatusClass(status) {
+            if (!status) return 'pending';
+            const s = status.toLowerCase();
+            if (s.includes('pending') || s.includes('pending')) return 'pending';
+            if (s.includes('processing') || s.includes('running') || s.includes('reporting')) return 'processing';
+            if (s.includes('completed') || s.includes('reported') || s.includes('success')) return 'completed';
+            if (s.includes('error') || s.includes('failed')) return 'error';
+            return 'pending';
+        }
+
+        function formatTime(timestamp) {
+            const date = new Date(timestamp);
+            return date.toLocaleString();
+        }
+
+        async function loadTaskStatus(taskId, submissionIndex, { fromPoll } = {}) {
+            taskDetails.classList.add('visible');
+            taskDetailsContent.innerHTML = '<div class="status loading">Loading task status...</div>';
+            taskIdDisplayBadge.textContent = `Task ID: ${taskId}`;
+
+            if (!getToken()) { showLoginModal('Please login to submit files.'); submitBtn.disabled = false; submitBtn.textContent = 'Submit for Analysis'; return; }
+
+            try {
+                const response = await fetch(`/api/task/${taskId}`, {
+                    headers: (() => { const t = getToken(); return t ? { 'Authorization': `Bearer ${t}` } : {}; })()
+                });
+                const contentType = response.headers.get('content-type') || '';
+                const data = contentType.includes('application/json') ? await response.json() : await response.text();
+
+                if (response.ok) {
+                    const payloadRoot = (data && typeof data === 'object' && 'data' in data) ? data.data : data;
+                    const statusText = typeof payloadRoot === 'string' ? payloadRoot : (payloadRoot?.status || (payloadRoot?.timedout ? 'timedout' : 'Unknown'));
+                    // Update the task status in localStorage
+                    const submissions = await loadSubmissions();
+                    if (submissions[submissionIndex]) {
+                        // Update the status in MongoDB
+                        try {
+                            const updateResp = await fetch(`/api/submissions/${submissions[submissionIndex].taskId}`, {
+                                method: 'PUT',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'Authorization': `Bearer ${getToken()}`
+                                },
+                                body: JSON.stringify({ status: statusText })
+                            });
+
+                            if (!updateResp.ok) {
+                                console.error('Error updating submission status:', await updateResp.text());
+                            }
+                        } catch (error) {
+                            console.error('Error updating submission status:', error);
+                        }
+                        renderSubmissions();
+                    }
+
+                    // Display status and actions when reported
+                    const actions = (String(statusText).toLowerCase() === 'reported') ? `
+                        <div class="task-details-item">
+                            <div class="task-details-label">Actions</div>
+                            <div class="task-details-value" style="display:flex; gap:10px; flex-wrap:wrap;">
+                                <button id="btnDownloadReport" style="padding:8px 12px; border:none; background:#667eea; color:#fff; border-radius:6px; font-weight:600; cursor:pointer;">Download Report</button>
+                                <button id="btnViewAnalysis" style="padding:8px 12px; border:none; background:#764ba2; color:#fff; border-radius:6px; font-weight:600; cursor:pointer;">View Analysis</button>
+                                <button id="btnVisualise" style="padding:8px 12px; border:none; background:#2b9d6f; color:#fff; border-radius:6px; font-weight:600; cursor:pointer;">Visualise</button>
+                            </div>
+                        </div>
+                    ` : '';
+
+                    taskDetailsContent.innerHTML = `
+                        <div class="task-details-item">
+                            <div class="task-details-label">Status</div>
+                            <div class="task-details-value">${statusText || 'Unknown'}</div>
+                        </div>
+                        ${actions}
+                    `;
+
+                    // Wire up action buttons
+                    const btnReport = document.getElementById('btnDownloadReport');
+                    if (btnReport) {
+                        btnReport.onclick = async () => {
+                            try {
+                                const resp = await fetch(`/api/task/${taskId}/report`, { headers: (() => { const t = getToken(); return t ? { 'Authorization': `Bearer ${t}` } : {}; })() });
+                                if (!resp.ok) { const tx = await resp.text(); alert(`Download failed: ${tx}`); return; }
+                                const blob = await resp.blob();
+                                const url = URL.createObjectURL(blob);
+                                const a = document.createElement('a');
+                                a.href = url; a.download = `report_${taskId}`; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+                            } catch (e) { alert('Download error: ' + e.message); }
+                        };
+                    }
+                    const btnAnalysis = document.getElementById('btnViewAnalysis');
+                    if (btnAnalysis) {
+                        btnAnalysis.onclick = () => {
+                            window.location.href = `analysis.html?taskId=${encodeURIComponent(taskId)}`;
+                        };
+                    }
+
+                    const btnVisualise = document.getElementById('btnVisualise');
+                    if (btnVisualise) {
+                        btnVisualise.onclick = async () => {
+                            try {
+                                const resp = await fetch(`/api/task/${taskId}/visualise`, { headers: (() => { const t = getToken(); return t ? { 'Authorization': `Bearer ${t}` } : {}; })() });
+                                if (!resp.ok) { const tx = await resp.text(); alert(`Visualise failed: ${tx}`); return; }
+                                const json = await resp.json();
+                                const url = json.visualiserUrl || (`/visualiser.html?report=/reports/report_${encodeURIComponent(taskId)}.json`);
+                                window.open(url, '_blank');
+                            } catch (e) { alert('Visualise error: ' + e.message); }
+                        };
+                    }
+
+                    // Stop polling on terminal status
+                    if (isTerminalStatus(statusText)) {
+                        stopPolling();
+                    }
+                } else {
+                    taskDetailsContent.innerHTML = `<div class="status error">Error: ${contentType.includes('application/json') ? JSON.stringify(data) : data}</div>`;
+                }
+            } catch (error) {
+                taskDetailsContent.innerHTML = `<div class="status error">Error loading task status: ${error.message}</div>`;
+            }
+        }
+
+        // Function to render a single submission
+        function renderSubmission(sub) {
+            return `
+                <div class="submission-item" data-task-id="${sub.taskId}">
+                    <div class="submission-item-header">
+                        <div class="submission-filename">${sub.filename}</div>
+                        <div class="submission-actions">
+                            <button class="submission-delete" data-task-id="${sub.taskId}">&times;</button>
+                        </div>
+                    </div>
+                    <div class="submission-info">
+                        Task ID: <span class="task-id-display">${sub.taskId}</span><br>
+                        Submitted: ${formatTime(sub.timestamp)}<br>
+                        Package: ${sub.package}, Timeout: ${sub.timeout}s, Priority: ${sub.priority}<br>
+                        <span class="status-badge ${getStatusClass(sub.status)}">${sub.status}</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Render submissions list
+        async function renderSubmissions() {
+            const submissions = await loadSubmissions();
+
+            if (!Array.isArray(submissions) || submissions.length === 0) {
+                submissionList.innerHTML = '<div class="empty-state">No submissions yet</div>';
+                return;
+            }
+
+            submissionList.innerHTML = submissions.map(renderSubmission).join('');
+
+            // Add click listeners for submission items
+            submissionList.querySelectorAll('.submission-item').forEach(item => {
+                item.addEventListener('click', async (e) => {
+                    if (e.target.classList.contains('submission-delete')) return; // Don't trigger for delete button
+                    const taskId = item.dataset.taskId;
+                    const index = item.dataset.index || Array.from(submissionList.querySelectorAll('.submission-item')).indexOf(item);
+                    document.querySelectorAll('.submission-item').forEach(i => i.classList.remove('active'));
+                    item.classList.add('active');
+                    await loadTaskStatus(taskId, index);
+                    startPolling(taskId, index);
+                });
+            });
+
+            // Add delete button handlers
+            submissionList.querySelectorAll('.submission-delete').forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    e.stopPropagation();
+                    const index = btn.dataset.index || Array.from(submissionList.querySelectorAll('.submission-delete')).indexOf(btn);
+                    const submissions = await loadSubmissions();
+                    const sub = submissions[index];
+                    const label = sub?.filename || `submission #${index + 1}`;
+                    if (confirm(`Do you really want to remove ${label}?`)) {
+                        // If currently selected, clear details and stop polling
+                        const active = document.querySelector('.submission-item.active');
+                        if (active && (active.dataset.index == index || active.dataset.taskId == sub.taskId)) {
+                            stopPolling();
+                            taskDetails.classList.remove('visible');
+                            taskDetailsContent.innerHTML = '';
+                        }
+                        // Delete from MongoDB via API
+                        try {
+                            const deleteResp = await fetch(`/api/submissions/${sub.taskId}`, {
+                                method: 'DELETE',
+                                headers: {
+                                    'Authorization': `Bearer ${getToken()}`
+                                }
+                            });
+                            if (!deleteResp.ok) {
+                                console.error('Error deleting submission:', await deleteResp.text());
+                            }
+                        } catch (error) {
+                            console.error('Error deleting submission:', error);
+                        }
+                        await renderSubmissions();
+                    }
+                });
+            });
+        }
+
+        // Handle form submission
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const file = fileInput.files[0];
+            if (!file) {
+                showStatus('Please select a file to upload', 'error');
+                return;
+            }
+
+            // Get form values
+            const packageValue = document.getElementById('package').value;
+            const timeout = document.getElementById('timeout').value;
+            const priority = document.getElementById('priority').value;
+
+            // Disable submit button
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Submitting...';
+            showStatus('Uploading file and submitting to CAPE sandbox...', 'loading');
+
+            try {
+                // Create form data
+                const formData = new FormData();
+                formData.append('file', file);
+                if (packageValue && packageValue !== 'auto') {
+                    formData.append('package', packageValue);
+                }
+                formData.append('timeout', timeout);
+                formData.append('priority', priority);
+
+                // Send to local proxy server
+                const response = await fetch('/api/upload', {
+                    method: 'POST',
+                    headers: (() => { const t = getToken(); return t ? { 'Authorization': `Bearer ${t}` } : {}; })(),
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // Log the full response for debugging
+                    console.log('CAPE API Response:', data);
+
+                    // Extract task ID from response - handle various response formats
+                    let taskId = null;
+
+                    // Try various possible fields (nested structures first)
+                    if (data.data && data.data.task_ids && Array.isArray(data.data.task_ids) && data.data.task_ids.length > 0) {
+                        taskId = data.data.task_ids[0]; // First task ID from nested data
+                    } else if (data.data && data.data.task_id) {
+                        taskId = data.data.task_id;
+                    } else if (data.task_ids && Array.isArray(data.task_ids) && data.task_ids.length > 0) {
+                        taskId = data.task_ids[0]; // First task ID if array
+                    } else if (data.task_ids && !Array.isArray(data.task_ids)) {
+                        taskId = data.task_ids;
+                    } else if (data.task_id) {
+                        taskId = data.task_id;
+                    } else if (data.task && data.task.id) {
+                        taskId = data.task.id;
+                    } else if (typeof data === 'number') {
+                        taskId = data;
+                    } else if (data.id) {
+                        taskId = data.id;
+                    }
+
+                    // Save submission to MongoDB via API
+                    const submission = {
+                        filename: file.name,
+                        package: packageValue,
+                        timeout: timeout,
+                        priority: priority,
+                        timestamp: Date.now(),
+                        taskId: taskId,
+                        status: 'Pending'
+                    };
+
+                    try {
+                        const saveResp = await fetch('/api/submissions', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${getToken()}`
+                            },
+                            body: JSON.stringify(submission)
+                        });
+
+                        if (!saveResp.ok) {
+                            console.error('Error saving submission:', await saveResp.text());
+                        }
+                    } catch (error) {
+                        console.error('Error saving submission:', error);
+                    }
+
+                    // Re-render submissions
+                    renderSubmissions();
+
+                    // Show success message
+                    if (taskId) {
+                        showStatus(`Success! Task ID: ${taskId}`, 'success');
+                    } else {
+                        showStatus(`Success! Submitted for analysis (Task ID unavailable)`, 'success');
+                    }
+                } else {
+                    showStatus(`Error: ${response.status} - ${JSON.stringify(data)}`, 'error');
+                }
+            } catch (error) {
+                showStatus(`Error uploading file: ${error.message}`, 'error');
+                console.error('Error:', error);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Submit for Analysis';
+            }
+        });
+
+        resetBtn.addEventListener('click', () => {
+            form.reset();
+            document.getElementById('timeout').value = '300';
+            document.getElementById('priority').value = '1';
+            document.getElementById('package').value = 'exe';
+            statusDiv.className = 'status';
+            statusDiv.textContent = '';
+            taskDetails.classList.remove('visible');
+            document.querySelectorAll('.submission-item').forEach(item => item.classList.remove('active'));
+        });
+
+        function showStatus(message, type) {
+            statusDiv.textContent = message;
+            statusDiv.className = `status ${type}`;
+        }
+
+        // Initial render
+        renderSubmissions();
+    </script>
+</body>
+
+</html>
