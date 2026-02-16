@@ -22,6 +22,8 @@ const xss = require('xss-clean');
 
 const app = express();
 
+
+
 // Security Headers
 app.use(helmet({
     contentSecurityPolicy: false, // Disable CSP for simplicity in this dev setup, or configure strictly
@@ -41,14 +43,14 @@ app.use(express.json({ limit: '10kb' })); // Limit body size
 app.use(express.urlencoded({ extended: true }));
 
 // Basic rate limiting
-const limiter = rateLimit({ 
+const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
     max: 100, // Limit each IP to 100 requests per windowMs
     message: 'Too many requests from this IP, please try again later'
 });
 app.use(limiter);
 
-const upload = multer({ 
+const upload = multer({
     storage: multer.memoryStorage(),
     limits: { fileSize: 50 * 1024 * 1024 } // 50MB limit
 });
@@ -61,14 +63,14 @@ const CAPE_API_UPLOAD_URL = `${CAPE_API_BASE}/apiv2/tasks/create/file/`;
 // Logging helpers (JSONL files in ./logs)
 const LOG_DIR = path.join(__dirname, 'logs');
 function ensureLogDir() {
-    try { if (!fs.existsSync(LOG_DIR)) fs.mkdirSync(LOG_DIR, { recursive: true }); } catch (_) {}
+    try { if (!fs.existsSync(LOG_DIR)) fs.mkdirSync(LOG_DIR, { recursive: true }); } catch (_) { }
 }
 ensureLogDir();
 
 // Reports directory for visualiser input files
 const REPORTS_DIR = path.join(__dirname, 'reports');
 function ensureReportsDir() {
-    try { if (!fs.existsSync(REPORTS_DIR)) fs.mkdirSync(REPORTS_DIR, { recursive: true }); } catch (_) {}
+    try { if (!fs.existsSync(REPORTS_DIR)) fs.mkdirSync(REPORTS_DIR, { recursive: true }); } catch (_) { }
 }
 ensureReportsDir();
 
@@ -134,6 +136,18 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model('User', userSchema);
 
+
+
+// Login History Model
+const loginHistorySchema = new mongoose.Schema({
+    username: { type: String, required: true, index: true },
+    role: { type: String, required: true },
+    ip: String,
+    timestamp: { type: Date, default: Date.now },
+    userAgent: String
+});
+const LoginHistory = mongoose.model('LoginHistory', loginHistorySchema);
+
 // Auth routes (fixed credential)
 const ADMIN_USERNAME = process.env.ADMIN_USERNAME || 'root';
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || null; // plaintext fallback
@@ -150,9 +164,9 @@ function requireAdmin(req, res, next) {
 app.post('/api/auth/login', async (req, res) => {
     try {
         const { username, password } = req.body;
-        // console.log('Login attempt:', { username }); // Don't log passwords
+        console.log('Login attempt:', { username }); // Don't log passwords
         if (!username || !password) return res.status(400).json({ error: 'Username and password required' });
-        
+
         // Basic brute force protection (sleep)
         await new Promise(r => setTimeout(r, 500));
 
@@ -164,15 +178,15 @@ app.post('/api/auth/login', async (req, res) => {
             if (password === STUDENT_PASSWORD) {
                 role = 'student';
                 isAuthenticated = true;
-                
+
                 // Persist student to MongoDB
                 try {
                     await User.findOneAndUpdate(
                         { username },
-                        { 
-                            $setOnInsert: { 
-                                username, 
-                                role: 'student', 
+                        {
+                            $setOnInsert: {
+                                username,
+                                role: 'student',
                                 createdAt: new Date(),
                                 email: `${username}@student.local` // Generate unique email to satisfy unique index
                             },
@@ -187,7 +201,7 @@ app.post('/api/auth/login', async (req, res) => {
 
                 await writeLog('auth.log', { type: 'login_success', ip: req.ip, username, role });
             }
-        } 
+        }
         // Check for Admin Login
         else if (username === ADMIN_USERNAME) {
             if (ADMIN_PASSWORD_HASH) {
@@ -200,6 +214,20 @@ app.post('/api/auth/login', async (req, res) => {
             if (isAuthenticated) {
                 role = 'admin';
                 await writeLog('auth.log', { type: 'login_success', ip: req.ip, username, role });
+            }
+        }
+
+        if (isAuthenticated) {
+            // Record Login History
+            try {
+                await LoginHistory.create({
+                    username,
+                    role,
+                    ip: req.ip,
+                    userAgent: req.headers['user-agent']
+                });
+            } catch (histErr) {
+                console.error('Error saving login history:', histErr.message);
             }
         }
 
@@ -239,13 +267,13 @@ app.put('/api/submissions/:taskId', authMiddleware, async (req, res) => {
         const { taskId } = req.params;
         const { status } = req.body;
         if (!status) return res.status(400).json({ error: 'Status required' });
-        
+
         const submission = await Submission.findOneAndUpdate(
             { taskId, userId: req.user.username },
             { status },
             { new: true }
         );
-        
+
         if (!submission) return res.status(404).json({ error: 'Submission not found' });
         res.json(submission);
     } catch (error) {
@@ -317,7 +345,7 @@ app.post('/api/upload', authMiddleware, upload.single('file'), async (req, res) 
         try {
             const taskIds = response.data?.data?.task_ids || response.data?.task_ids || [];
             const taskId = taskIds[0]; // Assuming single file upload
-            
+
             // Save submission to MongoDB
             if (taskId) {
                 const submission = new Submission({
@@ -333,7 +361,7 @@ app.post('/api/upload', authMiddleware, upload.single('file'), async (req, res) 
                 });
                 await submission.save();
             }
-            
+
             await writeLog('tasks.log', { type: 'submit_success', ip: req.ip, user: userFromReq(req), filename: file.originalname, taskIds });
         } catch (error) {
             console.error('Error saving submission:', error);
@@ -358,7 +386,7 @@ app.get('/api/task/:taskId', authMiddleware, async (req, res) => {
 
         const url = `${CAPE_API_BASE}/apiv2/tasks/status/${taskId}`;
         console.log('Fetching task status', { taskId, url });
-        
+
         const response = await axios.get(url);
         try {
             const status = response.data?.data?.status || response.data?.status;
@@ -563,9 +591,9 @@ const ES_PASSWORD = process.env.ELASTICSEARCH_PASSWORD;
 
 const esClient = new Client({
     node: ES_NODE,
-    auth: { 
-        username: ES_USERNAME, 
-        password: ES_PASSWORD 
+    auth: {
+        username: ES_USERNAME,
+        password: ES_PASSWORD
     },
     tls: {
         rejectUnauthorized: false // Self-signed certs are common in local setups
@@ -592,7 +620,7 @@ app.get('/api/es/stats', authMiddleware, requireAdmin, async (req, res) => {
 app.get('/api/es/reports', authMiddleware, requireAdmin, async (req, res) => {
     try {
         let { q, page = 1, limit = 20 } = req.query;
-        
+
         // Input validation
         page = parseInt(page);
         limit = parseInt(limit);
@@ -601,7 +629,7 @@ app.get('/api/es/reports', authMiddleware, requireAdmin, async (req, res) => {
         if (limit > 100) limit = 100; // Cap limit
 
         const from = (page - 1) * limit;
-        
+
         const body = {
             from,
             size: limit,
@@ -666,6 +694,198 @@ app.get('/api/es/reports/:id', authMiddleware, requireAdmin, async (req, res) =>
             return res.status(404).json({ error: 'Report not found' });
         }
         res.status(500).json({ error: 'Failed to fetch report' });
+    }
+});
+
+// --- ADMIN USER STATS ENDPOINTS ---
+
+// Get all users with stats
+app.get('/api/admin/users', authMiddleware, requireAdmin, async (req, res) => {
+    try {
+        // Aggregate Login History
+        // We want: username, role, lastLogin, totalLogins, totalSubmissions
+
+        // 1. Get all users from User collection (students)
+        // Admin user might not be in User collection if not using DB, so we handle that.
+
+        const users = await User.find().lean();
+
+        // 2. Get stats for each user (and any others found in LoginHistory/Submission)
+        // Aggregation is more efficient
+
+        const loginStats = await LoginHistory.aggregate([
+            { $group: { _id: "$username", count: { $sum: 1 }, lastLogin: { $max: "$timestamp" } } }
+        ]);
+
+        const submissionStats = await Submission.aggregate([
+            { $group: { _id: "$userId", count: { $sum: 1 }, lastSubmission: { $max: "$timestamp" } } }
+        ]);
+
+        // Merge data
+        const userMap = {};
+
+        // Initialize with known users
+        users.forEach(u => {
+            userMap[u.username] = {
+                username: u.username,
+                role: u.role,
+                joinedAt: u.createdAt,
+                lastLogin: u.lastLogin, // From User model
+                totalLogins: 0,
+                totalSubmissions: 0,
+                lastSubmission: null
+            };
+        });
+
+        // Merge Login Stats
+        loginStats.forEach(stat => {
+            if (!userMap[stat._id]) {
+                userMap[stat._id] = {
+                    username: stat._id,
+                    role: 'unknown',
+                    joinedAt: null,
+                    lastLogin: null,
+                    totalLogins: 0,
+                    totalSubmissions: 0,
+                    lastSubmission: null
+                };
+            }
+            userMap[stat._id].totalLogins = stat.count;
+            // Prefer the history timestamp if newer
+            if (!userMap[stat._id].lastLogin || stat.lastLogin > userMap[stat._id].lastLogin) {
+                userMap[stat._id].lastLogin = stat.lastLogin;
+            }
+            if (userMap[stat._id].role === 'unknown' && stat._id === ADMIN_USERNAME) {
+                userMap[stat._id].role = 'admin';
+            }
+        });
+
+        // Merge Submission Stats
+        submissionStats.forEach(stat => {
+            if (!userMap[stat._id]) {
+                // Should exist if they logged in, but just in case
+                userMap[stat._id] = {
+                    username: stat._id,
+                    role: 'unknown',
+                    joinedAt: null,
+                    lastLogin: null,
+                    totalLogins: 0,
+                    totalSubmissions: 0,
+                    lastSubmission: null
+                };
+            }
+            userMap[stat._id].totalSubmissions = stat.count;
+            userMap[stat._id].lastSubmission = stat.lastSubmission;
+        });
+
+        const result = Object.values(userMap).sort((a, b) => {
+            // Sort by last login desc, then username
+            const timeA = new Date(a.lastLogin || 0).getTime();
+            const timeB = new Date(b.lastLogin || 0).getTime();
+            return timeB - timeA;
+        });
+
+        res.json(result);
+
+    } catch (error) {
+        console.error('Error fetching user stats:', error);
+        res.status(500).json({ error: 'Failed to fetch user stats' });
+    }
+});
+
+// Get details for a specific user
+app.get('/api/admin/users/:username', authMiddleware, requireAdmin, async (req, res) => {
+    try {
+        const { username } = req.params;
+
+        // Parallel fetch
+        const [user, logins, submissions] = await Promise.all([
+            User.findOne({ username }).lean(),
+            LoginHistory.find({ username }).sort({ timestamp: -1 }).limit(50).lean(),
+            Submission.find({ userId: username }).sort({ timestamp: -1 }).limit(50).lean()
+        ]);
+
+        res.json({
+            user: user || { username, role: 'unknown' },
+            loginHistory: logins,
+            submissions: submissions
+        });
+
+    } catch (error) {
+        console.error('Error fetching user details:', error);
+        res.status(500).json({ error: 'Failed to fetch user details' });
+    }
+});
+
+// Dashboard Stats Endpoint
+app.get('/api/admin/dashboard-stats', authMiddleware, requireAdmin, async (req, res) => {
+    try {
+        const now = new Date();
+        const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+        // 1. Summary Counts
+        const totalUsers = await User.countDocuments();
+        const totalSubmissions = await Submission.countDocuments();
+        const loginsToday = await LoginHistory.countDocuments({ timestamp: { $gte: startOfDay } });
+        const submissionsToday = await Submission.countDocuments({ timestamp: { $gte: startOfDay } });
+
+        // 2. Timeline (Last 30 Days)
+        const thirtyDaysAgo = new Date();
+        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+        const loginTimeline = await LoginHistory.aggregate([
+            { $match: { timestamp: { $gte: thirtyDaysAgo } } },
+            {
+                $group: {
+                    _id: { $dateToString: { format: "%Y-%m-%d", date: "$timestamp" } },
+                    count: { $sum: 1 }
+                }
+            },
+            { $sort: { _id: 1 } }
+        ]);
+
+        const submissionTimeline = await Submission.aggregate([
+            { $match: { timestamp: { $gte: thirtyDaysAgo } } },
+            {
+                $group: {
+                    _id: { $dateToString: { format: "%Y-%m-%d", date: "$timestamp" } },
+                    count: { $sum: 1 }
+                }
+            },
+            { $sort: { _id: 1 } }
+        ]);
+
+        // 3. File Type Distribution
+        const fileTypes = await Submission.aggregate([
+            { $group: { _id: "$package", count: { $sum: 1 } } },
+            { $sort: { count: -1 } }
+        ]);
+
+        // 4. Top Users (by submission)
+        const topUsers = await Submission.aggregate([
+            { $group: { _id: "$userId", count: { $sum: 1 } } },
+            { $sort: { count: -1 } },
+            { $limit: 5 }
+        ]);
+
+        res.json({
+            summary: {
+                totalUsers,
+                totalSubmissions,
+                loginsToday,
+                submissionsToday
+            },
+            timeline: {
+                logins: loginTimeline,
+                submissions: submissionTimeline
+            },
+            fileTypes,
+            topUsers
+        });
+
+    } catch (error) {
+        console.error('Error fetching dashboard stats:', error);
+        res.status(500).json({ error: 'Failed to fetch dashboard stats' });
     }
 });
 

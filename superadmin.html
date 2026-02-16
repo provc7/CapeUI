@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
             --primary: #6366f1;
@@ -229,7 +231,7 @@
             font-family: monospace;
             color: var(--text-muted);
             font-size: 0.75rem;
-            background: rgba(0,0,0,0.2);
+            background: rgba(0, 0, 0, 0.2);
             padding: 2px 6px;
             border-radius: 4px;
         }
@@ -243,9 +245,20 @@
             font-weight: 600;
         }
 
-        .score-high { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
-        .score-med { background: rgba(245, 158, 11, 0.1); color: var(--warning); }
-        .score-low { background: rgba(16, 185, 129, 0.1); color: var(--success); }
+        .score-high {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+
+        .score-med {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+
+        .score-low {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
 
         /* Pagination */
         .pagination {
@@ -329,9 +342,9 @@
             white-space: pre-wrap;
             color: #e6edf3;
         }
-        
+
         .loading-spinner {
-            border: 3px solid rgba(255,255,255,0.1);
+            border: 3px solid rgba(255, 255, 255, 0.1);
             border-radius: 50%;
             border-top: 3px solid var(--primary);
             width: 24px;
@@ -341,13 +354,17 @@
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+            0% {
+                transform: rotate(0deg);
+            }
 
+            100% {
+                transform: rotate(360deg);
+            }
+        }
     </style>
     <script>
-        (function() {
+        (function () {
             try {
                 const token = localStorage.getItem('capeToken');
                 if (token) {
@@ -362,6 +379,7 @@
         })();
     </script>
 </head>
+
 <body>
 
     <nav class="navbar">
@@ -369,13 +387,76 @@
         <div class="nav-actions">
             <button class="btn btn-outline" onclick="window.location.href='/'">Upload Interface</button>
             <button class="btn btn-primary" id="refreshBtn">
-                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15">
+                    </path>
+                </svg>
                 Refresh
             </button>
         </div>
     </nav>
 
-    <main class="main">
+    <div class="container" style="max-width: 1400px; margin: 0 auto; padding: 0 2rem;">
+        <div style="display: flex; gap: 1rem; margin-top: 1rem; border-bottom: 1px solid var(--border);">
+            <button class="btn btn-outline" id="tabDashboard"
+                style="border-bottom: none; border-radius: 0.5rem 0.5rem 0 0; background: var(--bg-card); border-color: var(--border); color: var(--primary);">Dashboard</button>
+            <button class="btn btn-outline" id="tabReports"
+                style="border-bottom: none; border-radius: 0.5rem 0.5rem 0 0; border: 1px solid transparent; color: var(--text-muted);">Reports</button>
+            <button class="btn btn-outline" id="tabUsers"
+                style="border-bottom: none; border-radius: 0.5rem 0.5rem 0 0; border: 1px solid transparent; color: var(--text-muted);">Users</button>
+        </div>
+    </div>
+
+    <!-- DASHBOARD VIEW -->
+    <main class="main" id="viewDashboard" style="display: block;">
+        <div class="stats-grid" style="grid-template-columns: repeat(4, 1fr);">
+            <div class="stat-card">
+                <div class="stat-label">Total Users</div>
+                <div class="stat-value" id="dashTotalUsers">-</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Total Submissions</div>
+                <div class="stat-value" id="dashTotalSubs">-</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Logins Today</div>
+                <div class="stat-value" id="dashLoginsToday">-</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Submissions Today</div>
+                <div class="stat-value" id="dashSubsToday">-</div>
+            </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem; margin-bottom: 2rem;">
+            <!-- Main Chart -->
+            <div
+                style="background: var(--bg-card); padding: 1.5rem; border: 1px solid var(--border); border-radius: 1rem;">
+                <h3 style="margin-bottom: 1rem; color: var(--text-main);">Activity Trends (Last 30 Days)</h3>
+                <div style="position: relative; height: 300px; width: 100%;">
+                    <canvas id="accitivityChart"></canvas>
+                </div>
+            </div>
+            <!-- Pie Chart -->
+            <div
+                style="background: var(--bg-card); padding: 1.5rem; border: 1px solid var(--border); border-radius: 1rem;">
+                <h3 style="margin-bottom: 1rem; color: var(--text-main);">File Types</h3>
+                <div style="position: relative; height: 300px; width: 100%;">
+                    <canvas id="fileTypeChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div style="background: var(--bg-card); padding: 1.5rem; border: 1px solid var(--border); border-radius: 1rem;">
+            <h3 style="margin-bottom: 1rem; color: var(--text-main);">Top Users</h3>
+            <div style="position: relative; height: 200px; width: 100%;">
+                <canvas id="topUsersChart"></canvas>
+            </div>
+        </div>
+    </main>
+
+    <main class="main" id="viewReports" style="display: none;">
         <div class="stats-grid">
             <div class="stat-card">
                 <div class="stat-label">Total Reports</div>
@@ -389,8 +470,12 @@
 
         <div class="controls">
             <div class="search-box">
-                <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                <input type="text" class="search-input" id="searchInput" placeholder="Search by filename, SHA256, or MD5...">
+                <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+                <input type="text" class="search-input" id="searchInput"
+                    placeholder="Search by filename, SHA256, or MD5...">
             </div>
         </div>
 
@@ -415,13 +500,39 @@
             </table>
             <div class="pagination">
                 <div class="page-info">
-                    Showing <span id="pageStart">0</span> to <span id="pageEnd">0</span> of <span id="pageTotal">0</span> results
+                    Showing <span id="pageStart">0</span> to <span id="pageEnd">0</span> of <span
+                        id="pageTotal">0</span> results
                 </div>
                 <div class="page-controls">
                     <button class="btn btn-outline" id="prevBtn" disabled>Previous</button>
                     <button class="btn btn-outline" id="nextBtn" disabled>Next</button>
                 </div>
             </div>
+        </div>
+    </main>
+
+    <main class="main" id="viewUsers" style="display: none;">
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Role</th>
+                        <th>Joined</th>
+                        <th>Last Login</th>
+                        <th>Total Logins</th>
+                        <th>Total Submissions</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="usersTableBody">
+                    <tr>
+                        <td colspan="7" style="text-align: center; padding: 3rem;">
+                            <div class="loading-spinner"></div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </main>
 
@@ -482,7 +593,7 @@
         // Fetch Reports
         async function fetchReports() {
             tableBody.innerHTML = `<tr><td colspan="5" style="text-align: center; padding: 3rem;"><div class="loading-spinner"></div></td></tr>`;
-            
+
             try {
                 const params = new URLSearchParams({
                     page: currentPage,
@@ -493,7 +604,7 @@
                 const res = await fetch(`/api/es/reports?${params}`, {
                     headers: { 'Authorization': `Bearer ${getToken()}` }
                 });
-                
+
                 if (res.status === 401) {
                     alert('Please login first via the main interface.');
                     window.location.href = '/';
@@ -501,7 +612,7 @@
                 }
 
                 if (!res.ok) throw new Error('Failed to fetch reports');
-                
+
                 const data = await res.json();
                 renderTable(data.data);
                 updatePagination(data);
@@ -524,7 +635,7 @@
                 const score = r.info?.score || 0;
                 const timestamp = r.info?.started || '';
                 const dateStr = timestamp || 'N/A';
-                
+
                 let scoreClass = 'score-low';
                 if (score >= 7) scoreClass = 'score-high';
                 else if (score >= 4) scoreClass = 'score-med';
@@ -553,7 +664,7 @@
             totalItems = data.total;
             const start = (currentPage - 1) * currentLimit + 1;
             const end = Math.min(currentPage * currentLimit, totalItems);
-            
+
             pageStartEl.textContent = totalItems === 0 ? 0 : start;
             pageEndEl.textContent = end;
             pageTotalEl.textContent = totalItems;
@@ -651,7 +762,7 @@
                 });
                 if (!res.ok) throw new Error('Failed to fetch report details');
                 const data = await res.json();
-                
+
                 modalTitle.textContent = data.target?.file?.name || 'Report Details';
                 modalContent.innerHTML = `
                     <div style="margin-bottom: 1rem; display: flex; gap: 0.5rem;">
@@ -694,15 +805,262 @@
             fetchReports();
         });
 
+        // Tabs
+        const tabDashboard = document.getElementById('tabDashboard');
+        const tabReports = document.getElementById('tabReports');
+        const tabUsers = document.getElementById('tabUsers');
+
+        const viewDashboard = document.getElementById('viewDashboard');
+        const viewReports = document.getElementById('viewReports');
+        const viewUsers = document.getElementById('viewUsers');
+
+        const usersTableBody = document.getElementById('usersTableBody');
+        let currentTab = 'dashboard';
+
+        function switchTab(tab) {
+            currentTab = tab;
+            // Reset styles
+            [tabDashboard, tabReports, tabUsers].forEach(t => {
+                t.style.background = 'transparent';
+                t.style.borderColor = 'transparent';
+                t.style.color = 'var(--text-muted)';
+            });
+            [viewDashboard, viewReports, viewUsers].forEach(v => v.style.display = 'none');
+
+            // Set active
+            const activeTab = tab === 'dashboard' ? tabDashboard : (tab === 'reports' ? tabReports : tabUsers);
+            const activeView = tab === 'dashboard' ? viewDashboard : (tab === 'reports' ? viewReports : viewUsers);
+
+            activeTab.style.background = 'var(--bg-card)';
+            activeTab.style.borderColor = 'var(--border)';
+            activeTab.style.color = 'var(--primary)';
+            activeView.style.display = 'block';
+
+            if (tab === 'reports') fetchReports();
+            if (tab === 'users') fetchUsers();
+            if (tab === 'dashboard') fetchDashboard();
+        }
+
+        tabDashboard.onclick = () => switchTab('dashboard');
+        tabReports.onclick = () => switchTab('reports');
+        tabUsers.onclick = () => switchTab('users');
+
+        // Charts Instances
+        let activityChartInstance = null;
+        let fileTypeChartInstance = null;
+        let topUsersChartInstance = null;
+
+        async function fetchDashboard() {
+            try {
+                const res = await fetch('/api/admin/dashboard-stats', {
+                    headers: { 'Authorization': `Bearer ${getToken()}` }
+                });
+                if (!res.ok) throw new Error('Failed to fetch stats');
+                const data = await res.json();
+                renderDashboard(data);
+            } catch (err) {
+                console.error('Dashboard error:', err);
+            }
+        }
+
+        function renderDashboard(data) {
+            // Update Summary
+            document.getElementById('dashTotalUsers').textContent = data.summary.totalUsers;
+            document.getElementById('dashTotalSubs').textContent = data.summary.totalSubmissions;
+            document.getElementById('dashLoginsToday').textContent = data.summary.loginsToday;
+            document.getElementById('dashSubsToday').textContent = data.summary.submissionsToday;
+
+            // Chart Config
+            Chart.defaults.color = '#94a3b8';
+            Chart.defaults.borderColor = '#334155';
+
+            // 1. Activity Chart (Line)
+            const ctxActivity = document.getElementById('accitivityChart').getContext('2d');
+
+            // Prepare labels (last 30 days)
+            const labels = [];
+            const loginData = [];
+            const subData = [];
+
+            // Map data to dates (simple approach: merge sorted arrays)
+            const mapData = (arr) => {
+                const m = {};
+                arr.forEach(i => m[i._id] = i.count);
+                return m;
+            };
+            const loginMap = mapData(data.timeline.logins);
+            const subMap = mapData(data.timeline.submissions);
+
+            // Generate last 30 days
+            for (let i = 29; i >= 0; i--) {
+                const d = new Date();
+                d.setDate(d.getDate() - i);
+                const iso = d.toISOString().split('T')[0];
+                labels.push(iso);
+                loginData.push(loginMap[iso] || 0);
+                subData.push(subMap[iso] || 0);
+            }
+
+            if (activityChartInstance) activityChartInstance.destroy();
+            activityChartInstance = new Chart(ctxActivity, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        { label: 'Logins', data: loginData, borderColor: '#6366f1', tension: 0.4 },
+                        { label: 'Submissions', data: subData, borderColor: '#ec4899', tension: 0.4 }
+                    ]
+                },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+
+            // 2. File Types (Doughnut)
+            const ctxFile = document.getElementById('fileTypeChart').getContext('2d');
+            if (fileTypeChartInstance) fileTypeChartInstance.destroy();
+            fileTypeChartInstance = new Chart(ctxFile, {
+                type: 'doughnut',
+                data: {
+                    labels: data.fileTypes.map(f => f._id),
+                    datasets: [{
+                        data: data.fileTypes.map(f => f.count),
+                        backgroundColor: ['#6366f1', '#ec4899', '#10b981', '#f59e0b', '#8b5cf6']
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+
+            // 3. Top Users (Bar)
+            const ctxTop = document.getElementById('topUsersChart').getContext('2d');
+            if (topUsersChartInstance) topUsersChartInstance.destroy();
+            topUsersChartInstance = new Chart(ctxTop, {
+                type: 'bar',
+                data: {
+                    labels: data.topUsers.map(u => u._id),
+                    datasets: [{
+                        label: 'Submissions',
+                        data: data.topUsers.map(u => u.count),
+                        backgroundColor: '#10b981'
+                    }]
+                },
+                options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false }
+            });
+        }
+
+
+        async function fetchUsers() {
+            usersTableBody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 3rem;"><div class="loading-spinner"></div></td></tr>`;
+            try {
+                const res = await fetch('/api/admin/users', {
+                    headers: { 'Authorization': `Bearer ${getToken()}` }
+                });
+                if (!res.ok) throw new Error('Failed to fetch users');
+                const users = await res.json();
+                renderUsers(users);
+            } catch (err) {
+                console.error(err);
+                usersTableBody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--danger);">Failed to load users.</td></tr>`;
+            }
+        }
+
+        function renderUsers(users) {
+            if (users.length === 0) {
+                usersTableBody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 2rem; color: var(--text-muted);">No users found.</td></tr>`;
+                return;
+            }
+            usersTableBody.innerHTML = users.map(u => `
+                <tr style="cursor: pointer;" onclick="openUser('${u.username}')">
+                    <td><span style="font-weight: 500; color: var(--text-main);">${escapeHtml(u.username)}</span></td>
+                    <td><span style="padding: 2px 8px; border-radius: 99px; background: rgba(255,255,255,0.1); font-size: 0.75rem;">${u.role}</span></td>
+                    <td>${u.joinedAt ? new Date(u.joinedAt).toLocaleDateString() : '-'}</td>
+                    <td>${u.lastLogin ? new Date(u.lastLogin).toLocaleString() : '-'}</td>
+                    <td>${u.totalLogins}</td>
+                    <td>${u.totalSubmissions}</td>
+                    <td><button class="btn btn-outline" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;">Details</button></td>
+                </tr>
+            `).join('');
+        }
+
+        async function openUser(username) {
+            detailModal.classList.add('active');
+            modalContent.innerHTML = '<div class="loading-spinner"></div>';
+            modalTitle.textContent = `User: ${username}`;
+
+            try {
+                const res = await fetch(`/api/admin/users/${username}`, {
+                    headers: { 'Authorization': `Bearer ${getToken()}` }
+                });
+                if (!res.ok) throw new Error('Failed to fetch user details');
+                const data = await res.json();
+
+                let loginRows = data.loginHistory.map(l => `
+                    <tr>
+                        <td>${new Date(l.timestamp).toLocaleString()}</td>
+                        <td>${l.ip}</td>
+                        <td style="font-size: 0.75rem; color: var(--text-muted); max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${l.userAgent || '-'}</td>
+                    </tr>
+                `).join('');
+
+                if (data.loginHistory.length === 0) loginRows = '<tr><td colspan="3" style="text-align: center; color: var(--text-muted);">No login history</td></tr>';
+
+                let subRows = data.submissions.map(s => `
+                    <tr>
+                        <td>${new Date(s.timestamp).toLocaleString()}</td>
+                        <td>${escapeHtml(s.filename)}</td>
+                        <td>${s.status}</td>
+                    </tr>
+                `).join('');
+                if (data.submissions.length === 0) subRows = '<tr><td colspan="3" style="text-align: center; color: var(--text-muted);">No submissions</td></tr>';
+
+                modalContent.innerHTML = `
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                        <div>
+                            <h4 style="margin-bottom: 1rem; color: var(--primary);">Recent Logins</h4>
+                            <div style="max-height: 400px; overflow-y: auto; border: 1px solid var(--border); border-radius: 0.5rem;">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Time</th>
+                                            <th>IP</th>
+                                            <th>Agent</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>${loginRows}</tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 style="margin-bottom: 1rem; color: var(--secondary);">Recent Submissions</h4>
+                             <div style="max-height: 400px; overflow-y: auto; border: 1px solid var(--border); border-radius: 0.5rem;">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Time</th>
+                                            <th>File</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>${subRows}</tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } catch (err) {
+                modalContent.innerHTML = `<div style="color: var(--danger);">Error: ${err.message}</div>`;
+            }
+        }
+
         // Close modal on backdrop click
         detailModal.addEventListener('click', (e) => {
             if (e.target === detailModal) closeModal();
         });
 
         // Init
-        fetchStats();
-        fetchReports();
-
+        // fetchStats();
+        // fetchReports(); 
+        // Initial load handled by default switchTab in script start
+        switchTab('dashboard');
     </script>
 </body>
+
 </html>
