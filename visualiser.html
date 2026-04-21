@@ -76,6 +76,47 @@
             height: 100%;
             transition: width 0.5s ease-in-out, background-color 0.5s ease-in-out;
         }
+        .threat-verdict {
+            margin-top: 0.75rem;
+            padding: 0.5rem 0.875rem;
+            border-radius: 0.5rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        .threat-verdict.safe {
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: #34d399;
+        }
+        .threat-verdict.low {
+            background: rgba(52, 211, 153, 0.1);
+            border: 1px solid rgba(52, 211, 153, 0.25);
+            color: #6ee7b7;
+        }
+        .threat-verdict.moderate {
+            background: rgba(245, 158, 11, 0.12);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            color: #fbbf24;
+        }
+        .threat-verdict.high {
+            background: rgba(239, 68, 68, 0.12);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #f87171;
+        }
+        .threat-verdict.critical {
+            background: rgba(220, 38, 38, 0.18);
+            border: 1px solid rgba(220, 38, 38, 0.4);
+            color: #fca5a5;
+            animation: criticalPulse 2s ease-in-out infinite;
+        }
+        @keyframes criticalPulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
+            50% { box-shadow: 0 0 12px 2px rgba(220, 38, 38, 0.25); }
+        }
         
         #visualization-3d-container {
             position: relative;
@@ -304,6 +345,7 @@
                                 <span id="threat-score-label" class="font-bold text-4xl transition-colors">0.00</span>
                                 <div class="threat-bar"><div id="threat-bar-inner" class="threat-bar-inner"></div></div>
                             </div>
+                            <div id="threat-verdict" class="threat-verdict safe" style="display:none;"></div>
                         </div>
                     </div>
                 </div>
@@ -554,15 +596,48 @@
             }
 
             function calculateThreatScore(data) {
-                if (!data.signatures || data.signatures.length === 0) return 0;
+                // If CAPE provides its own score, blend it in
+                const capeScore = data.info?.score || data.malscore || 0;
+                
                 let score = 0;
-                data.signatures.forEach(s => {
-                    const severity = s.severity || 0;
-                    if (severity >= 5) score += 1.5; else if (severity >= 3) score += 1; else if (severity > 0) score += 0.5;
-                });
+                if (data.signatures && data.signatures.length > 0) {
+                    data.signatures.forEach(s => {
+                        const severity = s.severity || 0;
+                        if (severity >= 5) score += 1.5; else if (severity >= 3) score += 1; else if (severity > 0) score += 0.5;
+                    });
+                }
                 if (data.network?.hosts?.length > 1) score += 1.5;
                 if (data.network?.dns?.length > 2) score += 1;
+                // Factor in dropped files as a signal
+                const droppedCount = (data.dropped?.length || 0) + (data.behavior?.summary?.files_created?.length || 0);
+                if (droppedCount > 5) score += 1;
+                else if (droppedCount > 0) score += 0.5;
+                
+                // Blend with CAPE score if available (CAPE scores are 0-10)
+                if (capeScore > 0) {
+                    score = Math.max(score, capeScore);
+                }
                 return Math.min(score, 10);
+            }
+
+            function getThreatVerdict(score, data) {
+                const sigCount = data.signatures?.length || 0;
+                const droppedCount = (data.dropped?.length || 0);
+                const networkHosts = data.network?.hosts?.length || 0;
+
+                if (score === 0 && sigCount === 0) {
+                    return { level: 'safe', icon: 'fa-shield-alt', text: 'Safe to Use — No malicious indicators detected', detail: 'This sample shows no signatures, no suspicious network activity, and no file drops.' };
+                } else if (score <= 1) {
+                    return { level: 'safe', icon: 'fa-shield-alt', text: 'Safe — Minimal activity detected', detail: 'Very low threat indicators. The sample appears benign.' };
+                } else if (score <= 3) {
+                    return { level: 'low', icon: 'fa-check-circle', text: 'Low Risk — Minor suspicious behavior', detail: `${sigCount} signature(s) triggered with low severity.` };
+                } else if (score <= 6) {
+                    return { level: 'moderate', icon: 'fa-exclamation-triangle', text: 'Moderate Risk — Suspicious activity detected', detail: `${sigCount} signature(s), ${networkHosts} network connection(s), ${droppedCount} file(s) dropped.` };
+                } else if (score <= 8) {
+                    return { level: 'high', icon: 'fa-radiation', text: 'High Threat — Likely malicious', detail: `Significant malicious behavior: ${sigCount} signature(s), ${networkHosts} C2 connection(s), ${droppedCount} payload(s) dropped.` };
+                } else {
+                    return { level: 'critical', icon: 'fa-skull-crossbones', text: 'Critical Threat — Confirmed malicious', detail: `Severe malicious activity: ${sigCount} signature(s), ${networkHosts} C2 connection(s), ${droppedCount} payload(s) dropped.` };
+                }
             }
             
             async function fetchMalwareBazaarInfo(sha256) {
@@ -595,7 +670,7 @@
                     // If direct call fails (likely CORS), try proxy server
                     console.warn('Direct API call failed, trying proxy:', error);
                     try {
-                        const response = await fetch('http://localhost:8001/api/malware-bazaar', {
+                        const response = await fetch('/api/malware-bazaar', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json'
@@ -633,8 +708,9 @@
                 
                 const scoreLabel = document.getElementById('threat-score-label');
                 const scoreBar = document.getElementById('threat-bar-inner');
+                const verdictEl = document.getElementById('threat-verdict');
                 scoreLabel.textContent = calculatedScore.toFixed(2);
-                scoreBar.style.width = `${calculatedScore * 10}%`;
+                scoreBar.style.width = `${Math.max(calculatedScore * 10, calculatedScore === 0 ? 3 : 0)}%`;
                 if (calculatedScore > 7) {
                     scoreLabel.className = 'font-bold text-4xl text-red-500 transition-colors';
                     scoreBar.style.backgroundColor = '#ef4444';
@@ -645,6 +721,12 @@
                     scoreLabel.className = 'font-bold text-4xl text-green-400 transition-colors';
                     scoreBar.style.backgroundColor = '#10b981';
                 }
+
+                // Show verdict badge
+                const verdict = getThreatVerdict(calculatedScore, data);
+                verdictEl.className = `threat-verdict ${verdict.level}`;
+                verdictEl.innerHTML = `<i class="fas ${verdict.icon}"></i><div><div>${verdict.text}</div><div style="font-weight:400; font-size:0.7rem; opacity:0.8; margin-top:2px;">${verdict.detail}</div></div>`;
+                verdictEl.style.display = 'flex';
                 
                 // Fetch Malware Bazaar data
                 const mbData = await fetchMalwareBazaarInfo(target.file?.sha256);
@@ -665,15 +747,57 @@
                 const events = []; let time = 0;
                 const timeIncrement = 1.5; // seconds between events
                 const fileName = data.target?.file?.name || 'sample';
-                events.push({ time: time += timeIncrement, type: 'execution', title: 'Malware Executed', data: { name: fileName } });
                 
-                if (data.behavior?.processes) data.behavior.processes.forEach(p => events.push({ time: time += timeIncrement, type: 'process', title: `Process Created: ${p.process_name}`, data: p }));
+                // Check if benign — use a calmer title
+                const score = calculateThreatScore(data);
+                if (score === 0 && (!data.signatures || data.signatures.length === 0)) {
+                    events.push({ time: time += timeIncrement, type: 'execution', title: 'Sample Executed', data: { name: fileName, benign: true } });
+                } else {
+                    events.push({ time: time += timeIncrement, type: 'execution', title: 'Malware Executed', data: { name: fileName } });
+                }
+                
+                // Processes with enhanced info
+                if (data.behavior?.processes) data.behavior.processes.forEach(p => {
+                    const cmdLine = p.environ?.CommandLine || p.command_line || '';
+                    const pData = { ...p };
+                    if (cmdLine) pData._cmdLine = cmdLine;
+                    events.push({ time: time += timeIncrement, type: 'process', title: `Process Created: ${p.process_name}`, data: pData });
+                });
+                
+                // Dropped files — files the malware writes/drops during execution
+                if (data.dropped && data.dropped.length > 0) {
+                    data.dropped.forEach(d => {
+                        const droppedName = d.name?.[0] || d.filepath || 'unknown';
+                        const shortName = droppedName.split('\\').pop().split('/').pop();
+                        const droppedType = d.type || 'unknown type';
+                        const droppedSize = d.size ? `${(d.size / 1024).toFixed(1)} KB` : '';
+                        events.push({ time: time += timeIncrement, type: 'dropped', title: `File Dropped: ${shortName}`, data: { name: droppedName, shortName, type: droppedType, size: droppedSize, sha256: d.sha256 } });
+                    });
+                }
+                
+                // Files created from behavior summary
+                if (data.behavior?.summary?.files_created && data.behavior.summary.files_created.length > 0) {
+                    // Deduplicate with dropped files
+                    const droppedPaths = new Set((data.dropped || []).map(d => d.name?.[0] || d.filepath || '').map(p => p.toLowerCase()));
+                    data.behavior.summary.files_created.forEach(filePath => {
+                        if (droppedPaths.has(filePath.toLowerCase())) return; // skip duplicates
+                        const shortName = filePath.split('\\').pop().split('/').pop();
+                        events.push({ time: time += timeIncrement, type: 'file_created', title: `File Created: ${shortName}`, data: { name: filePath, shortName } });
+                    });
+                }
+                
                 if (data.network?.dns) data.network.dns.forEach(d => events.push({ time: time += timeIncrement, type: 'dns', title: `DNS Query: ${d.request}`, data: d }));
                 if (data.network?.hosts) data.network.hosts.forEach(h => events.push({ time: time += timeIncrement, type: 'connection', title: `Connection to ${h.ip}`, data: h }));
                 if (data.signatures) data.signatures.forEach(s => {
                     let eventTitle = s.signature ? `Signature: ${s.signature}` : (s.description ? 'Signature Match' : 'Unknown Signature');
                     events.push({ time: time += timeIncrement, type: 'signature', title: eventTitle, data: s });
                 });
+                
+                // If benign and nothing happened, add a "clean" event
+                if (score === 0 && events.length <= 1) {
+                    events.push({ time: time += timeIncrement, type: 'clean', title: 'Analysis Complete — No Threats', data: {} });
+                }
+                
                 return events;
             }
             

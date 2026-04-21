@@ -895,9 +895,10 @@ class Handler(BaseHTTPRequestHandler):
 
 
 def main():
-    port = int(os.environ.get('PORT', 8000))
-    server = HTTPServer(('0.0.0.0', port), Handler)
-    print(f'JSON Explorer running on port {port}')
+    host = os.environ.get('CAPE_EXPLORER_HOST', '0.0.0.0')
+    port = int(os.environ.get('CAPE_EXPLORER_PORT', 9000))
+    server = HTTPServer((host, port), Handler)
+    print(f'JSON Explorer running on http://{host}:{port}')
     try:
         server.serve_forever()
     except KeyboardInterrupt:
