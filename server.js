@@ -900,14 +900,30 @@ app.get('/api/admin/users/:username', authMiddleware, requireAdmin, async (req, 
 // Dashboard Stats Endpoint
 app.get('/api/admin/dashboard-stats', authMiddleware, requireAdmin, async (req, res) => {
     try {
-        const now = new Date();
-        const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        // Support optional ?date=YYYY-MM-DD query parameter
+        let startOfDay, endOfDay, dateLabel;
+        if (req.query.date) {
+            const parsed = new Date(req.query.date + 'T00:00:00');
+            if (isNaN(parsed.getTime())) {
+                return res.status(400).json({ error: 'Invalid date format. Use YYYY-MM-DD.' });
+            }
+            startOfDay = parsed;
+            endOfDay = new Date(parsed);
+            endOfDay.setDate(endOfDay.getDate() + 1);
+            dateLabel = req.query.date;
+        } else {
+            const now = new Date();
+            startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            endOfDay = new Date(startOfDay);
+            endOfDay.setDate(endOfDay.getDate() + 1);
+            dateLabel = 'today';
+        }
 
         // 1. Summary Counts
         const totalUsers = await User.countDocuments();
         const totalSubmissions = await Submission.countDocuments();
-        const loginsToday = await LoginHistory.countDocuments({ timestamp: { $gte: startOfDay } });
-        const submissionsToday = await Submission.countDocuments({ timestamp: { $gte: startOfDay } });
+        const loginsOnDate = await LoginHistory.countDocuments({ timestamp: { $gte: startOfDay, $lt: endOfDay } });
+        const submissionsOnDate = await Submission.countDocuments({ timestamp: { $gte: startOfDay, $lt: endOfDay } });
 
         // 2. Timeline (Last 30 Days)
         const thirtyDaysAgo = new Date();
@@ -952,8 +968,9 @@ app.get('/api/admin/dashboard-stats', authMiddleware, requireAdmin, async (req, 
             summary: {
                 totalUsers,
                 totalSubmissions,
-                loginsToday,
-                submissionsToday
+                loginsOnDate,
+                submissionsOnDate,
+                dateLabel
             },
             timeline: {
                 logins: loginTimeline,

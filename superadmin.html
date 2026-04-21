@@ -545,6 +545,61 @@
         }
 
         /* Custom Scrollbars */
+
+        /* Date Picker Bar */
+        .date-picker-bar {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+            padding: 0.75rem 1rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 0.75rem;
+        }
+
+        .date-picker-bar label {
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            white-space: nowrap;
+        }
+
+        .date-picker-bar input[type="date"] {
+            padding: 0.45rem 0.75rem;
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            color: var(--text-main);
+            font-family: inherit;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+
+        .date-picker-bar input[type="date"]:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+        }
+
+        .date-picker-bar input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(0.7);
+            cursor: pointer;
+        }
+
+        .date-picker-bar .btn-sm {
+            padding: 0.4rem 0.75rem;
+            font-size: 0.75rem;
+            border-radius: 0.4rem;
+        }
+
+        .date-picker-bar .selected-label {
+            font-size: 0.8rem;
+            color: var(--primary);
+            font-weight: 500;
+            margin-left: auto;
+        }
         ::-webkit-scrollbar {
             width: 6px;
             height: 6px;
@@ -636,6 +691,14 @@
 
     <!-- DASHBOARD VIEW -->
     <main class="main" id="viewDashboard" style="display: block;">
+        <div class="date-picker-bar">
+            <label>📅 View stats for:</label>
+            <input type="date" id="dashDatePicker">
+            <button class="btn btn-primary btn-sm" id="dashDateToday">Today</button>
+            <button class="btn btn-outline btn-sm" id="dashDateClear">Clear</button>
+            <span class="selected-label" id="dashDateLabel">Showing: Today</span>
+        </div>
+
         <div class="stats-grid" style="grid-template-columns: repeat(4, 1fr);">
             <div class="stat-card">
                 <div class="stat-label">Total Users</div>
@@ -646,11 +709,11 @@
                 <div class="stat-value" id="dashTotalSubs">-</div>
             </div>
             <div class="stat-card">
-                <div class="stat-label">Logins Today</div>
+                <div class="stat-label" id="dashLoginsLabel">Logins Today</div>
                 <div class="stat-value" id="dashLoginsToday">-</div>
             </div>
             <div class="stat-card">
-                <div class="stat-label">Submissions Today</div>
+                <div class="stat-label" id="dashSubsLabel">Submissions Today</div>
                 <div class="stat-value" id="dashSubsToday">-</div>
             </div>
         </div>
@@ -1094,9 +1157,37 @@
         let fileTypeChartInstance = null;
         let topUsersChartInstance = null;
 
+        let selectedDashDate = ''; // '' means today
+
+        const dashDatePicker = document.getElementById('dashDatePicker');
+        const dashDateLabel = document.getElementById('dashDateLabel');
+        const dashLoginsLabel = document.getElementById('dashLoginsLabel');
+        const dashSubsLabel = document.getElementById('dashSubsLabel');
+
+        // Set date picker max to today
+        dashDatePicker.max = new Date().toISOString().split('T')[0];
+
+        dashDatePicker.addEventListener('change', () => {
+            selectedDashDate = dashDatePicker.value;
+            fetchDashboard();
+        });
+
+        document.getElementById('dashDateToday').addEventListener('click', () => {
+            selectedDashDate = '';
+            dashDatePicker.value = '';
+            fetchDashboard();
+        });
+
+        document.getElementById('dashDateClear').addEventListener('click', () => {
+            selectedDashDate = '';
+            dashDatePicker.value = '';
+            fetchDashboard();
+        });
+
         async function fetchDashboard() {
             try {
-                const res = await fetch('/api/admin/dashboard-stats', {
+                const params = selectedDashDate ? `?date=${selectedDashDate}` : '';
+                const res = await fetch(`/api/admin/dashboard-stats${params}`, {
                     headers: { 'Authorization': `Bearer ${getToken()}` }
                 });
                 if (!res.ok) throw new Error('Failed to fetch stats');
@@ -1108,11 +1199,18 @@
         }
 
         function renderDashboard(data) {
+            // Update date label
+            const label = data.summary.dateLabel;
+            const isToday = label === 'today';
+            dashDateLabel.textContent = isToday ? 'Showing: Today' : `Showing: ${label}`;
+            dashLoginsLabel.textContent = isToday ? 'Logins Today' : `Logins on ${label}`;
+            dashSubsLabel.textContent = isToday ? 'Submissions Today' : `Submissions on ${label}`;
+
             // Update Summary
             document.getElementById('dashTotalUsers').textContent = data.summary.totalUsers;
             document.getElementById('dashTotalSubs').textContent = data.summary.totalSubmissions;
-            document.getElementById('dashLoginsToday').textContent = data.summary.loginsToday;
-            document.getElementById('dashSubsToday').textContent = data.summary.submissionsToday;
+            document.getElementById('dashLoginsToday').textContent = data.summary.loginsOnDate;
+            document.getElementById('dashSubsToday').textContent = data.summary.submissionsOnDate;
 
             // Chart Config
             Chart.defaults.color = '#94a3b8';
