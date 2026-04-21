@@ -34,7 +34,8 @@
             <div class="actions">
                 <button id="btnViewIocs" class="btn-primary">View IoCs</button>
                 <button id="btnDownloadScreens" class="btn-secondary">Download Screenshots</button>
-                <button id="btnViewReport" class="btn-secondary">View Report</button>
+                <button id="btnViewReport" class="btn-primary">View Report</button>
+                <button id="btnViewRawReport" class="btn-secondary">View Raw Report</button>
                 <button id="btnDownloadReport" class="btn-primary">Download Report</button>
             </div>
         </div>
@@ -56,6 +57,7 @@
         const btnViewIocs = document.getElementById('btnViewIocs');
         const btnDownloadScreens = document.getElementById('btnDownloadScreens');
         const btnViewReport = document.getElementById('btnViewReport');
+        const btnViewRawReport = document.getElementById('btnViewRawReport');
         const btnDownloadReport = document.getElementById('btnDownloadReport');
 
         if (!taskId) {
@@ -100,14 +102,37 @@
             } catch (e) { alert('Download error: ' + e.message); }
         });
 
+        // View Report — fetch report JSON and POST to cape_reports_explorer.py
         btnViewReport.addEventListener('click', async () => {
             if (!taskId) return;
             const token = requireToken();
             if (!token) return;
+            btnViewReport.textContent = 'Loading...';
+            btnViewReport.disabled = true;
             try {
-                const resp = await fetch(`/api/task/${taskId}/iocs`, { headers: { 'Authorization': `Bearer ${token}` } });
+                const resp = await fetch(`/api/task/${taskId}/report`, { headers: { 'Authorization': `Bearer ${token}` } });
+                if (!resp.ok) { alert('Failed to fetch report'); return; }
+                const blob = await resp.blob();
+                // Build a multipart form and submit to the explorer
+                const explorerUrl = window.location.protocol + '//' + window.location.hostname + ':8000';
+                const formData = new FormData();
+                formData.append('file', new File([blob], `report_${taskId}.json`, { type: 'application/json' }));
+                await fetch(explorerUrl + '/upload', { method: 'POST', body: formData, mode: 'no-cors' });
+                // Open the explorer in a new tab
+                window.open(explorerUrl, '_blank');
+            } catch (e) { alert('Error: ' + e.message); }
+            finally { btnViewReport.textContent = 'View Report'; btnViewReport.disabled = false; }
+        });
+
+        // View Raw Report — show raw JSON inline
+        btnViewRawReport.addEventListener('click', async () => {
+            if (!taskId) return;
+            const token = requireToken();
+            if (!token) return;
+            try {
+                const resp = await fetch(`/api/task/${taskId}/report`, { headers: { 'Authorization': `Bearer ${token}` } });
+                if (!resp.ok) { reportOutput.textContent = 'Failed to fetch report'; return; }
                 const data = await resp.json();
-                if (!resp.ok) { reportOutput.textContent = JSON.stringify(data, null, 2); return; }
                 reportOutput.textContent = JSON.stringify(data, null, 2);
             } catch (e) { reportOutput.textContent = 'Error: ' + e.message; }
         });

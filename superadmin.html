@@ -297,9 +297,9 @@
 
         .modal {
             background: var(--bg-card);
-            width: 90%;
-            max-width: 800px;
-            max-height: 90vh;
+            width: 94%;
+            max-width: 1100px;
+            max-height: 92vh;
             border-radius: 1rem;
             border: 1px solid var(--border);
             display: flex;
@@ -308,11 +308,12 @@
         }
 
         .modal-header {
-            padding: 1.5rem;
+            padding: 1.25rem 1.5rem;
             border-bottom: 1px solid var(--border);
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-shrink: 0;
         }
 
         .modal-title {
@@ -326,11 +327,157 @@
             color: var(--text-muted);
             cursor: pointer;
             font-size: 1.5rem;
+            transition: color 0.2s;
+        }
+
+        .modal-close:hover {
+            color: var(--text-main);
         }
 
         .modal-body {
             padding: 1.5rem;
             overflow-y: auto;
+            flex: 1;
+        }
+
+        /* User Detail Modal Styles */
+        .user-summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .user-stat-card {
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            border-radius: 0.75rem;
+            padding: 0.875rem 1rem;
+            text-align: center;
+        }
+
+        .user-stat-card .label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            margin-bottom: 0.35rem;
+        }
+
+        .user-stat-card .value {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .user-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .user-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .user-section-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .user-section-title .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .user-table-wrap {
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            overflow: hidden;
+            max-height: 280px;
+            overflow-y: auto;
+        }
+
+        .user-table-wrap table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.8rem;
+        }
+
+        .user-table-wrap th {
+            position: sticky;
+            top: 0;
+            z-index: 2;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(4px);
+            font-size: 0.7rem;
+            padding: 0.6rem 0.75rem;
+        }
+
+        .user-table-wrap td {
+            padding: 0.55rem 0.75rem;
+            font-size: 0.8rem;
+            border-bottom: 1px solid rgba(51, 65, 85, 0.5);
+            word-break: break-all;
+        }
+
+        .user-table-wrap tr:last-child td {
+            border-bottom: none;
+        }
+
+        .user-table-wrap .agent-cell {
+            max-width: 280px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            color: var(--text-muted);
+            font-size: 0.75rem;
+        }
+
+        .user-table-wrap .hash-cell {
+            font-family: monospace;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            word-break: break-all;
+        }
+
+        .status-pill {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 99px;
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+
+        .status-pill.success {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--success);
+        }
+
+        .status-pill.pending {
+            background: rgba(245, 158, 11, 0.15);
+            color: var(--warning);
+        }
+
+        .status-pill.failed {
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--danger);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 2rem 1rem;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .empty-state svg {
+            margin-bottom: 0.5rem;
+            opacity: 0.4;
         }
 
         .json-viewer {
@@ -982,7 +1129,7 @@
 
         async function openUser(username) {
             detailModal.classList.add('active');
-            modalContent.innerHTML = '<div class="loading-spinner"></div>';
+            modalContent.innerHTML = '<div class="loading-spinner" style="margin: 2rem auto;"></div>';
             modalTitle.textContent = `User: ${username}`;
 
             try {
@@ -992,61 +1139,122 @@
                 if (!res.ok) throw new Error('Failed to fetch user details');
                 const data = await res.json();
 
-                let loginRows = data.loginHistory.map(l => `
-                    <tr>
-                        <td>${new Date(l.timestamp).toLocaleString()}</td>
-                        <td>${l.ip}</td>
-                        <td style="font-size: 0.75rem; color: var(--text-muted); max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${l.userAgent || '-'}</td>
-                    </tr>
-                `).join('');
+                // Build summary cards
+                const userInfo = data.user || {};
+                const roleBg = userInfo.role === 'admin' ? 'rgba(99,102,241,0.15)' : 'rgba(236,72,153,0.15)';
+                const roleColor = userInfo.role === 'admin' ? 'var(--primary)' : 'var(--secondary)';
+                const joinedStr = (userInfo.createdAt || userInfo.joinedAt) ? new Date(userInfo.createdAt || userInfo.joinedAt).toLocaleDateString() : '-';
+                const lastLoginStr = userInfo.lastLogin ? new Date(userInfo.lastLogin).toLocaleString() : '-';
 
-                if (data.loginHistory.length === 0) loginRows = '<tr><td colspan="3" style="text-align: center; color: var(--text-muted);">No login history</td></tr>';
+                // Build login rows
+                let loginRows = '';
+                if (data.loginHistory.length === 0) {
+                    loginRows = `<tr><td colspan="3"><div class="empty-state">
+                        <svg width="28" height="28" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <div>No login history</div>
+                    </div></td></tr>`;
+                } else {
+                    loginRows = data.loginHistory.map(l => `
+                        <tr>
+                            <td style="white-space: nowrap;">${new Date(l.timestamp).toLocaleString()}</td>
+                            <td style="font-family: monospace; font-size: 0.75rem;">${(l.ip || '').replace(/^::ffff:/i, '')}</td>
+                            <td class="agent-cell" title="${escapeHtml(l.userAgent || '-')}">${escapeHtml(l.userAgent || '-')}</td>
+                        </tr>
+                    `).join('');
+                }
 
-                let subRows = data.submissions.map(s => `
-                    <tr>
-                        <td>${new Date(s.timestamp).toLocaleString()}</td>
-                        <td>${escapeHtml(s.filename)}</td>
-                        <td>${s.status}</td>
-                    </tr>
-                `).join('');
-                if (data.submissions.length === 0) subRows = '<tr><td colspan="3" style="text-align: center; color: var(--text-muted);">No submissions</td></tr>';
+                // Build submission rows
+                let subRows = '';
+                if (data.submissions.length === 0) {
+                    subRows = `<tr><td colspan="3"><div class="empty-state">
+                        <svg width="28" height="28" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
+                        <div>No submissions</div>
+                    </div></td></tr>`;
+                } else {
+                    subRows = data.submissions.map(s => {
+                        let statusClass = 'success';
+                        const st = (s.status || '').toLowerCase();
+                        if (st.includes('pend') || st.includes('process')) statusClass = 'pending';
+                        else if (st.includes('fail') || st.includes('error')) statusClass = 'failed';
+                        return `
+                            <tr>
+                                <td style="white-space: nowrap;">${new Date(s.timestamp).toLocaleString()}</td>
+                                <td class="hash-cell">${escapeHtml(s.filename)}</td>
+                                <td><span class="status-pill ${statusClass}">${escapeHtml(s.status)}</span></td>
+                            </tr>
+                        `;
+                    }).join('');
+                }
 
                 modalContent.innerHTML = `
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
-                        <div>
-                            <h4 style="margin-bottom: 1rem; color: var(--primary);">Recent Logins</h4>
-                            <div style="max-height: 400px; overflow-y: auto; border: 1px solid var(--border); border-radius: 0.5rem;">
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            <th>Time</th>
-                                            <th>IP</th>
-                                            <th>Agent</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>${loginRows}</tbody>
-                                </table>
-                            </div>
+                    <!-- User Summary Cards -->
+                    <div class="user-summary-grid">
+                        <div class="user-stat-card">
+                            <div class="label">Role</div>
+                            <div class="value" style="color: ${roleColor};"><span style="background: ${roleBg}; padding: 2px 10px; border-radius: 99px; font-size: 0.8rem;">${escapeHtml(userInfo.role || 'student')}</span></div>
                         </div>
-                        <div>
-                            <h4 style="margin-bottom: 1rem; color: var(--secondary);">Recent Submissions</h4>
-                             <div style="max-height: 400px; overflow-y: auto; border: 1px solid var(--border); border-radius: 0.5rem;">
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            <th>Time</th>
-                                            <th>File</th>
-                                            <th>Status</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>${subRows}</tbody>
-                                </table>
-                            </div>
+                        <div class="user-stat-card">
+                            <div class="label">Joined</div>
+                            <div class="value" style="font-size: 0.9rem;">${joinedStr}</div>
+                        </div>
+                        <div class="user-stat-card">
+                            <div class="label">Last Login</div>
+                            <div class="value" style="font-size: 0.85rem;">${lastLoginStr}</div>
+                        </div>
+                        <div class="user-stat-card">
+                            <div class="label">Total Logins</div>
+                            <div class="value" style="color: var(--primary);">${data.loginHistory.length}</div>
+                        </div>
+                        <div class="user-stat-card">
+                            <div class="label">Total Submissions</div>
+                            <div class="value" style="color: var(--secondary);">${data.submissions.length}</div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Logins -->
+                    <div class="user-section">
+                        <div class="user-section-title">
+                            <span class="dot" style="background: var(--primary);"></span>
+                            <span style="color: var(--primary);">Recent Logins</span>
+                            <span style="font-size: 0.7rem; color: var(--text-muted); font-weight: 400; margin-left: auto;">${data.loginHistory.length} entries</span>
+                        </div>
+                        <div class="user-table-wrap">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th style="min-width: 150px;">Time</th>
+                                        <th style="min-width: 130px;">IP Address</th>
+                                        <th style="min-width: 200px;">User Agent</th>
+                                    </tr>
+                                </thead>
+                                <tbody>${loginRows}</tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Recent Submissions -->
+                    <div class="user-section">
+                        <div class="user-section-title">
+                            <span class="dot" style="background: var(--secondary);"></span>
+                            <span style="color: var(--secondary);">Recent Submissions</span>
+                            <span style="font-size: 0.7rem; color: var(--text-muted); font-weight: 400; margin-left: auto;">${data.submissions.length} entries</span>
+                        </div>
+                        <div class="user-table-wrap">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th style="min-width: 150px;">Time</th>
+                                        <th style="min-width: 200px;">Filename</th>
+                                        <th style="min-width: 80px;">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>${subRows}</tbody>
+                            </table>
                         </div>
                     </div>
                 `;
             } catch (err) {
-                modalContent.innerHTML = `<div style="color: var(--danger);">Error: ${err.message}</div>`;
+                modalContent.innerHTML = `<div style="color: var(--danger); text-align: center; padding: 2rem;">Error: ${err.message}</div>`;
             }
         }
 
