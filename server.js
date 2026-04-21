@@ -261,6 +261,56 @@ app.get('/api/submissions', authMiddleware, async (req, res) => {
     }
 });
 
+// Bulk-refresh statuses of non-terminal submissions from CAPE API
+app.post('/api/submissions/refresh', authMiddleware, async (req, res) => {
+    try {
+        const submissions = await Submission.find({ userId: req.user.username })
+            .sort({ timestamp: -1 })
+            .limit(100)
+            .lean();
+
+        const terminalStatuses = ['reported', 'completed', 'success', 'error', 'failed', 'timedout'];
+        const pendingSubs = submissions.filter(s =>
+            s.taskId && !terminalStatuses.includes((s.status || '').toLowerCase())
+        );
+
+        let updated = 0;
+        if (pendingSubs.length > 0) {
+            const results = await Promise.allSettled(
+                pendingSubs.map(async (sub) => {
+                    try {
+                        const url = `${CAPE_API_BASE}/apiv2/tasks/status/${sub.taskId}`;
+                        const response = await axios.get(url, { timeout: 5000 });
+                        const rawData = response.data?.data;
+                        const status = typeof rawData === 'string' ? rawData : (rawData?.status || response.data?.status);
+                        if (status) {
+                            const lowerStatus = status.toLowerCase();
+                            if (lowerStatus !== (sub.status || '').toLowerCase()) {
+                                await Submission.findOneAndUpdate(
+                                    { taskId: sub.taskId, userId: req.user.username },
+                                    { status: lowerStatus }
+                                );
+                                updated++;
+                            }
+                        }
+                    } catch (_) {
+                        // Ignore individual CAPE API failures
+                    }
+                })
+            );
+        }
+
+        // Return the refreshed submissions
+        const refreshed = await Submission.find({ userId: req.user.username })
+            .sort({ timestamp: -1 })
+            .limit(100);
+        res.json({ updated, submissions: refreshed });
+    } catch (error) {
+        console.error('Error refreshing submission statuses:', error);
+        res.status(500).json({ error: 'Failed to refresh statuses' });
+    }
+});
+
 // Update submission status
 app.put('/api/submissions/:taskId', authMiddleware, async (req, res) => {
     try {
@@ -389,7 +439,8 @@ app.get('/api/task/:taskId', authMiddleware, async (req, res) => {
 
         const response = await axios.get(url);
         try {
-            const status = response.data?.data?.status || response.data?.status;
+            const rawData = response.data?.data;
+            const status = typeof rawData === 'string' ? rawData : (rawData?.status || response.data?.status);
             // Update submission status in MongoDB
             if (status) {
                 await Submission.findOneAndUpdate(
@@ -804,6 +855,35 @@ app.get('/api/admin/users/:username', authMiddleware, requireAdmin, async (req, 
             LoginHistory.find({ username }).sort({ timestamp: -1 }).limit(50).lean(),
             Submission.find({ userId: username }).sort({ timestamp: -1 }).limit(50).lean()
         ]);
+
+        // Refresh status of non-terminal submissions from CAPE API
+        const terminalStatuses = ['reported', 'completed', 'success', 'error', 'failed', 'timedout'];
+        const pendingSubs = submissions.filter(s =>
+            s.taskId && !terminalStatuses.includes((s.status || '').toLowerCase())
+        );
+
+        if (pendingSubs.length > 0) {
+            await Promise.allSettled(
+                pendingSubs.map(async (sub) => {
+                    try {
+                        const url = `${CAPE_API_BASE}/apiv2/tasks/status/${sub.taskId}`;
+                        const response = await axios.get(url, { timeout: 5000 });
+                        const rawData = response.data?.data;
+                        const status = typeof rawData === 'string' ? rawData : (rawData?.status || response.data?.status);
+                        if (status) {
+                            const lowerStatus = status.toLowerCase();
+                            await Submission.findOneAndUpdate(
+                                { taskId: sub.taskId },
+                                { status: lowerStatus }
+                            );
+                            sub.status = lowerStatus; // update the response object too
+                        }
+                    } catch (_) {
+                        // Ignore individual CAPE API failures
+                    }
+                })
+            );
+        }
 
         res.json({
             user: user || { username, role: 'unknown' },

@@ -557,6 +557,7 @@
                 if (!resp.ok) return alert(data.error || 'Login failed');
                 setToken(data.accessToken, data.user?.role);
                 renderSubmissions();
+                refreshPendingStatuses();
             } catch (e) { alert('Login error: ' + e.message); }
         });
         gateLogin.addEventListener('click', async () => {
@@ -571,6 +572,7 @@
                 if (!resp.ok) return alert(data.error || 'Login failed');
                 setToken(data.accessToken, data.user?.role);
                 renderSubmissions();
+                refreshPendingStatuses();
             } catch (e) { alert('Login error: ' + e.message); }
         });
         btnLogout.addEventListener('click', () => { clearToken(); });
@@ -1085,8 +1087,29 @@
             statusDiv.className = `status ${type}`;
         }
 
-        // Initial render
+        // Auto-refresh pending submission statuses on page load
+        async function refreshPendingStatuses() {
+            const token = getToken();
+            if (!token) return;
+            try {
+                const resp = await fetch('/api/submissions/refresh', {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (!resp.ok) return;
+                const data = await resp.json();
+                if (data.updated > 0) {
+                    console.log(`Auto-refreshed ${data.updated} submission statuses`);
+                    renderSubmissions();
+                }
+            } catch (e) {
+                console.error('Status refresh error:', e.message);
+            }
+        }
+
+        // Initial render then auto-refresh stale statuses
         renderSubmissions();
+        refreshPendingStatuses();
     </script>
 </body>
 

@@ -204,6 +204,40 @@
             border-bottom: 1px solid var(--border);
         }
 
+        th.sortable {
+            cursor: pointer;
+            user-select: none;
+            transition: color 0.2s;
+            position: relative;
+            padding-right: 2rem;
+        }
+
+        th.sortable:hover {
+            color: var(--text-main);
+        }
+
+        th.sortable::after {
+            content: '⇅';
+            position: absolute;
+            right: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            opacity: 0.3;
+            font-size: 0.7rem;
+        }
+
+        th.sortable.sort-asc::after {
+            content: '↑';
+            opacity: 1;
+            color: var(--primary);
+        }
+
+        th.sortable.sort-desc::after {
+            content: '↓';
+            opacity: 1;
+            color: var(--primary);
+        }
+
         td {
             padding: 1rem 1.5rem;
             border-bottom: 1px solid var(--border);
@@ -509,6 +543,51 @@
                 transform: rotate(360deg);
             }
         }
+
+        /* Custom Scrollbars */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-muted);
+        }
+
+        .modal-body::-webkit-scrollbar-thumb {
+            background: rgba(99, 102, 241, 0.3);
+        }
+
+        .modal-body::-webkit-scrollbar-thumb:hover {
+            background: rgba(99, 102, 241, 0.5);
+        }
+
+        .user-table-wrap::-webkit-scrollbar-thumb {
+            background: rgba(148, 163, 184, 0.2);
+        }
+
+        .user-table-wrap::-webkit-scrollbar-thumb:hover {
+            background: rgba(148, 163, 184, 0.4);
+        }
+
+        /* Firefox scrollbar */
+        * {
+            scrollbar-width: thin;
+            scrollbar-color: var(--border) transparent;
+        }
+
+        .modal-body {
+            scrollbar-color: rgba(99, 102, 241, 0.3) transparent;
+        }
     </style>
     <script>
         (function () {
@@ -659,16 +738,27 @@
     </main>
 
     <main class="main" id="viewUsers" style="display: none;">
+        <div class="controls">
+            <div class="search-box">
+                <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+                <input type="text" class="search-input" id="usersSearchInput"
+                    placeholder="Search by username or role...">
+            </div>
+        </div>
+
         <div class="table-container">
             <table>
                 <thead>
                     <tr>
-                        <th>Username</th>
-                        <th>Role</th>
-                        <th>Joined</th>
-                        <th>Last Login</th>
-                        <th>Total Logins</th>
-                        <th>Total Submissions</th>
+                        <th class="sortable" data-sort="username">Username</th>
+                        <th class="sortable" data-sort="role">Role</th>
+                        <th class="sortable" data-sort="joinedAt">Joined</th>
+                        <th class="sortable" data-sort="lastLogin">Last Login</th>
+                        <th class="sortable" data-sort="totalLogins">Total Logins</th>
+                        <th class="sortable" data-sort="totalSubmissions">Total Submissions</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -962,7 +1052,14 @@
         const viewUsers = document.getElementById('viewUsers');
 
         const usersTableBody = document.getElementById('usersTableBody');
+        const usersSearchInput = document.getElementById('usersSearchInput');
         let currentTab = 'dashboard';
+
+        // Users tab state
+        let allUsersData = [];
+        let usersSortKey = 'lastLogin';
+        let usersSortDir = 'desc';
+        let usersSearchQuery = '';
 
         function switchTab(tab) {
             currentTab = tab;
@@ -1101,13 +1198,88 @@
                     headers: { 'Authorization': `Bearer ${getToken()}` }
                 });
                 if (!res.ok) throw new Error('Failed to fetch users');
-                const users = await res.json();
-                renderUsers(users);
+                allUsersData = await res.json();
+                applyUsersFilterAndSort();
             } catch (err) {
                 console.error(err);
                 usersTableBody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--danger);">Failed to load users.</td></tr>`;
             }
         }
+
+        function applyUsersFilterAndSort() {
+            let filtered = allUsersData;
+
+            // Filter
+            if (usersSearchQuery) {
+                const q = usersSearchQuery.toLowerCase();
+                filtered = filtered.filter(u =>
+                    (u.username || '').toLowerCase().includes(q) ||
+                    (u.role || '').toLowerCase().includes(q)
+                );
+            }
+
+            // Sort
+            filtered = [...filtered].sort((a, b) => {
+                let valA = a[usersSortKey];
+                let valB = b[usersSortKey];
+
+                // Handle dates
+                if (usersSortKey === 'joinedAt' || usersSortKey === 'lastLogin') {
+                    valA = valA ? new Date(valA).getTime() : 0;
+                    valB = valB ? new Date(valB).getTime() : 0;
+                }
+                // Handle numbers
+                else if (usersSortKey === 'totalLogins' || usersSortKey === 'totalSubmissions') {
+                    valA = Number(valA) || 0;
+                    valB = Number(valB) || 0;
+                }
+                // Handle strings
+                else {
+                    valA = String(valA || '').toLowerCase();
+                    valB = String(valB || '').toLowerCase();
+                }
+
+                if (valA < valB) return usersSortDir === 'asc' ? -1 : 1;
+                if (valA > valB) return usersSortDir === 'asc' ? 1 : -1;
+                return 0;
+            });
+
+            renderUsers(filtered);
+            updateSortIndicators();
+        }
+
+        function updateSortIndicators() {
+            document.querySelectorAll('#viewUsers th.sortable').forEach(th => {
+                th.classList.remove('sort-asc', 'sort-desc');
+                if (th.dataset.sort === usersSortKey) {
+                    th.classList.add(usersSortDir === 'asc' ? 'sort-asc' : 'sort-desc');
+                }
+            });
+        }
+
+        // Sort click handlers
+        document.querySelectorAll('#viewUsers th.sortable').forEach(th => {
+            th.addEventListener('click', () => {
+                const key = th.dataset.sort;
+                if (usersSortKey === key) {
+                    usersSortDir = usersSortDir === 'asc' ? 'desc' : 'asc';
+                } else {
+                    usersSortKey = key;
+                    usersSortDir = 'asc';
+                }
+                applyUsersFilterAndSort();
+            });
+        });
+
+        // Users search
+        let usersDebounceTimer;
+        usersSearchInput.addEventListener('input', (e) => {
+            clearTimeout(usersDebounceTimer);
+            usersDebounceTimer = setTimeout(() => {
+                usersSearchQuery = e.target.value.trim();
+                applyUsersFilterAndSort();
+            }, 250);
+        });
 
         function renderUsers(users) {
             if (users.length === 0) {
@@ -1261,6 +1433,13 @@
         // Close modal on backdrop click
         detailModal.addEventListener('click', (e) => {
             if (e.target === detailModal) closeModal();
+        });
+
+        // Close modal on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && detailModal.classList.contains('active')) {
+                closeModal();
+            }
         });
 
         // Init
