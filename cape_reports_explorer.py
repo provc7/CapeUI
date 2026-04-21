@@ -837,28 +837,44 @@ class Handler(BaseHTTPRequestHandler):
     def log_message(self, fmt, *args):
         pass  # suppress default access log
 
+    def _send_cors_headers(self):
+        """Add CORS headers so the frontend (port 3000) can talk to us (port 9000)."""
+        self.send_header('Access-Control-Allow-Origin', '*')
+        self.send_header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
+        self.send_header('Access-Control-Allow-Headers', 'Content-Type')
+
+    def do_OPTIONS(self):
+        """Handle CORS preflight requests."""
+        self.send_response(204)
+        self._send_cors_headers()
+        self.end_headers()
+
     def do_GET(self):
         parsed = urlparse(self.path)
 
         if parsed.path == '/':
             self.send_response(200)
             self.send_header('Content-Type', 'text/html; charset=utf-8')
+            self._send_cors_headers()
             self.end_headers()
             self.wfile.write(HTML.encode())
 
         elif parsed.path == '/data':
             if Handler.current_data is None:
                 self.send_response(404)
+                self._send_cors_headers()
                 self.end_headers()
             else:
                 payload = json.dumps(Handler.current_data, ensure_ascii=False)
                 self.send_response(200)
                 self.send_header('Content-Type', 'application/json; charset=utf-8')
+                self._send_cors_headers()
                 self.end_headers()
                 self.wfile.write(payload.encode())
 
         else:
             self.send_response(404)
+            self._send_cors_headers()
             self.end_headers()
 
     def do_POST(self):
@@ -880,17 +896,22 @@ class Handler(BaseHTTPRequestHandler):
                         },
                         '__data__': data,
                     }
-                    self.send_response(302)
-                    self.send_header('Location', '/')
+                    self.send_response(200)
+                    self.send_header('Content-Type', 'application/json')
+                    self._send_cors_headers()
                     self.end_headers()
+                    self.wfile.write(json.dumps({'ok': True}).encode())
                 except (json.JSONDecodeError, UnicodeDecodeError):
                     self.send_response(400)
+                    self._send_cors_headers()
                     self.end_headers()
             else:
                 self.send_response(400)
+                self._send_cors_headers()
                 self.end_headers()
         else:
             self.send_response(404)
+            self._send_cors_headers()
             self.end_headers()
 
 

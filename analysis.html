@@ -102,7 +102,7 @@
             } catch (e) { alert('Download error: ' + e.message); }
         });
 
-        // View Report — fetch report JSON and POST to cape_reports_explorer.py
+        // View Report — fetch report JSON and POST to cape_reports_explorer.py (port 9000)
         btnViewReport.addEventListener('click', async () => {
             if (!taskId) return;
             const token = requireToken();
@@ -113,11 +113,11 @@
                 const resp = await fetch(`/api/task/${taskId}/report`, { headers: { 'Authorization': `Bearer ${token}` } });
                 if (!resp.ok) { alert('Failed to fetch report'); return; }
                 const blob = await resp.blob();
-                // Build a multipart form and submit to the explorer
-                const explorerUrl = window.location.protocol + '//' + window.location.hostname + ':8000';
+                // Build a multipart form and submit to the CAPE Explorer on port 9000
+                const explorerUrl = window.location.protocol + '//' + window.location.hostname + ':9000';
                 const formData = new FormData();
-                formData.append('file', new File([blob], `report_${taskId}.json`, { type: 'application/json' }));
-                await fetch(explorerUrl + '/upload', { method: 'POST', body: formData, mode: 'no-cors' });
+                formData.append('jsonfile', new File([blob], `report_${taskId}.json`, { type: 'application/json' }));
+                await fetch(explorerUrl + '/upload', { method: 'POST', body: formData });
                 // Open the explorer in a new tab
                 window.open(explorerUrl, '_blank');
             } catch (e) { alert('Error: ' + e.message); }
