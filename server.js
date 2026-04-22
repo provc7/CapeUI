@@ -897,6 +897,28 @@ app.get('/api/admin/users/:username', authMiddleware, requireAdmin, async (req, 
     }
 });
 
+// Lookup submission by Task ID (returns username)
+app.get('/api/admin/submission-lookup/:taskId', authMiddleware, requireAdmin, async (req, res) => {
+    try {
+        const { taskId } = req.params;
+        if (!taskId || !taskId.trim()) return res.status(400).json({ error: 'Task ID required' });
+
+        const submission = await Submission.findOne({ taskId: taskId.trim() }).lean();
+        if (!submission) return res.status(404).json({ error: 'No submission found for this Task ID' });
+
+        res.json({
+            taskId: submission.taskId,
+            username: submission.userId,
+            filename: submission.filename,
+            status: submission.status,
+            timestamp: submission.timestamp
+        });
+    } catch (error) {
+        console.error('Error looking up submission:', error);
+        res.status(500).json({ error: 'Failed to look up submission' });
+    }
+});
+
 // Dashboard Stats Endpoint
 app.get('/api/admin/dashboard-stats', authMiddleware, requireAdmin, async (req, res) => {
     try {

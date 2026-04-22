@@ -808,7 +808,7 @@
                         d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                 </svg>
                 <input type="text" class="search-input" id="usersSearchInput"
-                    placeholder="Search by username or role...">
+                    placeholder="Search by username, role, or Task ID...">
             </div>
         </div>
 
@@ -1369,15 +1369,90 @@
             });
         });
 
-        // Users search
+        // Users search (supports Task ID lookup)
         let usersDebounceTimer;
+        let taskIdLookupInProgress = false;
         usersSearchInput.addEventListener('input', (e) => {
             clearTimeout(usersDebounceTimer);
             usersDebounceTimer = setTimeout(() => {
-                usersSearchQuery = e.target.value.trim();
+                const val = e.target.value.trim();
+                usersSearchQuery = val;
                 applyUsersFilterAndSort();
             }, 250);
         });
+
+        // Handle Enter key for Task ID lookup
+        usersSearchInput.addEventListener('keydown', async (e) => {
+            if (e.key !== 'Enter') return;
+            const val = usersSearchInput.value.trim();
+            if (!val || !/^\d+$/.test(val) || taskIdLookupInProgress) return;
+
+            // Looks like a Task ID — do a lookup
+            taskIdLookupInProgress = true;
+            try {
+                const res = await fetch(`/api/admin/submission-lookup/${val}`, {
+                    headers: { 'Authorization': `Bearer ${getToken()}` }
+                });
+                if (!res.ok) {
+                    const err = await res.json().catch(() => ({}));
+                    showToast(err.error || `No submission found for Task ID ${val}`, 'warning');
+                    return;
+                }
+                const data = await res.json();
+                showToast(`Task #${data.taskId} submitted by ${data.username} (${data.filename})`, 'success');
+                // Open that user's detail modal
+                openUser(data.username);
+            } catch (err) {
+                showToast('Failed to look up Task ID', 'error');
+            } finally {
+                taskIdLookupInProgress = false;
+            }
+        });
+
+        // Toast notification helper
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            const colors = {
+                success: 'var(--success)',
+                warning: 'var(--warning)',
+                error: 'var(--danger)',
+                info: 'var(--primary)'
+            };
+            toast.style.cssText = `
+                position: fixed; bottom: 2rem; right: 2rem; z-index: 200;
+                padding: 0.85rem 1.25rem; border-radius: 0.75rem;
+                background: var(--bg-card); border: 1px solid ${colors[type] || colors.info};
+                color: var(--text-main); font-size: 0.85rem;
+                box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+                display: flex; align-items: center; gap: 0.5rem;
+                animation: toastSlideIn 0.3s ease-out;
+                max-width: 500px;
+            `;
+            toast.innerHTML = `<span style="width:8px;height:8px;border-radius:50%;background:${colors[type] || colors.info};flex-shrink:0;"></span>${escapeHtml(message)}`;
+            document.body.appendChild(toast);
+
+            // Add animation keyframes if not present
+            if (!document.getElementById('toastStyles')) {
+                const style = document.createElement('style');
+                style.id = 'toastStyles';
+                style.textContent = `
+                    @keyframes toastSlideIn {
+                        from { transform: translateX(100%); opacity: 0; }
+                        to { transform: translateX(0); opacity: 1; }
+                    }
+                    @keyframes toastSlideOut {
+                        from { transform: translateX(0); opacity: 1; }
+                        to { transform: translateX(100%); opacity: 0; }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+
+            setTimeout(() => {
+                toast.style.animation = 'toastSlideOut 0.3s ease-in forwards';
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
+        }
 
         function renderUsers(users) {
             if (users.length === 0) {
