@@ -1511,7 +1511,7 @@
                 // Build submission rows
                 let subRows = '';
                 if (data.submissions.length === 0) {
-                    subRows = `<tr><td colspan="3"><div class="empty-state">
+                    subRows = `<tr><td colspan="4"><div class="empty-state">
                         <svg width="28" height="28" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
                         <div>No submissions</div>
                     </div></td></tr>`;
@@ -1523,6 +1523,7 @@
                         else if (st.includes('fail') || st.includes('error')) statusClass = 'failed';
                         return `
                             <tr>
+                                <td><span style="font-family: monospace; font-size: 0.75rem; background: rgba(56,189,248,0.2); color: #38bdf8; padding: 2px 8px; border-radius: 4px; font-weight: 600;">#${escapeHtml(s.taskId || '-')}</span></td>
                                 <td style="white-space: nowrap;">${new Date(s.timestamp).toLocaleString()}</td>
                                 <td class="hash-cell">${escapeHtml(s.filename)}</td>
                                 <td><span class="status-pill ${statusClass}">${escapeHtml(s.status)}</span></td>
@@ -1588,6 +1589,7 @@
                             <table>
                                 <thead>
                                     <tr>
+                                        <th style="min-width: 80px;">Task ID</th>
                                         <th style="min-width: 150px;">Time</th>
                                         <th style="min-width: 200px;">Filename</th>
                                         <th style="min-width: 80px;">Status</th>
