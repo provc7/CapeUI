@@ -666,6 +666,16 @@
     <nav class="navbar">
         <div class="logo">CAPE Superadmin</div>
         <div class="nav-actions">
+            <div style="display: flex; align-items: center; gap: 0.75rem; margin-right: 1rem; border-right: 1px solid var(--border); padding-right: 1.5rem;">
+                <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: 500;">Rate Limit (5/5hrs):</span>
+                <label style="position: relative; display: inline-block; width: 44px; height: 24px; margin: 0;">
+                    <input type="checkbox" id="rateLimitToggle" style="opacity: 0; width: 0; height: 0;">
+                    <span class="slider" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--border); border-radius: 24px; transition: .3s;">
+                        <span class="slider-knob" style="position: absolute; content: ''; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; border-radius: 50%; transition: .3s;"></span>
+                    </span>
+                </label>
+                <span id="rateLimitLabel" style="font-size: 0.75rem; font-weight: 600; color: var(--text-muted); min-width: 2rem;">OFF</span>
+            </div>
             <button class="btn btn-outline" onclick="window.location.href='/'">Upload Interface</button>
             <button class="btn btn-primary" id="refreshBtn">
                 <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1103,6 +1113,66 @@
         refreshBtn.addEventListener('click', () => {
             fetchStats();
             fetchReports();
+            fetchRateLimitStatus();
+        });
+
+        // Rate Limit Toggle Logic
+        const rateLimitToggle = document.getElementById('rateLimitToggle');
+        const rateLimitLabel = document.getElementById('rateLimitLabel');
+        const sliderKnob = rateLimitToggle.nextElementSibling.querySelector('.slider-knob');
+        const sliderBg = rateLimitToggle.nextElementSibling;
+
+        function updateRateLimitUI(enabled) {
+            rateLimitToggle.checked = enabled;
+            if (enabled) {
+                sliderBg.style.backgroundColor = 'var(--primary)';
+                sliderKnob.style.transform = 'translateX(20px)';
+                rateLimitLabel.textContent = 'ON';
+                rateLimitLabel.style.color = 'var(--primary)';
+            } else {
+                sliderBg.style.backgroundColor = 'var(--border)';
+                sliderKnob.style.transform = 'translateX(0)';
+                rateLimitLabel.textContent = 'OFF';
+                rateLimitLabel.style.color = 'var(--text-muted)';
+            }
+        }
+
+        async function fetchRateLimitStatus() {
+            try {
+                const res = await fetch('/api/admin/restriction-status', {
+                    headers: { 'Authorization': `Bearer ${getToken()}` }
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    updateRateLimitUI(data.enabled);
+                }
+            } catch (err) {
+                console.error('Failed to fetch rate limit status', err);
+            }
+        }
+
+        rateLimitToggle.addEventListener('change', async (e) => {
+            // Revert UI optimistically, we'll update it based on server response
+            e.preventDefault();
+            const wasEnabled = !e.target.checked; 
+            updateRateLimitUI(wasEnabled); 
+            
+            try {
+                const res = await fetch('/api/admin/toggle-restriction', {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${getToken()}` }
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    updateRateLimitUI(data.enabled);
+                    showToast(`Rate limit ${data.enabled ? 'enabled' : 'disabled'}`, 'success');
+                } else {
+                    throw new Error('Failed to toggle');
+                }
+            } catch (err) {
+                console.error(err);
+                showToast('Failed to toggle rate limit', 'error');
+            }
         });
 
         // Tabs
@@ -1622,6 +1692,7 @@
         // fetchReports(); 
         // Initial load handled by default switchTab in script start
         switchTab('dashboard');
+        fetchRateLimitStatus();
     </script>
 </body>
 

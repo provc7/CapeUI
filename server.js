@@ -22,7 +22,8 @@ const xss = require('xss-clean');
 
 const app = express();
 
-
+// Global state for submission restriction
+let submissionRestrictionEnabled = true;
 
 // Security Headers
 app.use(helmet({
@@ -361,9 +362,22 @@ app.post('/api/upload', authMiddleware, upload.single('file'), async (req, res) 
         const pkg = (packageType && validPackages.includes(packageType)) ? packageType : 'exe';
         const tm = Math.min(Math.max(parseInt(timeout) || 300, 100), 300); // 100s to 300s
         // Only admin users can set custom priority; students are forced to 1
-        const prio = (req.user && req.user.role === 'admin')
+        const prio = (req.user && (req.user.role === 'admin' || req.user.role === 'root'))
             ? Math.min(Math.max(parseInt(priority) || 1, 1), 5)
             : 1;
+
+        // Rate limit check
+        if (submissionRestrictionEnabled && req.user && req.user.role !== 'admin' && req.user.role !== 'root') {
+            const fiveHoursAgo = new Date(Date.now() - 5 * 60 * 60 * 1000);
+            const recentSubmissionsCount = await Submission.countDocuments({
+                userId: req.user.username,
+                timestamp: { $gte: fiveHoursAgo }
+            });
+            if (recentSubmissionsCount >= 5) {
+                await writeLog('tasks.log', { type: 'submit_rate_limited', ip: req.ip, user: userFromReq(req) });
+                return res.status(429).json({ error: 'Submission limit reached. Max 5 submissions per 5 hours.' });
+            }
+        }
 
         // Create form data to forward to CAPE API
         const formData = new FormData();
@@ -917,6 +931,17 @@ app.get('/api/admin/submission-lookup/:taskId', authMiddleware, requireAdmin, as
         console.error('Error looking up submission:', error);
         res.status(500).json({ error: 'Failed to look up submission' });
     }
+});
+
+// Get restriction status
+app.get('/api/admin/restriction-status', authMiddleware, requireAdmin, (req, res) => {
+    res.json({ enabled: submissionRestrictionEnabled });
+});
+
+// Toggle restriction
+app.post('/api/admin/toggle-restriction', authMiddleware, requireAdmin, (req, res) => {
+    submissionRestrictionEnabled = !submissionRestrictionEnabled;
+    res.json({ enabled: submissionRestrictionEnabled });
 });
 
 // Dashboard Stats Endpoint
