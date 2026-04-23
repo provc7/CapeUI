@@ -207,10 +207,44 @@
         body.viz-fullscreen header { display: none; }
         body.viz-fullscreen #main-content { padding: 0; gap: 0; }
 
-        /* Geolocation panel styles */
-        .geolocation-panel {
+        /* Hide scrollbar globally for seamless UI */
+        ::-webkit-scrollbar {
+            display: none;
+        }
+        * {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+        
+        /* Panel styles for Geolocation */
+        .info-panel {
             max-height: 200px;
             overflow-y: auto;
+        }
+        
+        .process-tree-panel ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .process-tree-panel li {
+            position: relative;
+            margin-top: 0.75rem;
+        }
+        .process-tree-panel ul ul {
+            padding-left: 2.5rem;
+            border-left: 2px solid #4b5563;
+            margin-left: 1.25rem;
+            margin-top: 0.75rem;
+        }
+        /* Connection lines for process tree */
+        .process-tree-panel ul ul li::before {
+            content: '';
+            position: absolute;
+            left: -2.5rem;
+            top: 1.5rem;
+            width: 2.5rem;
+            border-top: 2px solid #4b5563;
         }
         .geo-item {
             display: flex;
@@ -338,8 +372,8 @@
                         <h2 class="text-xl font-semibold mb-4 flex items-center"><i class="fas fa-file-invoice mr-3"></i>Analysis Summary</h2>
                         <div id="malware-info" class="space-y-3 text-sm"></div>
                         <div class="mt-6">
-                             <h3 class="text-lg font-semibold mb-2 flex items-center">Threat Score
-                                <div class="tooltip ml-2"><i class="fas fa-info-circle text-gray-400"></i><span class="tooltiptext">Calculated dynamically based on signature severity and suspicious network activity. Capped at 10.</span></div>
+                             <h3 class="text-lg font-semibold mb-2 flex items-center">Malscore
+                                <div class="tooltip ml-2"><i class="fas fa-info-circle text-gray-400"></i><span class="tooltiptext">Malscore as reported by the CAPE analysis.</span></div>
                              </h3>
                             <div class="threat-level">
                                 <span id="threat-score-label" class="font-bold text-4xl transition-colors">0.00</span>
@@ -362,10 +396,13 @@
                             <button id="view-toggle-btn" class="text-sm px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors" title="Toggle View">
                                 <i class="fas fa-map mr-1"></i><span class="hidden sm:inline">Map View</span>
                             </button>
-                            <div id="map-controls" class="hidden items-center gap-1">
+                            <button id="view-process-tree-btn" class="text-sm px-3 py-1.5 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors shadow-lg shadow-purple-500/20" title="View Process Tree">
+                                <i class="fas fa-sitemap mr-1"></i><span class="hidden sm:inline">Process Tree</span>
+                            </button>
+                            <div id="map-controls" class="flex items-center gap-1">
                                 <button id="map-zoom-in" class="text-sm px-2 py-1 bg-gray-600 hover:bg-gray-500 text-white rounded transition-colors" title="Zoom In"><i class="fas fa-search-plus"></i></button>
                                 <button id="map-zoom-out" class="text-sm px-2 py-1 bg-gray-600 hover:bg-gray-500 text-white rounded transition-colors" title="Zoom Out"><i class="fas fa-search-minus"></i></button>
-                                <button id="map-reset" class="text-sm px-2 py-1 bg-gray-600 hover:bg-gray-500 text-white rounded transition-colors" title="Reset Map"><i class="fas fa-crosshairs"></i></button>
+                                <button id="map-reset" class="text-sm px-2 py-1 bg-gray-600 hover:bg-gray-500 text-white rounded transition-colors" title="Reset View"><i class="fas fa-crosshairs"></i></button>
                                 <!-- globe texture input removed per request -->
                             </div>
                         </div>
@@ -398,12 +435,30 @@
                 <!-- Geolocation Panel -->
                 <div class="mt-4 pt-4 border-t border-gray-700">
                     <h2 class="text-lg font-semibold mb-3 flex items-center"><i class="fas fa-globe-americas mr-2"></i>IP Geolocations</h2>
-                    <div id="geolocation-container" class="geolocation-panel">
-                        <p class="text-gray-400 text-sm">IP geolocations will appear here as they are discovered during simulation.</p>
+                    <div id="geolocation-container" class="info-panel">
+                        <p class="text-gray-400 text-sm empty-state">IP geolocations will appear here as they are discovered.</p>
                     </div>
                 </div>
             </div>
         </main>
+
+        <!-- Process Tree Modal -->
+        <div id="process-tree-modal" class="fixed inset-0 z-[9999] hidden flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 sm:p-8">
+            <div class="card w-full max-w-6xl h-full flex flex-col border border-gray-600 shadow-2xl relative overflow-hidden">
+                <div class="flex justify-between items-center p-4 border-b border-gray-700 bg-gray-800 rounded-t-xl flex-shrink-0">
+                    <h2 class="text-xl font-bold text-white flex items-center"><i class="fas fa-sitemap text-indigo-400 mr-3"></i>Execution Process Tree</h2>
+                    <div class="flex items-center gap-2">
+                        <button id="ptree-zoom-out" class="text-xs px-2 py-1 bg-gray-700 hover:bg-gray-600 text-white rounded transition-colors" title="Zoom Out"><i class="fas fa-search-minus"></i></button>
+                        <button id="ptree-zoom-in" class="text-xs px-2 py-1 bg-gray-700 hover:bg-gray-600 text-white rounded transition-colors" title="Zoom In"><i class="fas fa-search-plus"></i></button>
+                        <button id="ptree-reset" class="text-xs px-2 py-1 bg-gray-700 hover:bg-gray-600 text-white rounded transition-colors mr-3" title="Reset Zoom"><i class="fas fa-crosshairs"></i></button>
+                        <button id="close-process-tree-btn" class="text-gray-400 hover:text-white transition-colors p-1"><i class="fas fa-times text-xl"></i></button>
+                    </div>
+                </div>
+                <div id="process-tree-container" class="flex-grow p-6 overflow-auto process-tree-panel bg-gray-900 rounded-b-xl">
+                    <p class="text-gray-400 text-sm empty-state">Processes will appear here as they spawn.</p>
+                </div>
+            </div>
+        </div>
 
         <div id="upload-container" class="flex-grow flex items-center justify-center">
              <div class="card p-8 flex flex-col items-center text-center">
@@ -439,6 +494,26 @@
             const mapZoomOutBtn = document.getElementById('map-zoom-out');
             const mapResetBtn = document.getElementById('map-reset');
             const worldSvg = document.getElementById('world-svg');
+            const viewProcessTreeBtn = document.getElementById('view-process-tree-btn');
+            const closeProcessTreeBtn = document.getElementById('close-process-tree-btn');
+            const processTreeModal = document.getElementById('process-tree-modal');
+            
+            // Process tree zoom controls
+            const pTreeZoomIn = document.getElementById('ptree-zoom-in');
+            const pTreeZoomOut = document.getElementById('ptree-zoom-out');
+            const pTreeReset = document.getElementById('ptree-reset');
+            let pTreeScale = 1;
+            function updatePTreeZoom() {
+                const root = document.getElementById('ptree-root');
+                if (root) {
+                    root.style.transform = `scale(${pTreeScale})`;
+                    root.style.transformOrigin = 'top left';
+                    root.style.transition = 'transform 0.2s ease';
+                }
+            }
+            if (pTreeZoomIn) pTreeZoomIn.addEventListener('click', () => { pTreeScale = Math.min(3, pTreeScale + 0.1); updatePTreeZoom(); });
+            if (pTreeZoomOut) pTreeZoomOut.addEventListener('click', () => { pTreeScale = Math.max(0.3, pTreeScale - 0.1); updatePTreeZoom(); });
+            if (pTreeReset) pTreeReset.addEventListener('click', () => { pTreeScale = 1; updatePTreeZoom(); });
 
             // Globe (3D real-time world) state
             let globeInstance = null;
@@ -528,6 +603,8 @@
             mapZoomInBtn.addEventListener('click', () => changeMapZoom(1.2));
             mapZoomOutBtn.addEventListener('click', () => changeMapZoom(1/1.2));
             mapResetBtn.addEventListener('click', resetMap);
+            if (viewProcessTreeBtn) viewProcessTreeBtn.addEventListener('click', () => { processTreeModal.classList.remove('hidden'); });
+            if (closeProcessTreeBtn) closeProcessTreeBtn.addEventListener('click', () => { processTreeModal.classList.add('hidden'); });
             window.addEventListener('resize', onWindowResize, false);
             initMapInteractions();
             document.addEventListener('keydown', (e) => {
@@ -553,7 +630,8 @@
                 if (!reportData) return;
                 
                 document.getElementById('timeline-container').innerHTML = '';
-                document.getElementById('geolocation-container').innerHTML = '<p class="text-gray-400 text-sm">IP geolocations will appear here as they are discovered during simulation.</p>';
+                document.getElementById('geolocation-container').innerHTML = '<p class="text-gray-400 text-sm empty-state">IP geolocations will appear here as they are discovered during simulation.</p>';
+                document.getElementById('process-tree-container').innerHTML = '<p class="text-gray-400 text-sm empty-state">Processes will appear here as they spawn.</p>';
                 cancelAnimationFrame(animationFrameId);
 
                 uploadContainer.style.display = 'none';
@@ -596,28 +674,17 @@
             }
 
             function calculateThreatScore(data) {
-                // If CAPE provides its own score, blend it in
-                const capeScore = data.info?.score || data.malscore || 0;
-                
-                let score = 0;
-                if (data.signatures && data.signatures.length > 0) {
-                    data.signatures.forEach(s => {
-                        const severity = s.severity || 0;
-                        if (severity >= 5) score += 1.5; else if (severity >= 3) score += 1; else if (severity > 0) score += 0.5;
-                    });
+                // Use malscore directly from CAPE report as requested
+                let capeScore = 0;
+                if (data.malscore !== undefined) {
+                    capeScore = parseFloat(data.malscore);
+                } else if (data.info && data.info.score !== undefined) {
+                    capeScore = parseFloat(data.info.score);
+                } else if (data.info && data.info.malscore !== undefined) {
+                    capeScore = parseFloat(data.info.malscore);
                 }
-                if (data.network?.hosts?.length > 1) score += 1.5;
-                if (data.network?.dns?.length > 2) score += 1;
-                // Factor in dropped files as a signal
-                const droppedCount = (data.dropped?.length || 0) + (data.behavior?.summary?.files_created?.length || 0);
-                if (droppedCount > 5) score += 1;
-                else if (droppedCount > 0) score += 0.5;
                 
-                // Blend with CAPE score if available (CAPE scores are 0-10)
-                if (capeScore > 0) {
-                    score = Math.max(score, capeScore);
-                }
-                return Math.min(score, 10);
+                return isNaN(capeScore) ? 0 : Math.min(10, Math.max(0, capeScore));
             }
 
             function getThreatVerdict(score, data) {
@@ -820,7 +887,7 @@
                 scene.fog = new THREE.FogExp2(0x1a1f35, 0.015);
                 
                 camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
-                camera.position.set(0, 15, 35);
+                camera.position.set(0, 25, 55);
                 
                 renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
                 renderer.setSize(container.clientWidth, container.clientHeight);
@@ -1524,6 +1591,19 @@
             }
 
             function changeMapZoom(factor) {
+                if (currentView === '3d') {
+                    if (camera && controls) {
+                        const target = controls.target;
+                        const direction = new THREE.Vector3().subVectors(camera.position, target);
+                        direction.multiplyScalar(1 / factor);
+                        const newDistance = direction.length();
+                        if (newDistance > controls.minDistance && newDistance < controls.maxDistance) {
+                            camera.position.copy(target).add(direction);
+                            controls.update();
+                        }
+                    }
+                    return;
+                }
                 // If globe is active, change globe POV altitude instead of 2D zoom
                 if (useGlobe && globeInstance) {
                     try {
@@ -1546,6 +1626,14 @@
             }
 
             function resetMap() {
+                if (currentView === '3d') {
+                    if (camera && controls) {
+                        camera.position.set(0, 25, 55);
+                        controls.target.set(0, 0, 0);
+                        controls.update();
+                    }
+                    return;
+                }
                 if (useGlobe && globeInstance) {
                     globeInstance.pointOfView({ lat: 20, lng: 0, altitude: 2.5 }, 600);
                     return;
@@ -1680,7 +1768,6 @@
                 if (targetView === 'map') {
                     geolocationMapContainer.classList.remove('hidden');
                     visualization3dContainer.classList.add('hidden');
-                    if (mapControls) mapControls.classList.remove('hidden');
                     viewToggleBtn.querySelector('i').className = 'fas fa-network-wired mr-1';
                     viewToggleBtn.querySelector('span').textContent = '3D View';
                     currentView = 'map';
@@ -1696,7 +1783,6 @@
                 } else {
                     geolocationMapContainer.classList.add('hidden');
                     visualization3dContainer.classList.remove('hidden');
-                    if (mapControls) mapControls.classList.add('hidden');
                     viewToggleBtn.querySelector('i').className = 'fas fa-map mr-1';
                     viewToggleBtn.querySelector('span').textContent = 'Map View';
                     currentView = '3d';
@@ -1841,7 +1927,7 @@
             function updateGeolocationDisplay() {
                 const container = document.getElementById('geolocation-container');
                 if (Object.keys(geolocationData).length === 0) {
-                    container.innerHTML = '<p class="text-gray-400 text-sm">IP geolocations will appear here as they are discovered during simulation.</p>';
+                    container.innerHTML = '<p class="text-gray-400 text-sm empty-state">IP geolocations will appear here as they are discovered during simulation.</p>';
                     return;
                 }
                 
@@ -1884,8 +1970,9 @@
             }
 
             function highlightNodeBySignature(data) {
-                if (!data.pid) return;
-                const nodeToHighlight = nodeMap.get(data.pid);
+                const pid = data.process_id || data.pid;
+                if (!pid) return;
+                const nodeToHighlight = nodeMap.get(pid);
                 if (nodeToHighlight) animatedObjects.push({ type: 'highlight', object: nodeToHighlight, progress: 0, originalColor: nodeToHighlight.material.color.clone() });
             }
             
@@ -1903,7 +1990,9 @@
                         let description = '';
                         let locationBadge = '';
                         
-                        if(event.type === 'process') description = `PID: ${event.data.pid}, Parent PID: ${event.data.ppid}`;
+                        const timelinePid = event.data.process_id || event.data.pid;
+                        const timelinePpid = event.data.parent_id || event.data.ppid;
+                        if(event.type === 'process') description = `PID: ${timelinePid}, Parent PID: ${timelinePpid}`;
                         if(event.type === 'dns') description = `Resolves to ${event.data.answers[0]?.data || 'N/A'}`;
                         if(event.type === 'connection') {
                             description = `IP: ${event.data.ip}, Port: ${event.data.port || 'N/A'}`;
@@ -1926,6 +2015,83 @@
                         container.prepend(item);
                         setTimeout(() => item.classList.add('active'), 10);
                         trigger3DAnimation(event);
+                        
+                        // Process Tree logic
+                        if(event.type === 'execution') {
+                            const ptContainer = document.getElementById('process-tree-container');
+                            if (ptContainer.querySelector('.empty-state')) {
+                                ptContainer.innerHTML = '<div id="ptree-root"></div>';
+                            }
+                            const root = document.getElementById('ptree-root');
+                            if (root) {
+                                root.innerHTML = `
+                                    <ul class="min-w-max">
+                                        <li id="ptree-initial" class="text-sm">
+                                            <div class="flex flex-col p-3 bg-gray-800 border border-indigo-500/50 hover:border-indigo-400 rounded-lg shadow-md transition-colors relative z-10 w-fit min-w-[320px]">
+                                                <div class="flex justify-between items-center">
+                                                    <div class="flex items-center">
+                                                        <i class="fas fa-bug text-red-500 mr-3 text-lg w-5 text-center"></i>
+                                                        <span class="font-bold text-white text-base">${event.data.name}</span>
+                                                        ${event.data.benign ? '<span class="ml-3 text-xs font-semibold text-green-400 border border-green-400/50 bg-green-400/10 px-2 py-0.5 rounded">Benign</span>' : ''}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                `;
+                            }
+                        } else if(event.type === 'process') {
+                            const ptContainer = document.getElementById('process-tree-container');
+                            if (ptContainer.querySelector('.empty-state')) {
+                                ptContainer.innerHTML = '<div id="ptree-root"></div>';
+                            }
+                            
+                            const ppid = event.data.parent_id || event.data.ppid || 'N/A';
+                            const pid = event.data.process_id || event.data.pid || 'N/A';
+                            const pName = event.data.process_name || event.data.name;
+                            const cmdLine = event.data._cmdLine || '';
+                            
+                            let parentLi = document.getElementById(`ptree-${ppid}`);
+                            if (!parentLi) parentLi = document.getElementById('ptree-initial');
+                            if (!parentLi) parentLi = document.getElementById('ptree-root');
+                            if (!parentLi) parentLi = ptContainer;
+                            
+                            let ul = parentLi.querySelector(':scope > ul');
+                            if (!ul) {
+                                ul = document.createElement('ul');
+                                if (parentLi.id === 'ptree-root') ul.className = 'min-w-max';
+                                parentLi.appendChild(ul);
+                            }
+                            
+                            const li = document.createElement('li');
+                            li.id = `ptree-${pid}`;
+                            li.className = 'text-sm mt-1';
+                            
+                            const cmdHtml = cmdLine ? `<div class="text-xs text-gray-400 mt-2 font-mono whitespace-normal break-all bg-gray-900/50 p-2 rounded border border-gray-700" title="${cmdLine.replace(/"/g, '&quot;')}">${cmdLine}</div>` : '';
+                            
+                            li.innerHTML = `
+                                <div class="flex flex-col p-3 bg-gray-800 border border-gray-700 hover:border-gray-500 rounded-lg shadow-md transition-colors relative z-10 w-fit min-w-[320px] max-w-xl">
+                                    <div class="flex justify-between items-center">
+                                        <div class="flex items-center">
+                                            <i class="fas fa-cogs text-orange-400 mr-3 text-lg w-5 text-center"></i>
+                                            <span class="font-bold text-white text-base">${pName}</span>
+                                        </div>
+                                        <span class="text-xs bg-gray-700 text-gray-300 px-2 py-1 rounded font-mono border border-gray-600 shadow-inner">PID: ${pid}</span>
+                                    </div>
+                                    ${cmdHtml}
+                                </div>
+                            `;
+                            ul.appendChild(li);
+                            
+                            // Highlight flash animation
+                            li.animate([
+                                { backgroundColor: 'rgba(249, 115, 22, 0.4)' },
+                                { backgroundColor: 'transparent' }
+                            ], { duration: 1500 });
+                            
+                            // Auto-scroll to bottom of the process tree panel
+                            ptContainer.scrollTop = ptContainer.scrollHeight;
+                        }
                         // timeline-synced globe animation: add arcs between sequential connection events
                         // timeline-synced animation: add arcs/lines between sequential connection events
                         if (event.type === 'execution') {
