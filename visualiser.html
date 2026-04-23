@@ -10,6 +10,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/renderers/CSS2DRenderer.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <!-- Globe and animation libraries -->
     <script src="https://unpkg.com/globe.gl@2.26.6"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -135,6 +137,9 @@
             color: #ffffff;
             font-family: 'Inter', sans-serif;
             font-size: 13px;
+            color: #ffffff;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
             font-weight: 500;
             text-shadow: 0 0 8px rgba(0, 0, 0, 0.9), 0 0 3px rgba(0, 0, 0, 0.8);
             background-color: rgba(17, 24, 39, 0.95);
@@ -145,9 +150,24 @@
             text-align: center;
             min-width: 120px;
             white-space: nowrap;
-            pointer-events: none;
+            pointer-events: auto;
+            cursor: pointer;
             backdrop-filter: blur(4px);
             -webkit-backdrop-filter: blur(4px);
+        }
+        .reg-tab {
+            color: #9ca3af;
+            background: transparent;
+            border: 1px solid transparent;
+        }
+        .reg-tab:hover {
+            color: #ffffff;
+            background: rgba(255,255,255,0.05);
+        }
+        .active-reg-tab {
+            color: #ffffff;
+            background: rgba(99, 102, 241, 0.25);
+            border: 1px solid rgba(99, 102, 241, 0.5);
         }
         .label .ip {
             font-size: 11px;
@@ -277,23 +297,24 @@
         
         /* Geolocation Map Styles */
         #geolocation-map-container {
-            background: linear-gradient(135deg, #bfdbfe 0%, #93c5fd 100%);
+            background: #111827; /* Tailwind gray-900 */
         }
         .world-map {
             width: 100%;
             height: 100%;
             position: relative;
+            z-index: 1;
+        }
+        .leaflet-container {
+            background: #0f172a !important; /* Tailwind slate-900 */
         }
         .location-pin {
-            position: absolute;
-            transform: translate(-50%, -100%);
-            transition: all 0.5s ease;
             cursor: pointer;
             z-index: 10;
         }
         .location-pin.active {
             z-index: 20;
-            transform: translate(-50%, -100%) scale(1.3);
+            transform: scale(1.3);
             filter: drop-shadow(0 0 10px rgba(239, 68, 68, 0.8));
         }
         .location-pin svg {
@@ -327,34 +348,11 @@
         .location-pin.active .location-label {
             opacity: 1;
         }
-        .location-line {
-            position: absolute;
-            height: 2px;
-            background: linear-gradient(90deg, rgba(239, 68, 68, 0.8) 0%, rgba(239, 68, 68, 0.3) 100%);
-            transform-origin: left center;
-            z-index: 5;
-            transition: opacity 0.5s;
-        }
-        /* Map background & interactive behavior */
-        .world-map {
-            width: 100%;
-            height: 100%;
-            position: relative;
-            overflow: hidden;
-            /* higher-res Mercator-like background for better zoom */
-            background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/World_map_-_low_resolution.svg/2000px-World_map_-_low_resolution.svg.png');
-            background-position: center;
-            background-repeat: no-repeat;
-            background-size: cover;
-            touch-action: none; /* we'll handle pointer events */
-            transform-origin: 0 0;
-        }
-        .location-pin { transition: transform 0.3s ease, left 0.3s ease, top 0.3s ease; }
         .pin-new { animation: pin-drop 600ms cubic-bezier(.2,.9,.3,1); }
         @keyframes pin-drop {
-            0% { transform: translate(-50%, -200%) scale(0.2); opacity: 0; }
-            60% { transform: translate(-50%, -100%) scale(1.15); opacity: 1; }
-            100% { transform: translate(-50%, -100%) scale(1); }
+            0% { transform: scale(0.2); opacity: 0; }
+            60% { transform: scale(1.15); opacity: 1; }
+            100% { transform: scale(1); }
         }
     </style>
 </head>
@@ -399,6 +397,9 @@
                             <button id="view-process-tree-btn" class="text-sm px-3 py-1.5 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors shadow-lg shadow-purple-500/20" title="View Process Tree">
                                 <i class="fas fa-sitemap mr-1"></i><span class="hidden sm:inline">Process Tree</span>
                             </button>
+                            <button id="view-registry-btn" class="text-sm px-3 py-1.5 bg-yellow-600 hover:bg-yellow-700 text-white rounded-lg transition-colors shadow-lg shadow-yellow-500/20" title="View Registry Activity">
+                                <i class="fas fa-key mr-1"></i><span class="hidden sm:inline">Registry</span>
+                            </button>
                             <div id="map-controls" class="flex items-center gap-1">
                                 <button id="map-zoom-in" class="text-sm px-2 py-1 bg-gray-600 hover:bg-gray-500 text-white rounded transition-colors" title="Zoom In"><i class="fas fa-search-plus"></i></button>
                                 <button id="map-zoom-out" class="text-sm px-2 py-1 bg-gray-600 hover:bg-gray-500 text-white rounded transition-colors" title="Zoom Out"><i class="fas fa-search-minus"></i></button>
@@ -425,17 +426,14 @@
                     </div>
                 </div>
                 <div id="visualization-3d-container" class="flex-grow relative flex items-center justify-center rounded-lg overflow-hidden"></div>
-                <div id="geolocation-map-container" class="hidden flex-grow relative flex items-center justify-center rounded-lg overflow-hidden bg-gradient-to-br from-blue-50 to-blue-100">
-                    <div id="world-map" class="world-map">
-                        <!-- High-res SVG fallback map (will be hidden when globe is active) -->
-                        <img id="world-svg" src="https://upload.wikimedia.org/wikipedia/commons/8/80/World_map_-_low_resolution.svg" alt="World Map SVG" style="width:100%;height:100%;object-fit:cover;display:block" />
-                    </div>
+                <div id="geolocation-map-container" class="hidden flex-grow relative flex items-center justify-center rounded-lg overflow-hidden bg-gray-900 z-10">
+                    <div id="world-map" class="world-map"></div>
                 </div>
                 
                 <!-- Geolocation Panel -->
                 <div class="mt-4 pt-4 border-t border-gray-700">
-                    <h2 class="text-lg font-semibold mb-3 flex items-center"><i class="fas fa-globe-americas mr-2"></i>IP Geolocations</h2>
-                    <div id="geolocation-container" class="info-panel">
+                    <h2 class="text-lg font-semibold mb-3 flex items-center"><i class="fas fa-globe-americas mr-2 text-blue-400"></i>IP Geolocations</h2>
+                    <div id="geolocation-container" class="info-panel" style="max-height: 200px; overflow-y: auto;">
                         <p class="text-gray-400 text-sm empty-state">IP geolocations will appear here as they are discovered.</p>
                     </div>
                 </div>
@@ -446,7 +444,14 @@
         <div id="process-tree-modal" class="fixed inset-0 z-[9999] hidden flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 sm:p-8">
             <div class="card w-full max-w-6xl h-full flex flex-col border border-gray-600 shadow-2xl relative overflow-hidden">
                 <div class="flex justify-between items-center p-4 border-b border-gray-700 bg-gray-800 rounded-t-xl flex-shrink-0">
-                    <h2 class="text-xl font-bold text-white flex items-center"><i class="fas fa-sitemap text-indigo-400 mr-3"></i>Execution Process Tree</h2>
+                    <div class="flex items-center gap-1">
+                        <button id="pt-tab-tree" onclick="switchPtTab('tree')" class="reg-tab active-reg-tab px-4 py-1.5 rounded-lg text-sm font-semibold transition-colors flex items-center gap-2">
+                            <i class="fas fa-sitemap text-indigo-400"></i> Process Tree
+                        </button>
+                        <button id="pt-tab-dns" onclick="switchPtTab('dns')" class="reg-tab px-4 py-1.5 rounded-lg text-sm font-semibold transition-colors flex items-center gap-2">
+                            <i class="fas fa-network-wired text-cyan-400"></i> DNS Queries
+                        </button>
+                    </div>
                     <div class="flex items-center gap-2">
                         <button id="ptree-zoom-out" class="text-xs px-2 py-1 bg-gray-700 hover:bg-gray-600 text-white rounded transition-colors" title="Zoom Out"><i class="fas fa-search-minus"></i></button>
                         <button id="ptree-zoom-in" class="text-xs px-2 py-1 bg-gray-700 hover:bg-gray-600 text-white rounded transition-colors" title="Zoom In"><i class="fas fa-search-plus"></i></button>
@@ -456,6 +461,32 @@
                 </div>
                 <div id="process-tree-container" class="flex-grow p-6 overflow-auto process-tree-panel bg-gray-900 rounded-b-xl">
                     <p class="text-gray-400 text-sm empty-state">Processes will appear here as they spawn.</p>
+                </div>
+                <div id="dns-table-container" class="flex-grow p-6 overflow-auto process-tree-panel bg-gray-900 rounded-b-xl hidden">
+                    <p class="text-gray-400 text-sm empty-state">DNS queries will appear here.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Registry / Files Dropped Modal -->
+        <div id="registry-modal" class="fixed inset-0 z-[9999] hidden flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 sm:p-8">
+            <div class="card w-full max-w-6xl h-full flex flex-col border border-gray-600 shadow-2xl relative overflow-hidden">
+                <div class="flex justify-between items-center p-4 border-b border-gray-700 bg-gray-800 rounded-t-xl flex-shrink-0">
+                    <div class="flex items-center gap-1">
+                        <button id="reg-tab-registry" onclick="switchRegTab('registry')" class="reg-tab active-reg-tab px-4 py-1.5 rounded-lg text-sm font-semibold transition-colors flex items-center gap-2">
+                            <i class="fas fa-key text-yellow-400"></i> Registry Activity
+                        </button>
+                        <button id="reg-tab-files" onclick="switchRegTab('files')" class="reg-tab px-4 py-1.5 rounded-lg text-sm font-semibold transition-colors flex items-center gap-2">
+                            <i class="fas fa-file-alt text-blue-400"></i> Files Dropped
+                        </button>
+                    </div>
+                    <button id="close-registry-btn" class="text-gray-400 hover:text-white transition-colors p-1"><i class="fas fa-times text-xl"></i></button>
+                </div>
+                <div id="registry-container" class="flex-grow p-6 overflow-auto process-tree-panel bg-gray-900 rounded-b-xl">
+                    <p class="text-gray-400 text-sm empty-state">Registry keys modified or created will appear here.</p>
+                </div>
+                <div id="files-dropped-container" class="flex-grow p-6 overflow-auto process-tree-panel bg-gray-900 rounded-b-xl hidden">
+                    <p class="text-gray-400 text-sm empty-state">Files created or dropped will appear here.</p>
                 </div>
             </div>
         </div>
@@ -542,8 +573,9 @@
             let pendingView = null; // 'map' | '3d' when toggle requested mid-animation
             let geolocationData = {};
             let timelineEventsByIP = {};
+            let leafletMap = null;
+            let currentPolyline = null;
             // Map interaction state
-            let mapState = { scale: 1, minScale: 0.5, maxScale: 4, tx: 0, ty: 0, dragging: false, dragStart: null };
 
             // --- File Upload Logic ---
             fileUploadArea.addEventListener('click', () => fileInput.click());
@@ -574,7 +606,9 @@
                             headers: token ? { 'Authorization': `Bearer ${token}` } : {}
                         });
                         if (!resp.ok) throw new Error('Failed to fetch report from ES');
-                        const json = await resp.json();
+                        let content = await resp.text();
+                        content = content.replace(/:\s*NaN\b/g, ': null').replace(/:\s*Infinity\b/g, ': null').replace(/:\s*-Infinity\b/g, ': null');
+                        const json = JSON.parse(content);
                         reportData = json;
                         startVisualization();
                         return;
@@ -582,7 +616,9 @@
                         // attempt to fetch the report JSON (legacy/file based)
                         const resp = await fetch(reportUrl);
                         if (!resp.ok) throw new Error('Failed to fetch report');
-                        const json = await resp.json();
+                        let content = await resp.text();
+                        content = content.replace(/:\s*NaN\b/g, ': null').replace(/:\s*Infinity\b/g, ': null').replace(/:\s*-Infinity\b/g, ': null');
+                        const json = JSON.parse(content);
                         reportData = json;
                         // automatically start visualization
                         startVisualization();
@@ -603,8 +639,14 @@
             mapZoomInBtn.addEventListener('click', () => changeMapZoom(1.2));
             mapZoomOutBtn.addEventListener('click', () => changeMapZoom(1/1.2));
             mapResetBtn.addEventListener('click', resetMap);
+            const viewRegistryBtn = document.getElementById('view-registry-btn');
+            const closeRegistryBtn = document.getElementById('close-registry-btn');
+            const registryModal = document.getElementById('registry-modal');
+            
             if (viewProcessTreeBtn) viewProcessTreeBtn.addEventListener('click', () => { processTreeModal.classList.remove('hidden'); });
             if (closeProcessTreeBtn) closeProcessTreeBtn.addEventListener('click', () => { processTreeModal.classList.add('hidden'); });
+            if (viewRegistryBtn) viewRegistryBtn.addEventListener('click', () => { registryModal.classList.remove('hidden'); });
+            if (closeRegistryBtn) closeRegistryBtn.addEventListener('click', () => { registryModal.classList.add('hidden'); });
             window.addEventListener('resize', onWindowResize, false);
             initMapInteractions();
             document.addEventListener('keydown', (e) => {
@@ -619,9 +661,22 @@
             });
 
             function handleFile(file) {
-                if (file && file.type === 'application/json') {
+                if (file && (file.type === 'application/json' || file.name.toLowerCase().endsWith('.json'))) {
                     const reader = new FileReader();
-                    reader.onload = (e) => { try { reportData = JSON.parse(e.target.result); startVisualization(); } catch { alert('Error parsing JSON.'); } };
+                    reader.onload = (e) => { 
+                        try { 
+                            let content = e.target.result;
+                            // Clean up Python JSON artifacts commonly found in CAPE reports
+                            content = content.replace(/:\s*NaN\b/g, ': null')
+                                             .replace(/:\s*Infinity\b/g, ': null')
+                                             .replace(/:\s*-Infinity\b/g, ': null');
+                            reportData = JSON.parse(content); 
+                            startVisualization(); 
+                        } catch (err) { 
+                            alert('Error parsing JSON.\n' + err.message); 
+                            console.error(err);
+                        } 
+                    };
                     reader.readAsText(file);
                 } else { alert('Please upload a valid JSON file.'); }
             }
@@ -632,6 +687,8 @@
                 document.getElementById('timeline-container').innerHTML = '';
                 document.getElementById('geolocation-container').innerHTML = '<p class="text-gray-400 text-sm empty-state">IP geolocations will appear here as they are discovered during simulation.</p>';
                 document.getElementById('process-tree-container').innerHTML = '<p class="text-gray-400 text-sm empty-state">Processes will appear here as they spawn.</p>';
+                const regContainer = document.getElementById('registry-container');
+                if (regContainer) regContainer.innerHTML = '<p class="text-gray-400 text-sm empty-state">Registry keys modified or created will appear here.</p>';
                 cancelAnimationFrame(animationFrameId);
 
                 uploadContainer.style.display = 'none';
@@ -650,17 +707,25 @@
                 timelineEventsByIP = {};
                 // reset persistent connection visuals
                 connectionSequence = [];
-                if (overlaySvg && overlaySvg.parentNode) {
-                    overlaySvg.innerHTML = '';
-                }
-                // Clear any existing map pins and reset map transform
-                if (worldMap) {
-                    Object.values(mapPins).forEach(p => p.remove());
+                // Clear any existing map pins and reset map
+                if (leafletMap) {
+                    Object.values(mapPins).forEach(p => {
+                        if (p && typeof p.remove === 'function') p.remove();
+                    });
                     for (const k of Object.keys(mapPins)) delete mapPins[k];
-                    mapState.scale = 1; mapState.tx = 0; mapState.ty = 0; applyMapTransform();
+                    
+                    if (currentPolyline) {
+                        leafletMap.removeLayer(currentPolyline);
+                        currentPolyline = null;
+                    }
+                    leafletMap.setView([20, 0], 2);
                 }
 
                 populateMalwareInfo(reportData);
+                populateRegistryInfo(reportData);
+                populateFilesDropped(reportData);
+                populateDnsTable(reportData);
+                populateProcessTreeOrDns(reportData);
                 timelineEvents = createTimelineEvents(reportData);
                 init3DScene();
                 // ensure initial sync of map/globe/3D labels
@@ -807,6 +872,254 @@
                 }
                 
                 document.getElementById('malware-info').innerHTML = malwareInfoHTML;
+            }
+
+            function populateRegistryInfo(data) {
+                const container = document.getElementById('registry-container');
+                if (!container) return;
+                
+                const written = data.behavior?.summary?.keys_written || [];
+                const deleted = data.behavior?.summary?.keys_deleted || [];
+                
+                let allKeys = [];
+                written.forEach(k => allKeys.push({ key: k, type: 'Written', color: 'text-yellow-400', icon: 'fa-pen' }));
+                deleted.forEach(k => allKeys.push({ key: k, type: 'Deleted', color: 'text-red-400', icon: 'fa-trash' }));
+                
+                // If keys_written/deleted are missing, try extracting from process API calls
+                if (allKeys.length === 0 && data.behavior?.processes) {
+                    data.behavior.processes.forEach(p => {
+                        if (p.calls) {
+                            p.calls.forEach(c => {
+                                if (c.category === 'registry' && (c.api.includes('SetValue') || c.api.includes('CreateKey') || c.api.includes('DeleteKey'))) {
+                                    let keyName = 'Unknown Key';
+                                    if (Array.isArray(c.arguments)) {
+                                        // Priority: try known named fields first
+                                        const fieldNames = ['FullName', 'KeyName', 'Registry', 'Handle', 'ObjectName'];
+                                        const subFields = ['SubKey', 'ValueName', 'Value'];
+                                        let root = null, sub = null;
+                                        for (const fn of fieldNames) { root = c.arguments.find(a => a.name === fn); if (root) break; }
+                                        for (const sf of subFields) { sub = c.arguments.find(a => a.name === sf); if (sub) break; }
+                                        
+                                        let parts = [];
+                                        if (root) parts.push(root.pretty_value || root.value || '');
+                                        if (sub) parts.push(sub.pretty_value || sub.value || '');
+                                        
+                                        if (parts.some(p => p)) {
+                                            keyName = parts.filter(Boolean).join('\\').replace(/\\\\/g, '\\');
+                                        } else {
+                                            // Scan all args for anything that looks like a registry path
+                                            const regArg = c.arguments.find(a => {
+                                                const v = String(a.pretty_value || a.value || '');
+                                                return v.startsWith('HKEY_') || v.startsWith('HKLM') || v.startsWith('HKCU') || v.includes('\\SOFTWARE\\') || v.includes('\\SYSTEM\\');
+                                            });
+                                            keyName = regArg ? (regArg.pretty_value || regArg.value) : `${c.api}(${c.arguments.map(a => a.name).join(', ')})`;
+                                        }
+                                    } else if (c.arguments) {
+                                        keyName = c.arguments.regkey || c.arguments.key_handle || c.arguments.key_name || c.arguments.FullName || c.arguments.KeyName || `${c.api} call`;
+                                    }
+                                    let type = c.api.includes('Delete') ? 'Deleted' : (c.api.includes('Create') ? 'Created' : 'Written');
+                                    let color = type === 'Deleted' ? 'text-red-400' : (type === 'Created' ? 'text-green-400' : 'text-yellow-400');
+                                    let icon = type === 'Deleted' ? 'fa-trash' : (type === 'Created' ? 'fa-plus' : 'fa-pen');
+                                    
+                                    if (!allKeys.some(k => k.key === keyName)) {
+                                        allKeys.push({ key: keyName, type, color, icon });
+                                    }
+                                }
+                            });
+                        }
+                    });
+                }
+                
+                if (allKeys.length === 0) {
+                    container.innerHTML = '<p class="text-gray-400 text-sm empty-state">No significant registry modifications detected.</p>';
+                    return;
+                }
+                
+                let html = '<ul class="space-y-2">';
+                allKeys.slice(0, 50).forEach(item => { // Limit to 50 for performance and UI brevity
+                    html += `
+                    <li class="bg-gray-800 rounded p-2 border border-gray-700 break-all text-xs">
+                        <div class="flex items-center mb-1">
+                            <i class="fas ${item.icon} ${item.color} mr-2"></i>
+                            <span class="font-semibold ${item.color}">${item.type}</span>
+                        </div>
+                        <div class="text-gray-300 font-mono ml-5">${item.key}</div>
+                    </li>`;
+                });
+                if (allKeys.length > 50) {
+                    html += `<li class="text-center text-gray-500 text-xs py-2">+ ${allKeys.length - 50} more registry operations hidden</li>`;
+                }
+                html += '</ul>';
+                container.innerHTML = html;
+            }
+
+            window.switchRegTab = function(tab) {
+                const regPanel = document.getElementById('registry-container');
+                const filesPanel = document.getElementById('files-dropped-container');
+                const regTab = document.getElementById('reg-tab-registry');
+                const filesTab = document.getElementById('reg-tab-files');
+                if (tab === 'registry') {
+                    regPanel.classList.remove('hidden');
+                    filesPanel.classList.add('hidden');
+                    regTab.classList.add('active-reg-tab');
+                    filesTab.classList.remove('active-reg-tab');
+                } else {
+                    filesPanel.classList.remove('hidden');
+                    regPanel.classList.add('hidden');
+                    filesTab.classList.add('active-reg-tab');
+                    regTab.classList.remove('active-reg-tab');
+                }
+            };
+
+            window.switchPtTab = function(tab) {
+                const treePanel = document.getElementById('process-tree-container');
+                const dnsPanel = document.getElementById('dns-table-container');
+                const treeTab = document.getElementById('pt-tab-tree');
+                const dnsTab = document.getElementById('pt-tab-dns');
+                if (tab === 'tree') {
+                    treePanel.classList.remove('hidden');
+                    dnsPanel.classList.add('hidden');
+                    treeTab.classList.add('active-reg-tab');
+                    dnsTab.classList.remove('active-reg-tab');
+                } else {
+                    dnsPanel.classList.remove('hidden');
+                    treePanel.classList.add('hidden');
+                    dnsTab.classList.add('active-reg-tab');
+                    treeTab.classList.remove('active-reg-tab');
+                }
+            };
+
+            function populateDnsTable(data) {
+                const container = document.getElementById('dns-table-container');
+                if (!container) return;
+
+                const dnsEntries = data.network?.dns || [];
+                if (dnsEntries.length === 0) {
+                    container.innerHTML = '<p class="text-gray-400 text-sm empty-state">No DNS queries recorded for this sample.</p>';
+                    return;
+                }
+
+                let html = `<table class="w-full text-xs border-collapse">
+                    <thead>
+                        <tr class="border-b border-gray-700">
+                            <th class="text-left py-2 px-3 text-gray-400 font-semibold w-8">#</th>
+                            <th class="text-left py-2 px-3 text-gray-400 font-semibold">Domain Queried</th>
+                            <th class="text-left py-2 px-3 text-gray-400 font-semibold">Type</th>
+                            <th class="text-left py-2 px-3 text-gray-400 font-semibold">Response(s)</th>
+                        </tr>
+                    </thead>
+                    <tbody>`;
+
+                dnsEntries.forEach((d, i) => {
+                    const answers = Array.isArray(d.answers)
+                        ? d.answers.map(a => a.data || a.address || String(a)).filter(Boolean).join(', ')
+                        : (d.response || '—');
+                    const type = d.type || 'A';
+                    const rowBg = i % 2 === 0 ? '' : 'bg-gray-850';
+                    html += `<tr class="border-b border-gray-800 hover:bg-gray-800 transition-colors ${rowBg}">
+                        <td class="py-2 px-3 text-gray-600 select-none">${i + 1}</td>
+                        <td class="py-2 px-3 text-blue-300 font-mono break-all">${d.request || '—'}</td>
+                        <td class="py-2 px-3"><span class="bg-indigo-900 text-indigo-300 px-2 py-0.5 rounded text-xs font-mono">${type}</span></td>
+                        <td class="py-2 px-3 text-gray-400 font-mono break-all">${answers || '—'}</td>
+                    </tr>`;
+                });
+
+                html += `</tbody></table>`;
+                if (dnsEntries.length > 0) {
+                    html = `<p class="text-gray-500 text-xs mb-3">${dnsEntries.length} DNS quer${dnsEntries.length === 1 ? 'y' : 'ies'} recorded</p>` + html;
+                }
+                container.innerHTML = html;
+            }
+
+            function populateFilesDropped(data) {
+                const container = document.getElementById('files-dropped-container');
+                if (!container) return;
+
+                const seen = new Set();
+                const files = [];
+
+                const addFile = (path, type, proc) => {
+                    if (!path || path.length < 3) return;
+                    const key = path.toLowerCase();
+                    if (seen.has(key)) return;
+                    seen.add(key);
+                    files.push({ path, type, proc: proc || '' });
+                };
+
+                // 1. From behavior summary
+                (data.behavior?.summary?.files_created || []).forEach(f => addFile(f, 'Created', ''));
+                (data.behavior?.summary?.files_written || []).forEach(f => addFile(f, 'Written', ''));
+                (data.behavior?.summary?.files_deleted || []).forEach(f => addFile(f, 'Deleted', ''));
+                (data.behavior?.summary?.files_copied || []).forEach(f => addFile(typeof f === 'string' ? f : f.dst || f.src, 'Copied', ''));
+                (data.behavior?.summary?.files_moved || []).forEach(f => addFile(typeof f === 'string' ? f : f.dst || f.src, 'Moved', ''));
+
+                // 2. From dropped[] list (CAPE-specific)
+                (data.dropped || []).forEach(d => {
+                    if (d.name || d.path) addFile(d.path || d.name, 'Dropped', '');
+                });
+
+                // 3. From process API calls (WriteFile, CreateFile, CopyFile, MoveFile)
+                const fileApiKeywords = ['WriteFile', 'CreateFile', 'CopyFile', 'MoveFile', 'NtCreateFile', 'NtWriteFile'];
+                if (files.length < 200 && data.behavior?.processes) {
+                    data.behavior.processes.forEach(p => {
+                        if (!p.calls) return;
+                        p.calls.forEach(c => {
+                            if (!fileApiKeywords.some(k => c.api && c.api.includes(k))) return;
+                            let filePath = null;
+                            if (Array.isArray(c.arguments)) {
+                                const pathArg = c.arguments.find(a => ['filepath', 'FileName', 'ExistingFileName', 'NewFileName', 'filename', 'HandleName', 'ObjectName'].includes(a.name));
+                                if (pathArg) filePath = pathArg.pretty_value || pathArg.value;
+                            } else if (c.arguments) {
+                                filePath = c.arguments.filepath || c.arguments.FileName || c.arguments.filename;
+                            }
+                            if (filePath && /\.[a-zA-Z0-9]{1,5}$/.test(filePath)) {
+                                let type = c.api.includes('Write') ? 'Written' : c.api.includes('Copy') ? 'Copied' : c.api.includes('Move') ? 'Moved' : 'Created';
+                                addFile(filePath, type, p.process_name);
+                            }
+                        });
+                    });
+                }
+
+                if (files.length === 0) {
+                    container.innerHTML = '<p class="text-gray-400 text-sm empty-state">No dropped files found.</p>';
+                    return;
+                }
+
+                const iconMap = { 'Created': { icon: 'fa-plus', color: 'text-green-400' }, 'Written': { icon: 'fa-pen', color: 'text-yellow-400' }, 'Deleted': { icon: 'fa-trash', color: 'text-red-400' }, 'Dropped': { icon: 'fa-arrow-down', color: 'text-blue-400' }, 'Copied': { icon: 'fa-copy', color: 'text-purple-400' }, 'Moved': { icon: 'fa-arrows-alt', color: 'text-orange-400' } };
+
+                let html = '<ul class="space-y-2">';
+                files.slice(0, 100).forEach(f => {
+                    const style = iconMap[f.type] || { icon: 'fa-file', color: 'text-gray-400' };
+                    html += `
+                    <li class="bg-gray-800 rounded p-2 border border-gray-700 break-all text-xs">
+                        <div class="flex items-center mb-1">
+                            <i class="fas ${style.icon} ${style.color} mr-2"></i>
+                            <span class="font-semibold ${style.color}">${f.type}</span>
+                            ${f.proc ? `<span class="ml-auto text-gray-500 font-mono">${f.proc}</span>` : ''}
+                        </div>
+                        <div class="text-gray-300 font-mono ml-5">${f.path}</div>
+                    </li>`;
+                });
+                if (files.length > 100) html += `<li class="text-center text-gray-500 text-xs py-2">+ ${files.length - 100} more file operations hidden</li>`;
+                html += '</ul>';
+                container.innerHTML = html;
+            }
+
+            function populateProcessTreeOrDns(data) {
+                const ptContainer = document.getElementById('process-tree-container');
+                if (!ptContainer) return;
+
+                const processes = data.behavior?.processes || [];
+                if (processes.length > 0) {
+                    ptContainer.innerHTML = '<p class="text-gray-400 text-sm empty-state">Processes will appear here as they spawn.</p>';
+                } else {
+                    ptContainer.innerHTML = `
+                        <div class="flex flex-col items-center justify-center h-full gap-3 text-center">
+                            <i class="fas fa-sitemap text-gray-700 text-5xl"></i>
+                            <p class="text-gray-400 text-sm font-medium">No process tree available for this sample.</p>
+                            <p class="text-gray-600 text-xs">Check the <span class="text-cyan-400">DNS Queries</span> tab for network activity.</p>
+                        </div>`;
+                }
             }
 
             // --- TIMELINE LOGIC ---
@@ -1160,15 +1473,95 @@
                 if (firstProcess) nodeMap.set(firstProcess.pid, node);
             }
 
+            function renderLabel(node, div) {
+                let countBadge = '';
+                if (node.userData.count > 1) {
+                    countBadge = `<span style="background-color:#4f46e5; color:white; border-radius:4px; padding:2px 5px; margin-left:6px; font-size:10px;">${node.userData.count}</span>`;
+                }
+                
+                if (node.userData.isProcess) {
+                    let text = `${node.userData.processName}${countBadge}`;
+                    if (node.userData.expanded) {
+                        let tableHTML = '<table style="width:100%; text-align:left; border-collapse:collapse; margin-top:4px;">';
+                        tableHTML += '<tr style="border-bottom:1px solid #4f46e5;"><th style="padding:2px 0;">PID</th></tr>';
+                        node.userData.pids.slice(0, 15).forEach(pid => {
+                            tableHTML += `<tr><td style="padding:2px 0;">${pid}</td></tr>`;
+                        });
+                        if (node.userData.pids.length > 15) tableHTML += `<tr><td style="padding:2px 0; color:#818cf8;">+ ${node.userData.pids.length - 15} more</td></tr>`;
+                        tableHTML += '</table>';
+                        
+                        text += `<div style="font-size:10px; color:#a5b4fc; margin-top:4px; max-height:150px; overflow-y:auto; text-align:left; background:rgba(0,0,0,0.8); padding:6px; border-radius:4px; white-space:normal;">${tableHTML}</div>`;
+                    }
+                    div.innerHTML = text;
+                } else if (node.userData.isNetwork) {
+                    let text = `${node.userData.networkName}${countBadge}`;
+                    if (node.userData.networkIp) {
+                        text += `<div class="ip">${node.userData.networkIp}</div>`;
+                    }
+                    if (node.userData.expanded) {
+                        let tableHTML = '<table style="width:100%; text-align:left; border-collapse:collapse; margin-top:4px; font-size:9px;">';
+                        tableHTML += '<tr style="border-bottom:1px solid #4f46e5;"><th style="padding:2px 0;">Event Type</th></tr>';
+                        node.userData.events.slice(0, 15).forEach(ev => {
+                            let info = ev.port ? `Port: ${ev.port}` : (ev.type || 'Connection');
+                            tableHTML += `<tr><td style="padding:2px 0;">${info}</td></tr>`;
+                        });
+                        if (node.userData.events.length > 15) tableHTML += `<tr><td style="padding:2px 0; color:#818cf8;">+ ${node.userData.events.length - 15} more</td></tr>`;
+                        tableHTML += '</table>';
+                        
+                        text += `<div style="font-size:10px; color:#a5b4fc; margin-top:4px; max-height:150px; overflow-y:auto; background:rgba(0,0,0,0.8); padding:6px; border-radius:4px; white-space:normal;">${tableHTML}</div>`;
+                    }
+                    div.innerHTML = text;
+                } else {
+                    div.innerHTML = node.userData.processName || 'Node';
+                }
+            }
+
             function createProcessNode(data) {
                 const parentNode = nodeMap.get(data.ppid) || nodeMap.get('initial');
                 if (!parentNode) return;
-                const node = createNode(data.process_name, processColor);
+                
+                if (!parentNode.userData.childrenByName) {
+                    parentNode.userData.childrenByName = new Map();
+                }
+                
+                const processKey = String(data.process_name || 'unknown').toLowerCase().trim();
+                let node = parentNode.userData.childrenByName.get(processKey);
+                
+                if (node) {
+                    node.userData.count++;
+                    if (!node.userData.pids.includes(data.pid)) {
+                        node.userData.pids.push(data.pid);
+                    }
+                    const labelObj = node.children.find(c => c.isCSS2DObject);
+                    if (labelObj) {
+                        renderLabel(node, labelObj.element);
+                    }
+                    nodeMap.set(data.pid, node); // Route future children through this node
+                    return;
+                }
+                
+                node = createNode(data.process_name || 'Unknown', processColor);
+                node.userData.isProcess = true;
+                node.userData.processName = data.process_name || 'Unknown';
+                node.userData.count = 1;
+                node.userData.pids = [data.pid];
+                node.userData.expanded = false;
+                
+                const labelObj = node.children.find(c => c.isCSS2DObject);
+                if (labelObj) {
+                    labelObj.element.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        if (node.userData.count > 1) {
+                            node.userData.expanded = !node.userData.expanded;
+                            renderLabel(node, labelObj.element);
+                        }
+                    });
+                    renderLabel(node, labelObj.element);
+                }
                 
                 const childIndex = parentNode.userData.childCount++;
                 const goldenAngle = Math.PI * (3 - Math.sqrt(5)); // ~137.5 degrees
                 const angle = childIndex * goldenAngle;
-                // Increase spacing between process nodes for better visibility
                 const radius = 3.0 * Math.sqrt(childIndex + 1);
                 const yOffset = (childIndex % 2 === 0 ? 1 : -1) * (childIndex * 0.6);
 
@@ -1180,6 +1573,7 @@
 
                 infectionGraphGroup.add(node);
                 infectionGraphGroup.add(createLine(parentNode.position, node.position));
+                parentNode.userData.childrenByName.set(processKey, node);
                 nodeMap.set(data.pid, node);
             }
 
@@ -1188,31 +1582,59 @@
                 if (!parentNode) return;
                 const name = type === 'dns' ? data.request : data.ip;
                 const color = type === 'dns' ? dnsColor : ipColor;
-                let node = nodeMap.get(name);
+                
+                const networkKey = String(name || 'unknown').toLowerCase().trim();
+                let node = nodeMap.get(networkKey);
+                
                 if (!node) {
-                    // For IP nodes, we want to show the IP address initially, then update with location + IP
                     let locationName = name;
                     let ipToShow = null;
                     
                     if (type === 'ip') {
-                        // Show IP address initially as main text, IP will be added below when location is fetched
-                        locationName = name; // Show IP as main text initially
-                        ipToShow = null; // Don't duplicate IP, will be added when location comes in
-                        fetchGeolocation(data.ip, name);
+                        locationName = name;
+                        ipToShow = null;
+                        fetchGeolocation(data.ip, networkKey);
                     }
                     
                     node = createNode(locationName, color, 0.6, ipToShow);
+                    node.userData.isNetwork = true;
+                    node.userData.networkName = locationName;
+                    node.userData.networkIp = ipToShow;
+                    node.userData.count = 1;
+                    node.userData.events = [data];
+                    node.userData.expanded = false;
+                    
+                    const labelObj = node.children.find(c => c.isCSS2DObject);
+                    if (labelObj) {
+                        labelObj.element.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            if (node.userData.count > 1) {
+                                node.userData.expanded = !node.userData.expanded;
+                                renderLabel(node, labelObj.element);
+                            }
+                        });
+                        renderLabel(node, labelObj.element);
+                    }
+                    
                     const angle = networkNodeAngle;
                     networkNodeAngle += Math.PI / 4.5; // Slightly more spread
-                    // Spread nodes more to avoid label overlap
                     const radius = 22 + Math.random() * 3;
                     const height = (Math.random() - 0.5) * 10;
                     node.position.set(Math.cos(angle) * radius, height, Math.sin(angle) * radius);
                     infectionGraphGroup.add(node);
-                    nodeMap.set(name, node);
+                    nodeMap.set(networkKey, node);
+                    
+                    const line = createLine(parentNode.position, node.position);
+                    infectionGraphGroup.add(line);
+                } else {
+                    node.userData.count++;
+                    node.userData.events.push(data);
+                    const labelObj = node.children.find(c => c.isCSS2DObject);
+                    if (labelObj) {
+                        renderLabel(node, labelObj.element);
+                    }
                 }
-                const line = createLine(parentNode.position, node.position);
-                infectionGraphGroup.add(line);
+                
                 createPacket(parentNode.position, node.position);
             }
             
@@ -1306,6 +1728,8 @@
                 // Update the node label with the actual location
                 const node = nodeMap.get(nodeName);
                 if (node) {
+                    node.userData.networkName = location;
+                    node.userData.networkIp = ip;
                     // Find the label (CSS2DObject) among all children
                     let label = null;
                     for (let i = 0; i < node.children.length; i++) {
@@ -1315,7 +1739,7 @@
                         }
                     }
                     if (label && label.element) {
-                        label.element.innerHTML = `${location}<div class="ip">${ip}</div>`;
+                        renderLabel(node, label.element);
                     }
                 }
 
@@ -1353,191 +1777,124 @@
                 // ensure all views stay in sync after a location update
                 syncAllViews();
             }
+            function initMapInteractions() {
+                if (!document.getElementById('world-map')) return;
+                leafletMap = L.map('world-map', {
+                    center: [20, 0],
+                    zoom: 2,
+                    zoomControl: false,
+                    attributionControl: false
+                });
+                // Dark theme tile layer
+                L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+                    maxZoom: 19
+                }).addTo(leafletMap);
+            }
+
+            function changeMapZoom(factor) {
+                if (currentView === 'map') {
+                    if (leafletMap) {
+                        if (factor > 1) leafletMap.zoomIn();
+                        else leafletMap.zoomOut();
+                    }
+                } else if (controls && camera) {
+                    const zoomVector = new THREE.Vector3().subVectors(camera.position, controls.target);
+                    zoomVector.multiplyScalar(factor < 1 ? 1.2 : 1 / 1.2);
+                    camera.position.copy(controls.target).add(zoomVector);
+                    controls.update();
+                }
+            }
+
+            function resetMap() {
+                if (currentView === 'map') {
+                    if (leafletMap) leafletMap.setView([20, 0], 2);
+                } else if (controls && camera) {
+                    camera.position.set(0, 25, 55);
+                    controls.target.set(0, 0, 0);
+                    controls.update();
+                }
+            }
 
             function drawMapPin(ip, lat, lon, location) {
-                if (!worldMap) return;
-                // Use natural (untransformed) size for mapping so pins align predictably
-                const naturalW = worldMap.clientWidth || worldMap.offsetWidth;
-                const naturalH = worldMap.clientHeight || worldMap.offsetHeight;
-                // Protect against invalid numbers
-                if (typeof lat !== 'number' || typeof lon !== 'number' || Number.isNaN(lat) || Number.isNaN(lon) || !naturalW || !naturalH) {
-                    return;
-                }
-
-                const x_natural = ((lon + 180) / 360) * naturalW;
-                const y_natural = ((90 - lat) / 180) * naturalH;
+                if (!leafletMap) return;
+                if (typeof lat !== 'number' || typeof lon !== 'number' || Number.isNaN(lat) || Number.isNaN(lon)) return;
 
                 let pin = mapPins[ip];
                 if (!pin) {
-                    pin = document.createElement('div');
-                    pin.className = 'location-pin';
-                    pin.dataset.ip = ip;
-                    pin.style.left = `${x_natural}px`;
-                    pin.style.top = `${y_natural}px`;
-                    pin.innerHTML = `
-                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M12 2C8.13401 2 5 5.13401 5 9C5 14.25 12 22 12 22C12 22 19 14.25 19 9C19 5.13401 15.866 2 12 2Z" fill="#ef4444"/>
-                          <circle cx="12" cy="9" r="2.5" fill="#fff"/>
-                        </svg>
-                        <div class="location-label">${location}<div class="ip" style="font-size:10px;margin-top:4px;opacity:0.9">${ip}</div></div>
+                    const iconHtml = `
+                        <div class="location-pin pin-new" style="position:static;">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <path d="M12 2C8.13401 2 5 5.13401 5 9C5 14.25 12 22 12 22C12 22 19 14.25 19 9C19 5.13401 15.866 2 12 2Z" fill="#ef4444"/>
+                              <circle cx="12" cy="9" r="2.5" fill="#fff"/>
+                            </svg>
+                            <div class="location-label">${location}<div class="ip" style="font-size:10px;margin-top:4px;opacity:0.9">${ip}</div></div>
+                        </div>
                     `;
-                    // show label on hover / click
-                    pin.addEventListener('mouseenter', () => pin.classList.add('active'));
-                    pin.addEventListener('mouseleave', () => pin.classList.remove('active'));
-                    pin.addEventListener('click', () => {
-                        // highlight corresponding timeline entries if any
+                    const divIcon = L.divIcon({ html: iconHtml, className: '', iconSize: [28, 28], iconAnchor: [14, 28] });
+                    pin = L.marker([lat, lon], { icon: divIcon }).addTo(leafletMap);
+                    
+                    const markerEl = pin.getElement();
+                    if (markerEl) {
+                        markerEl.addEventListener('mouseenter', () => markerEl.querySelector('.location-pin').classList.add('active'));
+                        markerEl.addEventListener('mouseleave', () => markerEl.querySelector('.location-pin').classList.remove('active'));
+                    }
+
+                    pin.on('click', () => {
                         if (timelineEventsByIP[ip]) {
                             timelineEventsByIP[ip].forEach(it => { it.classList.add('active'); setTimeout(()=>it.classList.remove('active'), 1500); });
                         }
-                        // center the map on this pin smoothly
-                        centerOnCoordinates(lat, lon, 600);
-                        // also show a popup with details
+                        leafletMap.setView([lat, lon], 6, { animate: true });
                         showPinPopup(ip, lat, lon, location);
                     });
-                    worldMap.appendChild(pin);
+                    
                     mapPins[ip] = pin;
-                    // small entry animation
-                    requestAnimationFrame(()=> pin.classList.add('pin-new'));
                 } else {
-                    // update position and label
-                    pin.style.left = `${x_natural}px`;
-                    pin.style.top = `${y_natural}px`;
-                    const label = pin.querySelector('.location-label');
-                    if (label) label.innerHTML = `${location}<div class="ip" style="font-size:10px;margin-top:4px;opacity:0.9">${ip}</div>`;
-                    // if popup for this ip is open, reposition it
-                    if (pinPopup && pinPopup.querySelector && pinPopup.querySelector('.ip') && pinPopup.querySelector('.ip').textContent === ip) {
-                        showPinPopup(ip, lat, lon, location);
-                    }
+                    pin.setLatLng([lat, lon]);
                 }
-                // After creating/updating a pin, recompute clusters
-                updateClusters();
-                // Update persistent polyline if sequence exists
                 rebuildPolyline();
             }
 
-            // Draw an animated 2D line between two pins (container-based coordinates)
             function draw2DConnection(ipA, ipB, color = '#ff6b35', duration = 2800) {
-                if (!geolocationMapContainer) return;
-                const pinA = mapPins[ipA];
-                const pinB = mapPins[ipB];
-                if (!pinA || !pinB) return;
-                const containerRect = geolocationMapContainer.getBoundingClientRect();
-                const aRect = pinA.getBoundingClientRect();
-                const bRect = pinB.getBoundingClientRect();
-                const ax = aRect.left + aRect.width/2 - containerRect.left;
-                const ay = aRect.top + aRect.height/2 - containerRect.top;
-                const bx = bRect.left + bRect.width/2 - containerRect.left;
-                const by = bRect.top + bRect.height/2 - containerRect.top;
-
-                const dx = bx - ax; const dy = by - ay;
-                const dist = Math.sqrt(dx*dx + dy*dy);
-                const angle = Math.atan2(dy, dx) * 180 / Math.PI;
-
-                const line = document.createElement('div');
-                line.className = 'location-line';
-                line.style.left = `${ax}px`;
-                line.style.top = `${ay}px`;
-                line.style.width = `0px`;
-                line.style.height = `2px`;
-                line.style.background = color;
-                line.style.transformOrigin = 'left center';
-                line.style.transform = `rotate(${angle}deg)`;
-                line.style.opacity = '0';
-                line.style.pointerEvents = 'none';
-                geolocationMapContainer.appendChild(line);
-
-                // Animate growth and fade using GSAP if available, fallback to CSS
-                if (window.gsap) {
-                    gsap.to(line, { duration: 0.45, width: dist, opacity: 1, ease: 'power2.out', onComplete() {
-                        gsap.to(line, { duration: 0.5, delay: (duration-800)/1000, opacity: 0, width: 0, ease: 'power1.in', onComplete() { line.remove(); } });
-                    }});
-                } else {
-                    line.style.transition = `width 0.45s ease, opacity 0.5s ease ${ (duration-800)/1000 }s`;
-                    requestAnimationFrame(()=> { line.style.width = `${dist}px`; line.style.opacity = '1'; });
-                    setTimeout(()=> { line.style.opacity = '0'; line.style.width = '0px'; setTimeout(()=>line.remove(), 600); }, duration);
-                }
+                if (!connectionSequence.includes(ipA)) connectionSequence.push(ipA);
+                if (!connectionSequence.includes(ipB)) connectionSequence.push(ipB);
+                rebuildPolyline();
             }
 
-            // Ensure SVG overlay exists and matches container size
-            function ensureOverlay() {
-                if (!geolocationMapContainer) return null;
-                if (!overlaySvg) {
-                    overlaySvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-                    overlaySvg.setAttribute('id', 'map-overlay');
-                    overlaySvg.style.position = 'absolute';
-                    overlaySvg.style.left = '0';
-                    overlaySvg.style.top = '0';
-                    overlaySvg.style.width = '100%';
-                    overlaySvg.style.height = '100%';
-                    overlaySvg.style.pointerEvents = 'none';
-                    overlaySvg.style.zIndex = '8';
-                    geolocationMapContainer.appendChild(overlaySvg);
-                }
-                return overlaySvg;
-            }
-
-            // Build/update a persistent dot-line-dot path connecting pins in chronological order
             function rebuildPolyline() {
-                if (!geolocationMapContainer || connectionSequence.length < 2) return;
-                const svg = ensureOverlay();
-                if (!svg) return;
-                // Clear previous shape
-                while (svg.firstChild) svg.removeChild(svg.firstChild);
-
-                // Build de-duplicated consecutive sequence
+                if (!leafletMap) return;
+                if (currentPolyline) {
+                    leafletMap.removeLayer(currentPolyline);
+                    currentPolyline = null;
+                }
+                if (connectionSequence.length < 2) return;
+                
+                const latlngs = [];
                 const seq = connectionSequence.filter((ip, i, arr) => i === 0 || ip !== arr[i - 1]);
-                const containerRect = geolocationMapContainer.getBoundingClientRect();
-                const points = [];
                 for (const ip of seq) {
-                    const pin = mapPins[ip];
-                    if (!pin) continue;
-                    const pr = pin.getBoundingClientRect();
-                    const cx = Math.round(pr.left + pr.width / 2 - containerRect.left);
-                    const cy = Math.round(pr.top + pr.height / 2 - containerRect.top);
-                    points.push({ x: cx, y: cy });
+                    const marker = mapPins[ip];
+                    if (marker && marker.getLatLng) {
+                        latlngs.push(marker.getLatLng());
+                    }
                 }
-                if (points.length < 2) return;
-
-                // Draw circles and lines: dot-line-dot pattern
-                const dotColor = '#ef4444';
-                const lineColor = '#ef4444';
-                const dotRadius = 4;
-
-                // Draw lines between consecutive points
-                for (let i = 1; i < points.length; i++) {
-                    const a = points[i - 1], b = points[i];
-                    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-                    line.setAttribute('x1', String(a.x));
-                    line.setAttribute('y1', String(a.y));
-                    line.setAttribute('x2', String(b.x));
-                    line.setAttribute('y2', String(b.y));
-                    line.setAttribute('stroke', lineColor);
-                    line.setAttribute('stroke-width', '2');
-                    line.setAttribute('stroke-linecap', 'round');
-                    line.setAttribute('opacity', '0.9');
-                    svg.appendChild(line);
-                }
-
-                // Draw dots on each point last so they sit above lines (but below HTML pins)
-                for (const p of points) {
-                    const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-                    circle.setAttribute('cx', String(p.x));
-                    circle.setAttribute('cy', String(p.y));
-                    circle.setAttribute('r', String(dotRadius));
-                    circle.setAttribute('fill', dotColor);
-                    circle.setAttribute('opacity', '0.95');
-                    svg.appendChild(circle);
+                
+                if (latlngs.length >= 2) {
+                    currentPolyline = L.polyline(latlngs, {
+                        color: '#ef4444',
+                        weight: 2,
+                        opacity: 0.9,
+                        dashArray: '5, 10'
+                    }).addTo(leafletMap);
                 }
             }
 
             function showPinPopup(ip, lat, lon, info) {
-                if (!worldMap) return;
+                if (!document.getElementById('world-map')) return;
                 // lazy-create popup
                 if (!pinPopup) {
                     pinPopup = document.createElement('div');
                     pinPopup.id = 'pin-popup';
                     pinPopup.style.position = 'absolute';
-                    pinPopup.style.zIndex = 50;
+                    pinPopup.style.zIndex = 1000;
                     pinPopup.style.minWidth = '200px';
                     pinPopup.style.background = 'rgba(17,24,39,0.95)';
                     pinPopup.style.color = '#fff';
@@ -1547,7 +1904,23 @@
                     pinPopup.style.boxShadow = '0 8px 24px rgba(0,0,0,0.6)';
                     pinPopup.style.pointerEvents = 'auto';
                     pinPopup.style.transition = 'transform 200ms ease, opacity 200ms ease';
-                    worldMap.appendChild(pinPopup);
+                    
+                    // Add close button
+                    const closeBtn = document.createElement('button');
+                    closeBtn.innerHTML = '<i class="fas fa-times"></i>';
+                    closeBtn.style.position = 'absolute';
+                    closeBtn.style.right = '5px';
+                    closeBtn.style.top = '5px';
+                    closeBtn.style.color = '#9ca3af';
+                    closeBtn.style.cursor = 'pointer';
+                    closeBtn.onclick = () => pinPopup.style.opacity = '0';
+                    pinPopup.appendChild(closeBtn);
+                    
+                    const contentDiv = document.createElement('div');
+                    contentDiv.className = 'popup-content';
+                    pinPopup.appendChild(contentDiv);
+                    
+                    document.getElementById('world-map').appendChild(pinPopup);
                 }
                 // Build content: IP, location, and recent events
                 const gd = geolocationData[ip] || {};
@@ -1562,27 +1935,16 @@
                 html += `<div style="display:flex;gap:8px;justify-content:flex-end"><button id="popup-center" style="background:#4f46e5;color:white;padding:6px 8px;border-radius:6px;border:none">Center</button><button id="popup-close" style="background:transparent;border:1px solid #374151;color:#cbd5e1;padding:6px 8px;border-radius:6px">Close</button></div>`;
                 pinPopup.innerHTML = html;
 
-                // position popup near the pin using natural coords then scale+translate
-                const naturalW = worldMap.clientWidth || worldMap.offsetWidth;
-                const naturalH = worldMap.clientHeight || worldMap.offsetHeight;
-                const x_natural = ((lon + 180) / 360) * naturalW;
-                const y_natural = ((90 - lat) / 180) * naturalH;
-                const x = x_natural * mapState.scale + mapState.tx;
-                const y = y_natural * mapState.scale + mapState.ty;
-                // place above the pin (adjust to keep inside container if needed)
+                // position popup relative to pin
                 const containerRect = geolocationMapContainer.getBoundingClientRect();
-                let left = x + 12;
-                let top = y - 12;
-                // ensure popup stays visible
                 const popupW = 220, popupH = 160;
-                left = Math.max(8, Math.min(containerRect.width - popupW - 8, left));
-                top = Math.max(8, Math.min(containerRect.height - popupH - 8, top));
+                let left = 20, top = 20; 
                 pinPopup.style.left = `${left}px`;
                 pinPopup.style.top = `${top}px`;
                 pinPopup.style.opacity = '1';
 
                 // wire buttons
-                document.getElementById('popup-center').onclick = () => centerOnCoordinates(lat, lon, 500);
+                document.getElementById('popup-center').onclick = () => centerOnCoordinates(lat, lon, 6);
                 document.getElementById('popup-close').onclick = () => { pinPopup.style.opacity = '0'; setTimeout(()=>{ if (pinPopup) pinPopup.remove(); pinPopup = null; }, 200); };
             }
 
@@ -1590,178 +1952,10 @@
                 if (pinPopup) { pinPopup.remove(); pinPopup = null; }
             }
 
-            function changeMapZoom(factor) {
-                if (currentView === '3d') {
-                    if (camera && controls) {
-                        const target = controls.target;
-                        const direction = new THREE.Vector3().subVectors(camera.position, target);
-                        direction.multiplyScalar(1 / factor);
-                        const newDistance = direction.length();
-                        if (newDistance > controls.minDistance && newDistance < controls.maxDistance) {
-                            camera.position.copy(target).add(direction);
-                            controls.update();
-                        }
-                    }
-                    return;
-                }
-                // If globe is active, change globe POV altitude instead of 2D zoom
-                if (useGlobe && globeInstance) {
-                    try {
-                        const pov = globeInstance.pointOfView() || { lat: 20, lng: 0, altitude: 2.5 };
-                        const newAlt = Math.min(10, Math.max(0.2, pov.altitude / factor));
-                        globeInstance.pointOfView({ lat: pov.lat, lng: pov.lng, altitude: newAlt }, 500);
-                    } catch (e) { console.warn('Globe zoom failed', e); }
-                    return;
-                }
-                const s = Math.min(mapState.maxScale, Math.max(mapState.minScale, mapState.scale * factor));
-                const rect = worldMap.getBoundingClientRect();
-                const containerRect = geolocationMapContainer.getBoundingClientRect();
-                // zoom towards center
-                const prevScale = mapState.scale;
-                mapState.scale = s;
-                // clamp tx/ty so there are no blank edges
-                clampMapTranslation();
-                applyMapTransform();
-                updateClusters();
-            }
-
-            function resetMap() {
-                if (currentView === '3d') {
-                    if (camera && controls) {
-                        camera.position.set(0, 25, 55);
-                        controls.target.set(0, 0, 0);
-                        controls.update();
-                    }
-                    return;
-                }
-                if (useGlobe && globeInstance) {
-                    globeInstance.pointOfView({ lat: 20, lng: 0, altitude: 2.5 }, 600);
-                    return;
-                }
-                mapState.scale = 1; mapState.tx = 0; mapState.ty = 0; applyMapTransform();
-            }
-
-            function applyMapTransform() {
-                if (!worldMap) return;
-                clampMapTranslation();
-                worldMap.style.transform = `translate(${mapState.tx}px, ${mapState.ty}px) scale(${mapState.scale})`;
-                // reposition popup if open
-                if (pinPopup) {
-                    // try to keep popup visible relative to its pinned ip if available
-                    // best-effort: close popup to avoid misplacement
-                    hidePinPopup();
-                }
-                // update persistent polyline to reflect new pin positions
-                rebuildPolyline();
-            }
-
-            // intentionally empty: clustering disabled per user request (pins are shown individually)
-            function updateClusters() {
-                // no-op: clustering removed to show every pin individually
-            }
-
-            function clampMapTranslation() {
-                if (!worldMap) return;
-                const containerRect = geolocationMapContainer.getBoundingClientRect();
-                // natural size of the map element (not affected by CSS transform)
-                const naturalW = worldMap.clientWidth || worldMap.offsetWidth;
-                const naturalH = worldMap.clientHeight || worldMap.offsetHeight;
-                const scaledW = naturalW * mapState.scale;
-                const scaledH = naturalH * mapState.scale;
-
-                // If scaled map is smaller than container, center it
-                if (scaledW <= containerRect.width) {
-                    mapState.tx = (containerRect.width - scaledW) / 2;
-                } else {
-                    const minTx = containerRect.width - scaledW;
-                    const maxTx = 0;
-                    mapState.tx = Math.max(minTx, Math.min(maxTx, mapState.tx));
-                }
-
-                if (scaledH <= containerRect.height) {
-                    mapState.ty = (containerRect.height - scaledH) / 2;
-                } else {
-                    const minTy = containerRect.height - scaledH;
-                    const maxTy = 0;
-                    mapState.ty = Math.max(minTy, Math.min(maxTy, mapState.ty));
-                }
-            }
-
-            function centerOnCoordinates(lat, lon, duration = 400) {
-                if (!worldMap) return;
-                const naturalW = worldMap.clientWidth || worldMap.offsetWidth;
-                const naturalH = worldMap.clientHeight || worldMap.offsetHeight;
-                const x_natural = ((lon + 180) / 360) * naturalW;
-                const y_natural = ((90 - lat) / 180) * naturalH;
-                const containerRect = geolocationMapContainer.getBoundingClientRect();
-                const cx = containerRect.width / 2;
-                const cy = containerRect.height / 2;
-                const targetTx = cx - x_natural * mapState.scale;
-                const targetTy = cy - y_natural * mapState.scale;
-                const startTx = mapState.tx, startTy = mapState.ty;
-                const start = performance.now();
-                function step(t) {
-                    const p = Math.min(1, (t - start) / duration);
-                    const ease = p < 0.5 ? 2*p*p : -1 + (4 - 2*p)*p;
-                    mapState.tx = startTx + (targetTx - startTx) * ease;
-                    mapState.ty = startTy + (targetTy - startTy) * ease;
-                    applyMapTransform();
-                    if (p < 1) requestAnimationFrame(step);
-                }
-                requestAnimationFrame(step);
-            }
-
-            function initMapInteractions() {
-                if (!worldMap) return;
-                worldMap.addEventListener('pointerdown', (e) => {
-                    worldMap.setPointerCapture(e.pointerId);
-                    mapState.dragging = true;
-                    mapState.dragStart = { x: e.clientX - mapState.tx, y: e.clientY - mapState.ty };
-                });
-                window.addEventListener('pointermove', (e) => {
-                    if (!mapState.dragging) return;
-                    mapState.tx = e.clientX - mapState.dragStart.x;
-                    mapState.ty = e.clientY - mapState.dragStart.y;
-                    clampMapTranslation();
-                    applyMapTransform();
-                    updateClusters();
-                });
-                window.addEventListener('pointerup', (e) => {
-                    if (mapState.dragging) {
-                        mapState.dragging = false;
-                        mapState.dragStart = null;
-                    }
-                });
-                geolocationMapContainer.addEventListener('wheel', (e) => {
-                    e.preventDefault();
-                    const containerRect = geolocationMapContainer.getBoundingClientRect();
-                    const mouseX = e.clientX - containerRect.left;
-                    const mouseY = e.clientY - containerRect.top;
-                    const oldScale = mapState.scale;
-                    const delta = e.deltaY > 0 ? 1/1.12 : 1.12;
-                    const newScale = Math.min(mapState.maxScale, Math.max(mapState.minScale, oldScale * delta));
-                    // mouse position in natural map coordinates
-                    const naturalX = (mouseX - mapState.tx) / oldScale;
-                    const naturalY = (mouseY - mapState.ty) / oldScale;
-                    mapState.scale = newScale;
-                    // keep the same natural point under the cursor
-                    mapState.tx = mouseX - naturalX * newScale;
-                    mapState.ty = mouseY - naturalY * newScale;
-                    clampMapTranslation();
-                    applyMapTransform();
-                    updateClusters();
-                }, { passive: false });
-            }
 
             function toggleMapView() {
                 const desired = currentView === '3d' ? 'map' : '3d';
-                // Only allow immediate switch if animation not started yet or has ended
-                if (!animationStarted || animationEnded) {
-                    performViewSwitch(desired);
-                    return;
-                }
-                // queue the switch to run when animation ends
-                pendingView = desired;
+                performViewSwitch(desired);
             }
 
             function performViewSwitch(targetView) {
@@ -1776,8 +1970,7 @@
                         for (const [ip, info] of Object.entries(geolocationData)) {
                             if (info && info.lat !== null && info.lon !== null) drawMapPin(ip, info.lat, info.lon, info.location);
                         }
-                        clampMapTranslation();
-                        applyMapTransform();
+                        if (leafletMap) leafletMap.invalidateSize();
                         rebuildPolyline();
                     });
                 } else {
@@ -2089,8 +2282,11 @@
                                 { backgroundColor: 'transparent' }
                             ], { duration: 1500 });
                             
-                            // Auto-scroll to bottom of the process tree panel
-                            ptContainer.scrollTop = ptContainer.scrollHeight;
+                            // Auto-scroll only if user hasn't scrolled away (within 120px of bottom)
+                            const isNearBottom = ptContainer.scrollHeight - ptContainer.scrollTop - ptContainer.clientHeight < 120;
+                            if (isNearBottom) {
+                                ptContainer.scrollTop = ptContainer.scrollHeight;
+                            }
                         }
                         // timeline-synced globe animation: add arcs between sequential connection events
                         // timeline-synced animation: add arcs/lines between sequential connection events
