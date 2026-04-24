@@ -1,8 +1,72 @@
 <!DOCTYPE html>
-<html lang="en">
+<!-- 
+  ==========================================================================
+  AUTHENTICATION & OWNERSHIP NOTICE
+  --------------------------------------------------------------------------
+  Project: Dynamic Malware Analysis Visualizer
+  Author: SHRIYA
+  
+  This source code is the original work of SHRIYA. 
+  Unauthorized redistribution or "piracy" of this code is strictly prohibited.
+  ==========================================================================
+-->
+<html lang="en" data-auth-sig="SHRIYA-SECURE-2026">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, height=device-height">
+    <script>
+        /**
+         * @license SHRIYA-AUTHENTICATED
+         * Anti-Tamper & Authenticity Guard
+         */
+        (function() {
+            const _0xAuth = 'SHRIYA';
+            const _0xKey = 'AUTH-SIG';
+            
+            // Debugger Trap: Prevents inspection by pausing execution if DevTools is open
+            const _0xTrap = function() {
+                try {
+                    (function _0xCheck(_0xI) {
+                        if ((('' + _0xI / _0xI)['length'] !== 0x1) || (_0xI % 0x14 === 0x0)) {
+                            (function() {}['constructor']('debugger')());
+                        } else {
+                            (function() {}['constructor']('debugger')());
+                        }
+                        _0xCheck(++_0xI);
+                    }(0x0));
+                } catch (_0xErr) {}
+            };
+            
+            // Integrity Monitor
+            setInterval(() => {
+                const _0xEl = document.documentElement;
+                if (_0xEl.getAttribute('data-auth-sig') !== 'SHRIYA-SECURE-2026') {
+                    document.body.innerHTML = '<div style="display:flex;align-items:center;justify-center:center;height:100vh;background:#000;color:#f00;font-family:sans-serif;font-weight:bold;">CRITICAL: AUTHENTICITY REVOKED. UNAUTHORIZED TAMPERING DETECTED.</div>';
+                    window.location.reload();
+                }
+                // Periodic debugger trap check
+                if (window.outerWidth - window.innerWidth > 160 || window.outerHeight - window.innerHeight > 160) {
+                    _0xTrap();
+                }
+            }, 1000);
+
+            // Disable Right-Click and Keyboard Shortcuts
+            document.addEventListener('contextmenu', (e) => e.preventDefault());
+            document.addEventListener('keydown', (e) => {
+                if (
+                    e.key === 'F12' || 
+                    ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C' || e.key === 'i' || e.key === 'j' || e.key === 'c')) || 
+                    ((e.ctrlKey || e.metaKey) && (e.key === 'U' || e.key === 'u' || e.key === 'S' || e.key === 's' || e.key === 'P' || e.key === 'p'))
+                ) {
+                    e.preventDefault();
+                    _0xTrap(); 
+                    return false;
+                }
+            });
+            
+            console.log('%c [SECURE] Authentication Verified: ' + _0xAuth, 'color:#4f46e5;font-weight:bold;');
+        })();
+    </script>
     <title>Real-Time Malware Analysis Simulation</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
