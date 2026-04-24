@@ -136,24 +136,31 @@
         .label {
             color: #ffffff;
             font-family: 'Inter', sans-serif;
-            font-size: 13px;
-            color: #ffffff;
-            font-family: 'Inter', sans-serif;
-            font-size: 13px;
+            font-size: 11px;
             font-weight: 500;
             text-shadow: 0 0 8px rgba(0, 0, 0, 0.9), 0 0 3px rgba(0, 0, 0, 0.8);
-            background-color: rgba(17, 24, 39, 0.95);
-            padding: 6px 12px;
-            border-radius: 8px;
-            border: 1px solid rgba(74, 158, 255, 0.5);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6), 0 0 8px rgba(74, 158, 255, 0.3);
+            background-color: rgba(17, 24, 39, 0.85);
+            padding: 4px 8px;
+            border-radius: 6px;
+            border: 1px solid rgba(74, 158, 255, 0.3);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4), 0 0 8px rgba(74, 158, 255, 0.1);
             text-align: center;
-            min-width: 120px;
+            min-width: 80px;
             white-space: nowrap;
             pointer-events: auto;
             cursor: pointer;
             backdrop-filter: blur(4px);
             -webkit-backdrop-filter: blur(4px);
+            opacity: 0.7;
+            transition: opacity 0.2s ease, transform 0.2s ease, z-index 0s;
+            z-index: 1;
+        }
+        .label:hover {
+            opacity: 1;
+            transform: scale(1.15);
+            z-index: 1000;
+            background-color: rgba(17, 24, 39, 0.98);
+            border-color: rgba(74, 158, 255, 0.8);
         }
         .reg-tab {
             color: #9ca3af;
@@ -170,9 +177,9 @@
             border: 1px solid rgba(99, 102, 241, 0.5);
         }
         .label .ip {
-            font-size: 11px;
+            font-size: 9px;
             color: #a5b4fc;
-            margin-top: 4px;
+            margin-top: 3px;
             font-weight: 400;
             opacity: 0.9;
         }
@@ -1503,10 +1510,18 @@
                     }
                     if (node.userData.expanded) {
                         let tableHTML = '<table style="width:100%; text-align:left; border-collapse:collapse; margin-top:4px; font-size:9px;">';
-                        tableHTML += '<tr style="border-bottom:1px solid #4f46e5;"><th style="padding:2px 0;">Event Type</th></tr>';
+                        tableHTML += '<tr style="border-bottom:1px solid #4f46e5;"><th style="padding:2px 0;">Details</th></tr>';
                         node.userData.events.slice(0, 15).forEach(ev => {
-                            let info = ev.port ? `Port: ${ev.port}` : (ev.type || 'Connection');
-                            tableHTML += `<tr><td style="padding:2px 0;">${info}</td></tr>`;
+                            let info = '';
+                            if (ev.answers) {
+                                const answers = ev.answers.map(a => a.data).slice(0, 2).join(', ');
+                                info = `DNS ${ev.type}${answers ? ' &rarr; ' + answers : ''}`;
+                            } else if (ev.port) {
+                                info = `Port: ${ev.port}`;
+                            } else {
+                                info = ev.type || 'Connection';
+                            }
+                            tableHTML += `<tr><td style="padding:2px 0; overflow:hidden; text-overflow:ellipsis; max-width:180px;" title="${info}">${info}</td></tr>`;
                         });
                         if (node.userData.events.length > 15) tableHTML += `<tr><td style="padding:2px 0; color:#818cf8;">+ ${node.userData.events.length - 15} more</td></tr>`;
                         tableHTML += '</table>';
@@ -1520,34 +1535,45 @@
             }
 
             function createProcessNode(data) {
-                const parentNode = nodeMap.get(data.ppid) || nodeMap.get('initial');
+                // Handle missing PIDs/PPIDs safely to prevent `null` key chaining
+                const ppid = (data.ppid === null || data.ppid === undefined) ? 'unknown_parent' : data.ppid;
+                const pid = (data.pid === null || data.pid === undefined) ? `unknown_pid_${Math.random()}` : data.pid;
+                
+                const parentNode = nodeMap.get(ppid) || nodeMap.get('initial');
                 if (!parentNode) return;
                 
                 if (!parentNode.userData.childrenByName) {
                     parentNode.userData.childrenByName = new Map();
                 }
                 
-                const processKey = String(data.process_name || 'unknown').toLowerCase().trim();
+                let baseName = String(data.process_name || 'unknown').trim();
+                // Match the first word (ignoring arguments) so "nslookup.exe domain.com" groups under "nslookup.exe"
+                const firstWordMatch = baseName.match(/^([^\s]+)/);
+                if (firstWordMatch) {
+                    baseName = firstWordMatch[1];
+                }
+                const processKey = baseName.toLowerCase();
+                
                 let node = parentNode.userData.childrenByName.get(processKey);
                 
                 if (node) {
                     node.userData.count++;
-                    if (!node.userData.pids.includes(data.pid)) {
-                        node.userData.pids.push(data.pid);
+                    if (!node.userData.pids.includes(pid)) {
+                        node.userData.pids.push(pid);
                     }
                     const labelObj = node.children.find(c => c.isCSS2DObject);
                     if (labelObj) {
                         renderLabel(node, labelObj.element);
                     }
-                    nodeMap.set(data.pid, node); // Route future children through this node
+                    nodeMap.set(pid, node); // Route future children through this node
                     return;
                 }
                 
-                node = createNode(data.process_name || 'Unknown', processColor);
+                node = createNode(baseName, processColor);
                 node.userData.isProcess = true;
-                node.userData.processName = data.process_name || 'Unknown';
+                node.userData.processName = baseName;
                 node.userData.count = 1;
-                node.userData.pids = [data.pid];
+                node.userData.pids = [pid];
                 node.userData.expanded = false;
                 
                 const labelObj = node.children.find(c => c.isCSS2DObject);
@@ -1565,8 +1591,8 @@
                 const childIndex = parentNode.userData.childCount++;
                 const goldenAngle = Math.PI * (3 - Math.sqrt(5)); // ~137.5 degrees
                 const angle = childIndex * goldenAngle;
-                const radius = 3.0 * Math.sqrt(childIndex + 1);
-                const yOffset = (childIndex % 2 === 0 ? 1 : -1) * (childIndex * 0.6);
+                const radius = 5.0 * Math.sqrt(childIndex + 1); // Increased from 3.0
+                const yOffset = (childIndex % 2 === 0 ? 1 : -1) * (childIndex * 1.5); // Increased from 0.6
 
                 node.position.set(
                     parentNode.position.x + Math.cos(angle) * radius,
@@ -1577,7 +1603,7 @@
                 infectionGraphGroup.add(node);
                 infectionGraphGroup.add(createLine(parentNode.position, node.position));
                 parentNode.userData.childrenByName.set(processKey, node);
-                nodeMap.set(data.pid, node);
+                nodeMap.set(pid, node);
             }
 
             function createNetworkNode(data, type) {
@@ -1620,9 +1646,9 @@
                     }
                     
                     const angle = networkNodeAngle;
-                    networkNodeAngle += Math.PI / 4.5; // Slightly more spread
-                    const radius = 22 + Math.random() * 3;
-                    const height = (Math.random() - 0.5) * 10;
+                    networkNodeAngle += Math.PI / 6; // Less dense packing
+                    const radius = 40 + Math.random() * 15; // Increased from 22
+                    const height = (Math.random() - 0.5) * 30; // Increased from 10
                     node.position.set(Math.cos(angle) * radius, height, Math.sin(angle) * radius);
                     infectionGraphGroup.add(node);
                     nodeMap.set(networkKey, node);
