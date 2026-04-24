@@ -81,52 +81,34 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <style>
         html, body {
-            overflow: hidden;
-            height: 100vh;
-            width: 100vw;
-            margin: 0;
-            padding: 0;
+            overflow: overflow; /* Prevent scrolling */
         }
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #0f172a;
-            color: #f1f5f9;
-            display: flex;
-            flex-direction: column;
-        }
-        .main-wrapper {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            padding: 1rem;
-            box-sizing: border-box;
-            gap: 1rem;
+            background-color: #111827;
+            color: #e5e7eb;
         }
         .card {
-            background-color: #1e293b;
-            border-radius: 1rem;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
+            background-color: #1f2937;
+            border-radius: 0.75rem;
+            border: 1px solid #374151;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
         }
         .timeline-item {
             position: relative;
-            padding-bottom: 1.5rem;
-            padding-left: 2rem;
-            border-left: 2px solid #334155;
+            padding-bottom: 1.25rem; /* Reduced padding */
+            padding-left: 2.5rem;
+            border-left: 2px solid #4b5563;
         }
         .timeline-dot {
             position: absolute;
-            left: -0.65rem;
+            left: -0.7rem;
             top: 0;
-            height: 1.2rem;
-            width: 1.2rem;
-            border-radius: 50%;
-            background-color: #475569;
-            border: 4px solid #1e293b;
+            height: 1.25rem;
+            width: 1.25rem;
+            border-radius: 9999px;
+            background-color: #4b5563;
+            border: 4px solid #1f2937;
             transition: all 0.3s ease;
         }
         .timeline-item.active .timeline-dot {
@@ -307,14 +289,14 @@
              border-radius: 0.5rem;
         }
 
-        /* Fullscreen styles */
-        #visualization-card:fullscreen {
-            padding: 1.5rem;
-            background-color: #0f172a;
+        /* In-page fullscreen styles */
+        body.viz-fullscreen #main-content > .lg\:col-span-1 { display: none; }
+        body.viz-fullscreen #main-content > .lg\:col-span-2 {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: 50; margin: 0; padding: 1rem; border-radius: 0;
         }
-        body.viz-fullscreen #main-content > .lg\:col-span-3 {
-            position: relative;
-        }
+        body.viz-fullscreen header { display: none; }
+        body.viz-fullscreen #main-content { padding: 0; gap: 0; }
 
         /* Hide scrollbar globally for seamless UI */
         ::-webkit-scrollbar {
@@ -389,13 +371,9 @@
             background: #111827; /* Tailwind gray-900 */
         }
         .world-map {
-            width: 100% !important;
-            height: 100% !important;
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
+            width: 100%;
+            height: 100%;
+            position: relative;
             z-index: 1;
         }
         .leaflet-container {
@@ -450,17 +428,13 @@
     </style>
 </head>
 <body>
-    <div class="main-wrapper">
-        <header id="main-header" class="flex-shrink-0 text-center py-2">
-            <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-white flex items-center justify-center gap-3">
-                <i class="fas fa-shield-virus text-indigo-500"></i>
-                Dynamic Malware Analysis Visualizer
-            </h1>
-            <p class="text-sm text-slate-400 mt-1">Real-time behavior simulation & geographic threat mapping</p>
+    <div class="max-w-screen-2xl mx-auto h-screen flex flex-col p-4">
+        <header id="main-header" class="relative mb-4 text-center flex-shrink-0">
+            <h1 class="text-3xl sm:text-4xl font-bold tracking-tight text-white"><i class="fas fa-shield-virus mr-2"></i>Dynamic Malware Analysis Visualizer</h1>
+            <p class="mt-1 text-lg text-gray-400">A real-time 3D simulation of malware behavior from your log file.</p>
         </header>
 
-        <main id="main-content" class="hidden flex-grow grid grid-cols-1 lg:grid-cols-4 gap-4 min-h-0">
-            <!-- Left Sidebar: Summary & Timeline -->
+        <main id="main-content" class="hidden flex-grow grid grid-cols-1 lg:grid-cols-3 gap-4 min-h-0">
             <div class="lg:col-span-1 flex flex-col gap-4 min-h-0">
                 <div class="card p-6 flex flex-col flex-shrink-0">
                     <div>
@@ -483,8 +457,7 @@
                     <div id="timeline-container" class="relative flex-grow overflow-y-auto pr-2"></div>
                 </div>
             </div>
-            <!-- Center/Right Visualization Area -->
-            <div id="visualization-card" class="lg:col-span-3 card p-5 flex flex-col min-h-0 relative">
+            <div class="lg:col-span-2 card p-6 flex flex-col">
                 <div class="flex justify-between items-center flex-shrink-0 mb-4">
                     <h2 class="text-xl font-semibold flex items-center" id="simulation-title"><i class="fas fa-cube mr-3"></i>3D Infection Simulation</h2>
                     <div class="flex items-center gap-2 sm:gap-4">
@@ -499,14 +472,10 @@
                                 <i class="fas fa-key mr-1"></i><span class="hidden sm:inline">Registry</span>
                             </button>
                             <div id="map-controls" class="flex items-center gap-1">
-                                <button id="map-pan-left" class="text-sm px-2 py-1 bg-gray-600 hover:bg-gray-500 text-white rounded transition-colors" title="Pan Left"><i class="fas fa-chevron-left"></i></button>
-                                <button id="map-pan-up" class="text-sm px-2 py-1 bg-gray-600 hover:bg-gray-500 text-white rounded transition-colors" title="Pan Up"><i class="fas fa-chevron-up"></i></button>
-                                <button id="map-pan-down" class="text-sm px-2 py-1 bg-gray-600 hover:bg-gray-500 text-white rounded transition-colors" title="Pan Down"><i class="fas fa-chevron-down"></i></button>
-                                <button id="map-pan-right" class="text-sm px-2 py-1 bg-gray-600 hover:bg-gray-500 text-white rounded transition-colors" title="Pan Right"><i class="fas fa-chevron-right"></i></button>
-                                <div class="w-px h-4 bg-gray-700 mx-1"></div>
                                 <button id="map-zoom-in" class="text-sm px-2 py-1 bg-gray-600 hover:bg-gray-500 text-white rounded transition-colors" title="Zoom In"><i class="fas fa-search-plus"></i></button>
                                 <button id="map-zoom-out" class="text-sm px-2 py-1 bg-gray-600 hover:bg-gray-500 text-white rounded transition-colors" title="Zoom Out"><i class="fas fa-search-minus"></i></button>
                                 <button id="map-reset" class="text-sm px-2 py-1 bg-gray-600 hover:bg-gray-500 text-white rounded transition-colors" title="Reset View"><i class="fas fa-crosshairs"></i></button>
+                                <!-- globe texture input removed per request -->
                             </div>
                         </div>
                         <div id="playback-controls" class="flex items-center gap-2 sm:gap-3">
@@ -737,20 +706,10 @@
             speedBtns.forEach(btn => btn.addEventListener('click', setSpeed));
             
             fullscreenBtn.addEventListener('click', toggleFullscreen);
-            document.addEventListener('fullscreenchange', () => {
-                const isFullscreen = !!document.fullscreenElement;
-                fullscreenBtn.querySelector('i').className = isFullscreen ? 'fas fa-compress' : 'fas fa-expand';
-                setTimeout(onWindowResize, 100);
-            });
             viewToggleBtn.addEventListener('click', toggleMapView);
             mapZoomInBtn.addEventListener('click', () => changeMapZoom(1.2));
             mapZoomOutBtn.addEventListener('click', () => changeMapZoom(1/1.2));
             mapResetBtn.addEventListener('click', resetMap);
-
-            document.getElementById('map-pan-left').addEventListener('click', () => panView('left'));
-            document.getElementById('map-pan-right').addEventListener('click', () => panView('right'));
-            document.getElementById('map-pan-up').addEventListener('click', () => panView('up'));
-            document.getElementById('map-pan-down').addEventListener('click', () => panView('down'));
             const viewRegistryBtn = document.getElementById('view-registry-btn');
             const closeRegistryBtn = document.getElementById('close-registry-btn');
             const registryModal = document.getElementById('registry-modal');
@@ -1426,26 +1385,10 @@
             }
 
             function toggleFullscreen() {
-                const container = document.getElementById('visualization-card');
-                if (!container) return;
-                
-                if (!document.fullscreenElement) {
-                    if (container.requestFullscreen) {
-                        container.requestFullscreen();
-                    } else if (container.webkitRequestFullscreen) {
-                        container.webkitRequestFullscreen();
-                    } else if (container.msRequestFullscreen) {
-                        container.msRequestFullscreen();
-                    }
-                } else {
-                    if (document.exitFullscreen) {
-                        document.exitFullscreen();
-                    } else if (document.webkitExitFullscreen) {
-                        document.webkitExitFullscreen();
-                    } else if (document.msExitFullscreen) {
-                        document.msExitFullscreen();
-                    }
-                }
+                body.classList.toggle('viz-fullscreen');
+                const isFullscreen = body.classList.contains('viz-fullscreen');
+                fullscreenBtn.querySelector('i').className = isFullscreen ? 'fas fa-compress' : 'fas fa-expand';
+                setTimeout(onWindowResize, 50);
             }
 
             function togglePause() {
@@ -1615,15 +1558,21 @@
                     if (node.userData.expanded) {
                         let tableHTML = '<table style="width:100%; text-align:left; border-collapse:collapse; margin-top:4px;">';
                         tableHTML += '<tr style="border-bottom:1px solid #4f46e5;"><th style="padding:2px 0;">PID</th></tr>';
-                        node.userData.pids.slice(0, 15).forEach(pid => {
+                        // No slice here, let it scroll
+                        node.userData.pids.forEach(pid => {
                             tableHTML += `<tr><td style="padding:2px 0;">${pid}</td></tr>`;
                         });
-                        if (node.userData.pids.length > 15) tableHTML += `<tr><td style="padding:2px 0; color:#818cf8;">+ ${node.userData.pids.length - 15} more</td></tr>`;
                         tableHTML += '</table>';
                         
-                        text += `<div style="font-size:10px; color:#a5b4fc; margin-top:4px; max-height:150px; overflow-y:auto; text-align:left; background:rgba(0,0,0,0.8); padding:6px; border-radius:4px; white-space:normal;">${tableHTML}</div>`;
+                        text += `<div class="node-scroll-area" style="font-size:10px; color:#a5b4fc; margin-top:4px; max-height:120px; overflow-y:auto; text-align:left; background:rgba(0,0,0,0.8); padding:6px; border-radius:4px; white-space:normal; pointer-events:auto;">${tableHTML}</div>`;
                     }
                     div.innerHTML = text;
+                    // Prevent OrbitControls from stealing scroll/wheel events
+                    const scrollArea = div.querySelector('.node-scroll-area');
+                    if (scrollArea) {
+                        scrollArea.addEventListener('wheel', (e) => e.stopPropagation(), { passive: false });
+                        scrollArea.addEventListener('mousedown', (e) => e.stopPropagation());
+                    }
                 } else if (node.userData.isNetwork) {
                     let text = `${node.userData.networkName}${countBadge}`;
                     if (node.userData.networkIp) {
@@ -1632,7 +1581,8 @@
                     if (node.userData.expanded) {
                         let tableHTML = '<table style="width:100%; text-align:left; border-collapse:collapse; margin-top:4px; font-size:9px;">';
                         tableHTML += '<tr style="border-bottom:1px solid #4f46e5;"><th style="padding:2px 0;">Details</th></tr>';
-                        node.userData.events.slice(0, 15).forEach(ev => {
+                        // No slice here, let it scroll
+                        node.userData.events.forEach(ev => {
                             let info = '';
                             if (ev.answers) {
                                 const answers = ev.answers.map(a => a.data).slice(0, 2).join(', ');
@@ -1644,12 +1594,16 @@
                             }
                             tableHTML += `<tr><td style="padding:2px 0; overflow:hidden; text-overflow:ellipsis; max-width:180px;" title="${info}">${info}</td></tr>`;
                         });
-                        if (node.userData.events.length > 15) tableHTML += `<tr><td style="padding:2px 0; color:#818cf8;">+ ${node.userData.events.length - 15} more</td></tr>`;
                         tableHTML += '</table>';
                         
-                        text += `<div style="font-size:10px; color:#a5b4fc; margin-top:4px; max-height:150px; overflow-y:auto; background:rgba(0,0,0,0.8); padding:6px; border-radius:4px; white-space:normal;">${tableHTML}</div>`;
+                        text += `<div class="node-scroll-area" style="font-size:10px; color:#a5b4fc; margin-top:4px; max-height:120px; overflow-y:auto; background:rgba(0,0,0,0.8); padding:6px; border-radius:4px; white-space:normal; pointer-events:auto;">${tableHTML}</div>`;
                     }
                     div.innerHTML = text;
+                    const scrollArea = div.querySelector('.node-scroll-area');
+                    if (scrollArea) {
+                        scrollArea.addEventListener('wheel', (e) => e.stopPropagation(), { passive: false });
+                        scrollArea.addEventListener('mousedown', (e) => e.stopPropagation());
+                    }
                 } else {
                     div.innerHTML = node.userData.processName || 'Node';
                 }
@@ -1930,17 +1884,12 @@
                 leafletMap = L.map('world-map', {
                     center: [20, 0],
                     zoom: 2,
-                    minZoom: 2,
                     zoomControl: false,
-                    attributionControl: false,
-                    maxBounds: [[-90, -180], [90, 180]],
-                    maxBoundsViscosity: 1.0
+                    attributionControl: false
                 });
                 // Dark theme tile layer
                 L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-                    maxZoom: 19,
-                    noWrap: false,
-                    bounds: [[-90, -180], [90, 180]]
+                    maxZoom: 19
                 }).addTo(leafletMap);
             }
 
@@ -1954,22 +1903,6 @@
                     const zoomVector = new THREE.Vector3().subVectors(camera.position, controls.target);
                     zoomVector.multiplyScalar(factor < 1 ? 1.2 : 1 / 1.2);
                     camera.position.copy(controls.target).add(zoomVector);
-                    controls.update();
-                }
-            }
-
-            function panView(direction) {
-                if (currentView === 'map' && leafletMap) {
-                    const offset = direction === 'left' ? [-100, 0] : 
-                                 direction === 'right' ? [100, 0] : 
-                                 direction === 'up' ? [0, -100] : [0, 100];
-                    leafletMap.panBy(offset);
-                } else if (currentView === '3d' && controls && camera) {
-                    const panStep = 5;
-                    if (direction === 'left') { camera.position.x -= panStep; controls.target.x -= panStep; }
-                    else if (direction === 'right') { camera.position.x += panStep; controls.target.x += panStep; }
-                    else if (direction === 'up') { camera.position.y += panStep; controls.target.y += panStep; }
-                    else if (direction === 'down') { camera.position.y -= panStep; controls.target.y -= panStep; }
                     controls.update();
                 }
             }
@@ -2139,12 +2072,7 @@
                         for (const [ip, info] of Object.entries(geolocationData)) {
                             if (info && info.lat !== null && info.lon !== null) drawMapPin(ip, info.lat, info.lon, info.location);
                         }
-                        if (leafletMap) {
-                            setTimeout(() => {
-                                leafletMap.invalidateSize();
-                                leafletMap.setView([20, 0], leafletMap.getZoom(), { animate: false });
-                            }, 100);
-                        }
+                        if (leafletMap) leafletMap.invalidateSize();
                         rebuildPolyline();
                     });
                 } else {
