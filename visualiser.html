@@ -307,8 +307,12 @@
              border-radius: 0.5rem;
         }
 
-        /* In-page fullscreen styles removed per request */
-        body.viz-fullscreen #main-content > .lg\:col-span-2 {
+        /* Fullscreen styles */
+        #visualization-card:fullscreen {
+            padding: 1.5rem;
+            background-color: #0f172a;
+        }
+        body.viz-fullscreen #main-content > .lg\:col-span-3 {
             position: relative;
         }
 
@@ -480,7 +484,7 @@
                 </div>
             </div>
             <!-- Center/Right Visualization Area -->
-            <div class="lg:col-span-3 card p-5 flex flex-col min-h-0 relative">
+            <div id="visualization-card" class="lg:col-span-3 card p-5 flex flex-col min-h-0 relative">
                 <div class="flex justify-between items-center flex-shrink-0 mb-4">
                     <h2 class="text-xl font-semibold flex items-center" id="simulation-title"><i class="fas fa-cube mr-3"></i>3D Infection Simulation</h2>
                     <div class="flex items-center gap-2 sm:gap-4">
@@ -1422,7 +1426,7 @@
             }
 
             function toggleFullscreen() {
-                const container = document.querySelector('.lg\\:col-span-2.card');
+                const container = document.getElementById('visualization-card');
                 if (!container) return;
                 
                 if (!document.fullscreenElement) {
