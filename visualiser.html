@@ -289,14 +289,10 @@
              border-radius: 0.5rem;
         }
 
-        /* In-page fullscreen styles */
-        body.viz-fullscreen #main-content > .lg\:col-span-1 { display: none; }
+        /* In-page fullscreen styles removed per request */
         body.viz-fullscreen #main-content > .lg\:col-span-2 {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            z-index: 50; margin: 0; padding: 1rem; border-radius: 0;
+            position: relative;
         }
-        body.viz-fullscreen header { display: none; }
-        body.viz-fullscreen #main-content { padding: 0; gap: 0; }
 
         /* Hide scrollbar globally for seamless UI */
         ::-webkit-scrollbar {
@@ -371,9 +367,13 @@
             background: #111827; /* Tailwind gray-900 */
         }
         .world-map {
-            width: 100%;
-            height: 100%;
-            position: relative;
+            width: 100% !important;
+            height: 100% !important;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
             z-index: 1;
         }
         .leaflet-container {
@@ -472,10 +472,14 @@
                                 <i class="fas fa-key mr-1"></i><span class="hidden sm:inline">Registry</span>
                             </button>
                             <div id="map-controls" class="flex items-center gap-1">
+                                <button id="map-pan-left" class="text-sm px-2 py-1 bg-gray-600 hover:bg-gray-500 text-white rounded transition-colors" title="Pan Left"><i class="fas fa-chevron-left"></i></button>
+                                <button id="map-pan-up" class="text-sm px-2 py-1 bg-gray-600 hover:bg-gray-500 text-white rounded transition-colors" title="Pan Up"><i class="fas fa-chevron-up"></i></button>
+                                <button id="map-pan-down" class="text-sm px-2 py-1 bg-gray-600 hover:bg-gray-500 text-white rounded transition-colors" title="Pan Down"><i class="fas fa-chevron-down"></i></button>
+                                <button id="map-pan-right" class="text-sm px-2 py-1 bg-gray-600 hover:bg-gray-500 text-white rounded transition-colors" title="Pan Right"><i class="fas fa-chevron-right"></i></button>
+                                <div class="w-px h-4 bg-gray-700 mx-1"></div>
                                 <button id="map-zoom-in" class="text-sm px-2 py-1 bg-gray-600 hover:bg-gray-500 text-white rounded transition-colors" title="Zoom In"><i class="fas fa-search-plus"></i></button>
                                 <button id="map-zoom-out" class="text-sm px-2 py-1 bg-gray-600 hover:bg-gray-500 text-white rounded transition-colors" title="Zoom Out"><i class="fas fa-search-minus"></i></button>
                                 <button id="map-reset" class="text-sm px-2 py-1 bg-gray-600 hover:bg-gray-500 text-white rounded transition-colors" title="Reset View"><i class="fas fa-crosshairs"></i></button>
-                                <!-- globe texture input removed per request -->
                             </div>
                         </div>
                         <div id="playback-controls" class="flex items-center gap-2 sm:gap-3">
@@ -706,10 +710,20 @@
             speedBtns.forEach(btn => btn.addEventListener('click', setSpeed));
             
             fullscreenBtn.addEventListener('click', toggleFullscreen);
+            document.addEventListener('fullscreenchange', () => {
+                const isFullscreen = !!document.fullscreenElement;
+                fullscreenBtn.querySelector('i').className = isFullscreen ? 'fas fa-compress' : 'fas fa-expand';
+                setTimeout(onWindowResize, 100);
+            });
             viewToggleBtn.addEventListener('click', toggleMapView);
             mapZoomInBtn.addEventListener('click', () => changeMapZoom(1.2));
             mapZoomOutBtn.addEventListener('click', () => changeMapZoom(1/1.2));
             mapResetBtn.addEventListener('click', resetMap);
+
+            document.getElementById('map-pan-left').addEventListener('click', () => panView('left'));
+            document.getElementById('map-pan-right').addEventListener('click', () => panView('right'));
+            document.getElementById('map-pan-up').addEventListener('click', () => panView('up'));
+            document.getElementById('map-pan-down').addEventListener('click', () => panView('down'));
             const viewRegistryBtn = document.getElementById('view-registry-btn');
             const closeRegistryBtn = document.getElementById('close-registry-btn');
             const registryModal = document.getElementById('registry-modal');
@@ -1385,10 +1399,26 @@
             }
 
             function toggleFullscreen() {
-                body.classList.toggle('viz-fullscreen');
-                const isFullscreen = body.classList.contains('viz-fullscreen');
-                fullscreenBtn.querySelector('i').className = isFullscreen ? 'fas fa-compress' : 'fas fa-expand';
-                setTimeout(onWindowResize, 50);
+                const container = document.querySelector('.lg\\:col-span-2.card');
+                if (!container) return;
+                
+                if (!document.fullscreenElement) {
+                    if (container.requestFullscreen) {
+                        container.requestFullscreen();
+                    } else if (container.webkitRequestFullscreen) {
+                        container.webkitRequestFullscreen();
+                    } else if (container.msRequestFullscreen) {
+                        container.msRequestFullscreen();
+                    }
+                } else {
+                    if (document.exitFullscreen) {
+                        document.exitFullscreen();
+                    } else if (document.webkitExitFullscreen) {
+                        document.webkitExitFullscreen();
+                    } else if (document.msExitFullscreen) {
+                        document.msExitFullscreen();
+                    }
+                }
             }
 
             function togglePause() {
@@ -1873,12 +1903,17 @@
                 leafletMap = L.map('world-map', {
                     center: [20, 0],
                     zoom: 2,
+                    minZoom: 2,
                     zoomControl: false,
-                    attributionControl: false
+                    attributionControl: false,
+                    maxBounds: [[-90, -180], [90, 180]],
+                    maxBoundsViscosity: 1.0
                 });
                 // Dark theme tile layer
                 L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-                    maxZoom: 19
+                    maxZoom: 19,
+                    noWrap: false,
+                    bounds: [[-90, -180], [90, 180]]
                 }).addTo(leafletMap);
             }
 
@@ -1892,6 +1927,22 @@
                     const zoomVector = new THREE.Vector3().subVectors(camera.position, controls.target);
                     zoomVector.multiplyScalar(factor < 1 ? 1.2 : 1 / 1.2);
                     camera.position.copy(controls.target).add(zoomVector);
+                    controls.update();
+                }
+            }
+
+            function panView(direction) {
+                if (currentView === 'map' && leafletMap) {
+                    const offset = direction === 'left' ? [-100, 0] : 
+                                 direction === 'right' ? [100, 0] : 
+                                 direction === 'up' ? [0, -100] : [0, 100];
+                    leafletMap.panBy(offset);
+                } else if (currentView === '3d' && controls && camera) {
+                    const panStep = 5;
+                    if (direction === 'left') { camera.position.x -= panStep; controls.target.x -= panStep; }
+                    else if (direction === 'right') { camera.position.x += panStep; controls.target.x += panStep; }
+                    else if (direction === 'up') { camera.position.y += panStep; controls.target.y += panStep; }
+                    else if (direction === 'down') { camera.position.y -= panStep; controls.target.y -= panStep; }
                     controls.update();
                 }
             }
@@ -2061,7 +2112,12 @@
                         for (const [ip, info] of Object.entries(geolocationData)) {
                             if (info && info.lat !== null && info.lon !== null) drawMapPin(ip, info.lat, info.lon, info.location);
                         }
-                        if (leafletMap) leafletMap.invalidateSize();
+                        if (leafletMap) {
+                            setTimeout(() => {
+                                leafletMap.invalidateSize();
+                                leafletMap.setView([20, 0], leafletMap.getZoom(), { animate: false });
+                            }, 100);
+                        }
                         rebuildPolyline();
                     });
                 } else {
