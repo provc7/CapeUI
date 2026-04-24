@@ -1033,6 +1033,82 @@ app.get('/api/admin/dashboard-stats', authMiddleware, requireAdmin, async (req, 
     }
 });
 
+// --- IP Geolocation Proxy ---
+// Proxies geolocation lookups through the server so they work even when
+// the university network blocks direct browser requests to third-party APIs.
+const geoLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 300, // generous limit for geo lookups
+    message: { error: 'Too many geolocation requests' }
+});
+app.get('/api/geoip/:ip', geoLimiter, async (req, res) => {
+    const ip = req.params.ip;
+    // Basic IPv4/IPv6 validation
+    if (!/^[\d.:a-fA-F]+$/.test(ip)) return res.status(400).json({ error: 'Invalid IP' });
+
+    const apis = [
+        {
+            url: `https://ipapi.co/${ip}/json/`,
+            parse: d => ({
+                city: d.city, region: d.region, country: d.country_name,
+                lat: d.latitude, lon: d.longitude
+            })
+        },
+        {
+            url: `https://ipwhois.app/json/${ip}`,
+            parse: d => ({
+                city: d.city, region: d.region, country: d.country,
+                lat: d.latitude, lon: d.longitude
+            })
+        },
+        {
+            url: `https://ipapi.com/ip_api.php?ip=${ip}`,
+            parse: d => ({
+                city: d.city, region: d.regionName || d.region, country: d.countryName || d.country_name,
+                lat: d.latitude || d.lat, lon: d.longitude || d.lon
+            })
+        },
+        {
+            url: `https://json.geoiplookup.io/${ip}`,
+            parse: d => ({
+                city: d.city, region: d.region, country: d.country_name,
+                lat: d.latitude, lon: d.longitude
+            })
+        },
+        {
+            url: `https://api.ip.sb/geoip/${ip}`,
+            parse: d => ({
+                city: d.city, region: d.region, country: d.country,
+                lat: d.latitude, lon: d.longitude
+            })
+        }
+    ];
+
+    for (const api of apis) {
+        try {
+            const response = await axios.get(api.url, { timeout: 5000 });
+            const parsed = api.parse(response.data);
+            if (parsed.city || parsed.country) {
+                const location = `${parsed.city || 'Unknown'}, ${parsed.region || 'Unknown'}, ${parsed.country || 'Unknown'}`;
+                return res.json({
+                    ip,
+                    location,
+                    city: parsed.city || 'Unknown',
+                    region: parsed.region || 'Unknown',
+                    country: parsed.country || 'Unknown',
+                    lat: parsed.lat ? parseFloat(parsed.lat) : null,
+                    lon: parsed.lon ? parseFloat(parsed.lon) : null
+                });
+            }
+        } catch (e) {
+            // try next API
+            continue;
+        }
+    }
+    // All APIs failed
+    return res.status(502).json({ error: 'All geolocation APIs failed', ip });
+});
+
 const HOST = process.env.HOST || '0.0.0.0';
 app.listen(PORT, HOST, () => {
     console.log(`Server running on http://${HOST}:${PORT}`);

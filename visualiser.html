@@ -1639,23 +1639,41 @@
             }
             
             function fetchGeolocation(ip, nodeName) {
-                // Try multiple geolocation APIs with fallbacks
+                // Strategy: try the server-side proxy first (works behind firewalls),
+                // then fall back to direct browser API calls as a last resort.
+                
+                // 1. Try server proxy (handles all API fallbacks server-side)
+                fetch(`/api/geoip/${ip}`)
+                    .then(response => {
+                        if (!response.ok) throw new Error('Proxy returned ' + response.status);
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.location && data.location !== 'Unknown, Unknown, Unknown') {
+                            updateLocationData(ip, nodeName, data.location, data.lat, data.lon);
+                        } else {
+                            throw new Error('Invalid proxy data');
+                        }
+                    })
+                    .catch(proxyErr => {
+                        console.warn(`Server proxy failed for ${ip}, trying direct APIs:`, proxyErr.message);
+                        // 2. Fall back to direct browser API calls
+                        tryDirectApis(ip, nodeName);
+                    });
+            }
+            
+            function tryDirectApis(ip, nodeName) {
                 const apis = [
                     `https://ipapi.co/${ip}/json/`,
-                    `https://api.ipgeolocation.io/ipgeo?apiKey=demo&ip=${ip}`,
-                    `https://json.geoiplookup.io/${ip}`,
-                    `https://freegeoip.app/json/${ip}`,
-                    `https://api.ip.sb/geoip/${ip}`,
-                    `https://api.iplocation.net/?ip=${ip}`,
                     `https://ipwhois.app/json/${ip}`,
-                    `https://ipapi.com/ip_api.php?ip=${ip}`
+                    `https://json.geoiplookup.io/${ip}`,
+                    `https://api.ip.sb/geoip/${ip}`
                 ];
                 
                 let currentApiIndex = 0;
                 
                 function tryNextApi() {
                     if (currentApiIndex >= apis.length) {
-                        // All APIs failed
                         updateLocationData(ip, nodeName, 'Location unavailable');
                         return;
                     }
@@ -1665,58 +1683,38 @@
                     
                     fetch(apiUrl)
                         .then(response => {
-                            if (!response.ok) {
-                                throw new Error('API response not ok');
-                            }
+                            if (!response.ok) throw new Error('API response not ok');
                             return response.json();
                         })
                         .then(data => {
-                            let location;
-                            // Try to extract lat/lon from common fields
-                            const lat = data.latitude || data.lat || data.latitude || data.latitude || data.latitude || data.latitude || null;
-                            const lon = data.longitude || data.lon || data.lng || data.long || data.longitude || data.longitude || null;
+                            const lat = data.latitude || data.lat || null;
+                            const lon = data.longitude || data.lon || data.lng || null;
 
-                            // Parse response based on API to build a friendly location string
+                            let location;
                             if (apiUrl.includes('ipapi.co')) {
-                                location = `${data.city || 'Unknown'}, ${data.region || 'Unknown'}, ${data.country_name || 'Unknown'}`;
-                            } else if (apiUrl.includes('ipgeolocation.io')) {
-                                location = `${data.city || 'Unknown'}, ${data.state_prov || 'Unknown'}, ${data.country_name || 'Unknown'}`;
-                            } else if (apiUrl.includes('geoiplookup.io')) {
-                                location = `${data.city || 'Unknown'}, ${data.region || 'Unknown'}, ${data.country_name || 'Unknown'}`;
-                            } else if (apiUrl.includes('freegeoip.app')) {
-                                location = `${data.city || 'Unknown'}, ${data.region_name || 'Unknown'}, ${data.country_name || 'Unknown'}`;
-                            } else if (apiUrl.includes('ip.sb')) {
-                                location = `${data.city || 'Unknown'}, ${data.region || 'Unknown'}, ${data.country || 'Unknown'}`;
-                            } else if (apiUrl.includes('iplocation.net')) {
                                 location = `${data.city || 'Unknown'}, ${data.region || 'Unknown'}, ${data.country_name || 'Unknown'}`;
                             } else if (apiUrl.includes('ipwhois.app')) {
                                 location = `${data.city || 'Unknown'}, ${data.region || 'Unknown'}, ${data.country || 'Unknown'}`;
-                            } else if (apiUrl.includes('ipapi.com')) {
-                                location = `${data.city || 'Unknown'}, ${data.regionName || 'Unknown'}, ${data.countryName || 'Unknown'}`;
+                            } else if (apiUrl.includes('geoiplookup.io')) {
+                                location = `${data.city || 'Unknown'}, ${data.region || 'Unknown'}, ${data.country_name || 'Unknown'}`;
+                            } else if (apiUrl.includes('ip.sb')) {
+                                location = `${data.city || 'Unknown'}, ${data.region || 'Unknown'}, ${data.country || 'Unknown'}`;
                             } else {
-                                // Generic fallback
-                                location = `${data.city || data.region || data.country_name || data.country || 'Unknown'}, ${data.region || data.region_name || 'Unknown'}, ${data.country_name || data.country || 'Unknown'}`;
+                                location = `${data.city || 'Unknown'}, ${data.region || 'Unknown'}, ${data.country_name || data.country || 'Unknown'}`;
                             }
 
-                            // If lat/lon were not found in the earlier common fields, try a few other names
-                            const finalLat = lat || data.latitude || data.lat || data.location?.latitude || data.geo?.latitude || data.latitude;
-                            const finalLon = lon || data.longitude || data.lon || data.location?.longitude || data.geo?.longitude || data.longitude;
-
-                            // Validate location string
-                            if (location === 'Unknown, Unknown, Unknown' || !location || !location.includes(',')) {
-                                // treat as invalid and try next API
+                            if (location === 'Unknown, Unknown, Unknown' || !location) {
                                 throw new Error('Invalid location data');
                             }
 
-                            updateLocationData(ip, nodeName, location, finalLat ? parseFloat(finalLat) : null, finalLon ? parseFloat(finalLon) : null);
+                            updateLocationData(ip, nodeName, location, lat ? parseFloat(lat) : null, lon ? parseFloat(lon) : null);
                         })
                         .catch(error => {
-                            console.warn(`API ${apiUrl} failed:`, error);
-                            tryNextApi(); // Try next API
+                            console.warn(`Direct API ${apiUrl} failed:`, error.message);
+                            tryNextApi();
                         });
                 }
                 
-                // Start with the first API
                 tryNextApi();
             }
             
