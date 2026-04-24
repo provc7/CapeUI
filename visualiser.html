@@ -486,9 +486,14 @@
 </head>
 <body>
     <div class="max-w-screen-2xl mx-auto h-screen flex flex-col p-4">
-        <header id="main-header" class="relative mb-4 text-center flex-shrink-0">
-            <h1 class="text-3xl sm:text-4xl font-bold tracking-tight text-white"><i class="fas fa-shield-virus mr-2"></i>Dynamic Malware Analysis Visualizer</h1>
-            <p class="mt-1 text-lg text-gray-400">A real-time 3D simulation of malware behavior from your log file.</p>
+        <header id="main-header" class="relative mb-4 text-center flex-shrink-0 flex items-center justify-center">
+            <div class="flex-grow">
+                <h1 class="text-3xl sm:text-4xl font-bold tracking-tight text-white"><i class="fas fa-shield-virus mr-2"></i>Dynamic Malware Analysis Visualizer</h1>
+                <p class="mt-1 text-lg text-gray-400">A real-time 3D simulation of malware behavior from your log file.</p>
+            </div>
+            <button id="new-analysis-btn" class="hidden absolute right-0 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-bold shadow-lg shadow-indigo-500/20 transition-all flex items-center gap-2">
+                <i class="fas fa-plus"></i> New Analysis
+            </button>
         </header>
 
         <main id="main-content" class="hidden flex-grow grid grid-cols-1 lg:grid-cols-3 gap-4 min-h-0">
@@ -639,6 +644,7 @@
             const fileInput = document.getElementById('file-input');
             const uploadBtn = document.getElementById('upload-btn');
             const uploadContainer = document.getElementById('upload-container');
+            const newAnalysisBtn = document.getElementById('new-analysis-btn');
             const mainContent = document.getElementById('main-content');
             const fullscreenBtn = document.getElementById('fullscreen-btn');
             const playPauseBtn = document.getElementById('play-pause-btn');
@@ -764,6 +770,11 @@
             
             fullscreenBtn.addEventListener('click', toggleFullscreen);
             viewToggleBtn.addEventListener('click', toggleMapView);
+            if (newAnalysisBtn) {
+                newAnalysisBtn.addEventListener('click', () => {
+                    location.reload();
+                });
+            }
             mapZoomInBtn.addEventListener('click', () => changeMapZoom(1.2));
             mapZoomOutBtn.addEventListener('click', () => changeMapZoom(1/1.2));
             mapResetBtn.addEventListener('click', resetMap);
@@ -821,6 +832,7 @@
 
                 uploadContainer.style.display = 'none';
                 mainContent.classList.remove('hidden');
+                if (newAnalysisBtn) newAnalysisBtn.classList.remove('hidden');
                 
                 isPaused = false;
                 playbackSpeed = 1.0;
