@@ -19,50 +19,78 @@
          * @license SHRIYA-AUTHENTICATED
          * Anti-Tamper & Authenticity Guard
          */
+        /**
+         * @license SHRIYA-AUTHENTICATED
+         * Anti-Tamper & Authenticity Guard
+         */
         (function() {
             const _0xAuth = 'SHRIYA';
-            const _0xKey = 'AUTH-SIG';
-            
-            // Debugger Trap: Prevents inspection by pausing execution if DevTools is open
-            const _0xTrap = function() {
-                try {
-                    (function _0xCheck(_0xI) {
-                        if ((('' + _0xI / _0xI)['length'] !== 0x1) || (_0xI % 0x14 === 0x0)) {
-                            (function() {}['constructor']('debugger')());
-                        } else {
-                            (function() {}['constructor']('debugger')());
-                        }
-                        _0xCheck(++_0xI);
-                    }(0x0));
-                } catch (_0xErr) {}
-            };
-            
-            // Integrity Monitor
-            setInterval(() => {
-                const _0xEl = document.documentElement;
-                if (_0xEl.getAttribute('data-auth-sig') !== 'SHRIYA-SECURE-2026') {
-                    document.body.innerHTML = '<div style="display:flex;align-items:center;justify-center:center;height:100vh;background:#000;color:#f00;font-family:sans-serif;font-weight:bold;">CRITICAL: AUTHENTICITY REVOKED. UNAUTHORIZED TAMPERING DETECTED.</div>';
-                    window.location.reload();
-                }
-                // Periodic debugger trap check
-                if (window.outerWidth - window.innerWidth > 160 || window.outerHeight - window.innerHeight > 160) {
-                    _0xTrap();
-                }
-            }, 1000);
+            let _0xLockActive = false;
 
-            // Disable Right-Click and Keyboard Shortcuts
-            document.addEventListener('contextmenu', (e) => e.preventDefault());
-            document.addEventListener('keydown', (e) => {
+            const _0xToggleLock = (show) => {
+                if (show === _0xLockActive) return;
+                _0xLockActive = show;
+
+                let overlay = document.getElementById('security-lockdown-overlay');
+                if (show) {
+                    if (!overlay) {
+                        overlay = document.createElement('div');
+                        overlay.id = 'security-lockdown-overlay';
+                        overlay.style = "position:fixed;top:0;left:0;width:100vw;height:100vh;background:#0f172a;color:#f8fafc;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999999;font-family:'Inter',sans-serif;text-align:center;padding:2rem;box-sizing:border-box;";
+                        overlay.innerHTML = `
+                            <div style="background:#ef4444;padding:1.5rem;border-radius:1.5rem;margin-bottom:2rem;box-shadow:0 0 50px rgba(239,68,68,0.3);">
+                                <i class="fas fa-user-shield" style="font-size:3rem;color:white;"></i>
+                            </div>
+                            <h1 style="font-size:2rem;font-weight:800;margin-bottom:1rem;letter-spacing:-0.025em;">DEVELOPER TOOLS DISABLED</h1>
+                            <p style="font-size:1.1rem;color:#94a3b8;max-width:500px;line-height:1.6;">Inspection tools have been detected. Please close the Developer Tools to resume your analysis.</p>
+                            <div style="margin-top:2rem;display:flex;align-items:center;gap:10px;color:#64748b;font-size:0.8rem;">
+                                <div class="lock-spinner"></div> Detecting status...
+                            </div>
+                        `;
+                        const style = document.createElement('style');
+                        style.innerHTML = ".lock-spinner{width:16px;height:16px;border:2px solid #64748b;border-top-color:white;border-radius:50%;animation:spin 1s linear infinite;}@keyframes spin{to{transform:rotate(360deg);}}";
+                        document.head.appendChild(style);
+                        document.body.appendChild(overlay);
+                    }
+                    if (typeof togglePause === 'function' && !isPaused) togglePause();
+                } else if (overlay) {
+                    overlay.remove();
+                    if (typeof togglePause === 'function' && isPaused) togglePause();
+                }
+            };
+
+            const _0xTrap = function() {
+                const _0xStart = performance.now();
+                debugger;
+                const _0xLag = performance.now() - _0xStart > 100;
+                const _0xSize = window.outerWidth - window.innerWidth > 160 || window.outerHeight - window.innerHeight > 160;
+                
+                _0xToggleLock(_0xLag || _0xSize);
+            };
+
+            // Continuous Monitor
+            setInterval(_0xTrap, 500);
+
+            // Block Shortcuts & Right-Click
+            window.addEventListener('contextmenu', (e) => e.preventDefault(), true);
+            window.addEventListener('keydown', (e) => {
+                const key = e.key.toLowerCase();
+                const ctrl = e.ctrlKey || e.metaKey;
+                const shift = e.shiftKey;
+
+                // F12, Ctrl+U (View Source), Ctrl+S (Save), Ctrl+P (Print)
+                // Ctrl+Shift+I/J/C (DevTools)
                 if (
                     e.key === 'F12' || 
-                    ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C' || e.key === 'i' || e.key === 'j' || e.key === 'c')) || 
-                    ((e.ctrlKey || e.metaKey) && (e.key === 'U' || e.key === 'u' || e.key === 'S' || e.key === 's' || e.key === 'P' || e.key === 'p'))
+                    (ctrl && (key === 'u' || key === 's' || key === 'p')) ||
+                    (ctrl && shift && (key === 'i' || key === 'j' || key === 'c'))
                 ) {
                     e.preventDefault();
-                    _0xTrap(); 
+                    e.stopPropagation();
+                    _0xToggleLock(true);
                     return false;
                 }
-            });
+            }, true);
             
             console.log('%c [SECURE] Authentication Verified: ' + _0xAuth, 'color:#4f46e5;font-weight:bold;');
         })();
