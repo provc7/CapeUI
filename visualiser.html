@@ -775,22 +775,20 @@
             async function fetchMalwareBazaarInfo(sha256) {
                 if (!sha256) return null;
                 
-                // First, try direct API call
+                // Strategy: Try the server proxy first (bypasses CORS and university firewalls),
+                // then fall back to the direct API call if the proxy is unavailable.
+                
                 try {
-                    const formData = new FormData();
-                    formData.append('query', 'get_info');
-                    formData.append('hash', sha256);
-                    
-                    const response = await fetch('https://mb-api.abuse.ch/api/v1/', {
+                    const response = await fetch('/api/malware-bazaar', {
                         method: 'POST',
                         headers: {
-                            'Auth-Key': 'c142633e2abd97535582df9842fbfbbfcb7298e243d2a4ad'
+                            'Content-Type': 'application/json'
                         },
-                        body: formData
+                        body: JSON.stringify({ hash: sha256 })
                     });
                     
                     if (!response.ok) {
-                        throw new Error('API request failed');
+                        throw new Error('Proxy request failed with status ' + response.status);
                     }
                     
                     const jsonData = await response.json();
@@ -798,20 +796,25 @@
                         return jsonData.data[0];
                     }
                     return null;
-                } catch (error) {
-                    // If direct call fails (likely CORS), try proxy server
-                    console.warn('Direct API call failed, trying proxy:', error);
+                } catch (proxyError) {
+                    console.warn('Server proxy failed, trying direct API call:', proxyError);
+                    
+                    // Fallback: direct API call
                     try {
-                        const response = await fetch('/api/malware-bazaar', {
+                        const formData = new FormData();
+                        formData.append('query', 'get_info');
+                        formData.append('hash', sha256);
+                        
+                        const response = await fetch('https://mb-api.abuse.ch/api/v1/', {
                             method: 'POST',
                             headers: {
-                                'Content-Type': 'application/json'
+                                'Auth-Key': 'c142633e2abd97535582df9842fbfbbfcb7298e243d2a4ad'
                             },
-                            body: JSON.stringify({ hash: sha256 })
+                            body: formData
                         });
                         
                         if (!response.ok) {
-                            throw new Error('Proxy request failed');
+                            throw new Error('Direct API request failed');
                         }
                         
                         const jsonData = await response.json();
@@ -819,8 +822,8 @@
                             return jsonData.data[0];
                         }
                         return null;
-                    } catch (proxyError) {
-                        console.warn('Proxy request also failed:', proxyError);
+                    } catch (error) {
+                        console.warn('Both proxy and direct API calls failed:', error);
                         return null;
                     }
                 }
