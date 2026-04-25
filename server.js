@@ -43,6 +43,23 @@ app.use(cors());
 app.use(express.json({ limit: '10kb' })); // Limit body size
 app.use(express.urlencoded({ extended: true }));
 
+// Global Request Logger to server.log
+app.use(async (req, res, next) => {
+    const start = Date.now();
+    res.on('finish', async () => {
+        const duration = Date.now() - start;
+        await writeLog('server.log', {
+            type: 'request',
+            method: req.method,
+            url: req.originalUrl,
+            status: res.statusCode,
+            ip: req.ip,
+            duration: `${duration}ms`
+        });
+    });
+    next();
+});
+
 // Basic rate limiting
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
