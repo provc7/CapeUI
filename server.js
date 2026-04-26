@@ -48,7 +48,7 @@ app.use(async (req, res, next) => {
     const start = Date.now();
     res.on('finish', async () => {
         const duration = Date.now() - start;
-        await writeLog('server.log', {
+        await writeLog('../logs/server_activity.log', {
             type: 'request',
             method: req.method,
             url: req.originalUrl,
