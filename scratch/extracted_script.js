@@ -1,77 +1,4 @@
-        /**
-         * @license SHRIYA-AUTHENTICATED
-         * Internal Security Guard
-         */
-        (function() {
-            const _0xToggleLock = (msg) => {
-                document.body.innerHTML = `
-                    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;background:#0d1117;color:#ff4d4d;font-family:'Segoe UI',Roboto,sans-serif;text-align:center;padding:20px;">
-                        <div style="font-size:50px;margin-bottom:20px;">🚫</div>
-                        <h1 style="font-size:24px;font-weight:bold;margin-bottom:10px;">SECURITY ALERT</h1>
-                        <p style="font-size:18px;color:#8b949e;">${msg}</p>
-                        <div style="margin-top:30px;font-family:monospace;font-size:12px;color:#484f58;">[INTEGRITY_VIOLATION_DETECTED]</div>
-                    </div>
-                `;
-                (function() { }['constructor']('debugger')());
-            };
-
-            const _0xGuard = () => {
-                document.addEventListener('contextmenu', e => {
-                    e.preventDefault();
-                    _0xToggleLock("Developer tools are disabled. Right-click is prohibited.");
-                });
-
-                document.addEventListener('keydown', e => {
-                    if (e.key === 'F12') {
-                        e.preventDefault();
-                        _0xToggleLock("F12 Developer Tools are disabled.");
-                    }
-                    if ((e.ctrlKey || e.metaKey) && (e.key === 'u' || e.key === 'U')) {
-                        e.preventDefault();
-                        _0xToggleLock("View Source (Ctrl+U) is disabled.");
-                    }
-                    if ((e.ctrlKey || e.metaKey) && (e.key === 's' || e.key === 'S')) {
-                        e.preventDefault();
-                        _0xToggleLock("Saving is disabled.");
-                    }
-                    if ((e.ctrlKey || e.metaKey) && (e.key === 'p' || e.key === 'P')) {
-                        e.preventDefault();
-                        _0xToggleLock("Printing is disabled.");
-                    }
-                    if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) {
-                        e.preventDefault();
-                        _0xToggleLock("Inspect Element is disabled.");
-                    }
-                });
-
-                setInterval(() => {
-                    if (window.outerWidth - window.innerWidth > 160 || window.outerHeight - window.innerHeight > 160) {
-                        _0xToggleLock("Developer tools detected. Access revoked.");
-                    }
-                }, 1000);
-            };
-
-            _0xGuard();
-            console.log('%c [SECURE] Dashboard Integrity Verified', 'color:#4f46e5;font-weight:bold;');
-        })();
-    </script>
-    <script>
-            let leafletMap = null;
-            let camera, scene, renderer, labelRenderer, controls, hostSystem, clock, infectionGraphGroup;
-            let globeInstance = null;
-            let pTreeScale = 1;
-            
-            function updatePTreeZoom() {
-                const root = document.getElementById('ptree-root');
-                if (root) {
-                    root.style.transform = `scale(${pTreeScale})`;
-                    root.style.transformOrigin = 'top left';
-                    root.style.transition = 'transform 0.2s ease';
-                }
-            }
-
-            window.forensicNavigationSource = null;
-            document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function () {
             const body = document.body;
             const fileUploadArea = document.getElementById('file-upload-area');
             const fileInput = document.getElementById('file-input');
@@ -98,7 +25,7 @@
                 });
             }
 
-            window.zoomForensicCard = function(html) {
+            window.zoomForensicCard = function (html) {
                 const modal = document.getElementById('forensic-zoom-modal');
                 const body = document.getElementById('zoom-modal-body');
                 body.innerHTML = html;
@@ -106,7 +33,7 @@
                 document.body.style.overflow = 'hidden';
             };
 
-            window.closeZoomModal = function() {
+            window.closeZoomModal = function () {
                 const modal = document.getElementById('forensic-zoom-modal');
                 modal.classList.add('hidden');
                 document.body.style.overflow = '';
@@ -174,15 +101,28 @@
             const geolocationMapContainer = document.getElementById('geolocation-map-container');
             const visualization3dContainer = document.getElementById('visualization-3d-container');
             const worldMap = document.getElementById('world-map');
-            const mapControls = document.getElementById('map-controls');
+            // map-controls and ptree-controls removed from navbar; use floating nav instead
             const mapZoomInBtn = document.getElementById('map-zoom-in');
             const mapZoomOutBtn = document.getElementById('map-zoom-out');
             const mapResetBtn = document.getElementById('map-reset');
             const pTreeZoomIn = document.getElementById('ptree-zoom-in-btn');
             const pTreeZoomOut = document.getElementById('ptree-zoom-out-btn');
             const pTreeReset = document.getElementById('ptree-reset-btn');
+            let pTreeScale = 1;
+            function updatePTreeZoom() {
+                const root = document.getElementById('ptree-root');
+                if (root) {
+                    root.style.transform = `scale(${pTreeScale})`;
+                    root.style.transformOrigin = 'top left';
+                    root.style.transition = 'transform 0.2s ease';
+                }
+            }
+            if (pTreeZoomIn) pTreeZoomIn.addEventListener('click', () => { pTreeScale = Math.min(3, pTreeScale + 0.1); updatePTreeZoom(); });
+            if (pTreeZoomOut) pTreeZoomOut.addEventListener('click', () => { pTreeScale = Math.max(0.3, pTreeScale - 0.1); updatePTreeZoom(); });
+            if (pTreeReset) pTreeReset.addEventListener('click', () => { pTreeScale = 1; updatePTreeZoom(); });
 
             // Globe (3D real-time world) state
+            let globeInstance = null;
             let globePoints = []; // {lat, lng, size, color, ip, label, time}
             let globeArcs = []; // {startLat, startLng, endLat, endLng, color}
             let useGlobe = false; // when true, show globe instead of 2D worldMap
@@ -208,8 +148,8 @@
             let pendingView = null; // 'map' | '3d' when toggle requested mid-animation
             let geolocationData = {};
             let timelineEventsByIP = {};
+            let leafletMap = null;
             let currentPolyline = null;
-            // Map interaction state
 
             // --- File Upload Logic ---
             fileUploadArea.addEventListener('click', () => fileInput.click());
@@ -274,21 +214,20 @@
                 fullscreenBtn.querySelector('i').className = isFullscreen ? 'fas fa-compress' : 'fas fa-expand';
                 setTimeout(onWindowResize, 100);
             });
-            // View controls are now handled via switchMainTab in the navbar
-            
-            mapZoomInBtn.addEventListener('click', () => changeMapZoom(1.2));
-            mapZoomOutBtn.addEventListener('click', () => changeMapZoom(1 / 1.2));
-            mapResetBtn.addEventListener('click', resetMap);
 
-            document.getElementById('map-pan-left').addEventListener('click', () => panView('left'));
-            document.getElementById('map-pan-right').addEventListener('click', () => panView('right'));
-            document.getElementById('map-pan-up').addEventListener('click', () => panView('up'));
-            document.getElementById('map-pan-down').addEventListener('click', () => panView('down'));
+            if (mapZoomInBtn) mapZoomInBtn.addEventListener('click', () => changeMapZoom(1.2));
+            if (mapZoomOutBtn) mapZoomOutBtn.addEventListener('click', () => changeMapZoom(1 / 1.2));
+            if (mapResetBtn) mapResetBtn.addEventListener('click', resetMap);
 
-            // Process Tree zoom controls
-            if (pTreeZoomIn) pTreeZoomIn.addEventListener('click', () => { pTreeScale = Math.min(3, pTreeScale + 0.1); updatePTreeZoom(); });
-            if (pTreeZoomOut) pTreeZoomOut.addEventListener('click', () => { pTreeScale = Math.max(0.3, pTreeScale - 0.1); updatePTreeZoom(); });
-            if (pTreeReset) pTreeReset.addEventListener('click', () => { pTreeScale = 1; updatePTreeZoom(); });
+            const mapPanLeft = document.getElementById('map-pan-left');
+            const mapPanRight = document.getElementById('map-pan-right');
+            const mapPanUp = document.getElementById('map-pan-up');
+            const mapPanDown = document.getElementById('map-pan-down');
+            if (mapPanLeft) mapPanLeft.addEventListener('click', () => panView('left'));
+            if (mapPanRight) mapPanRight.addEventListener('click', () => panView('right'));
+            if (mapPanUp) mapPanUp.addEventListener('click', () => panView('up'));
+            if (mapPanDown) mapPanDown.addEventListener('click', () => panView('down'));
+
             window.addEventListener('resize', onWindowResize, false);
             initMapInteractions();
             document.addEventListener('keydown', (e) => {
@@ -626,7 +565,7 @@
                     if (t === tab) {
                         if (panel) panel.classList.remove('hidden');
                         if (tabBtn) tabBtn.classList.add('active');
-                        
+
                         // Populate data if needed
                         if (tab === 'behavior') populateBehavioralSummary(reportData);
                         if (tab === 'dns') populateDnsTable(reportData);
@@ -644,23 +583,15 @@
 
                 // Context-aware controls visibility
                 const playbackControls = document.getElementById('playback-controls');
-                const mapControls = document.getElementById('map-controls');
-                const ptreeControls = document.getElementById('ptree-controls');
                 const geoPanel = document.getElementById('geolocation-panel');
 
                 if (playbackControls) playbackControls.style.display = (tab === '3d' || tab === 'map') ? 'flex' : 'none';
-                if (mapControls) mapControls.style.display = (tab === 'map') ? 'flex' : 'none';
-                if (ptreeControls) ptreeControls.style.display = (tab === 'tree') ? 'flex' : 'none';
                 if (geoPanel) geoPanel.style.display = (tab === '3d' || tab === 'map') ? 'block' : 'none';
 
                 // Handle Floating Nav visibility
                 const floatingNav = document.getElementById('vis-floating-nav');
-                const floatingDir = document.getElementById('floating-dir-controls');
-                if (floatingNav) {
-                    floatingNav.classList.toggle('hidden', !(tab === '3d' || tab === 'map' || tab === 'tree'));
-                    if (floatingDir) floatingDir.style.display = (tab === 'tree') ? 'none' : 'grid';
-                }
-                
+                if (floatingNav) floatingNav.classList.toggle('hidden', !(tab === '3d' || tab === 'map'));
+
                 // Handle Map specific logic
                 if (tab === 'map' && reportData) {
                     if (!leafletMap) {
@@ -684,7 +615,7 @@
                         // Add a temporary highlight effect
                         card.classList.add('ring-2', 'ring-white', 'ring-offset-4', 'ring-offset-gray-900');
                         setTimeout(() => card.classList.remove('ring-2', 'ring-white', 'ring-offset-4', 'ring-offset-gray-900'), 2000);
-                        
+
                         // Expand the details
                         showSignatureDetails(index);
                     }
@@ -705,7 +636,7 @@
                 ];
 
                 let html = '<div class="space-y-6">';
-                
+
                 // Add Unique "Extracted Payloads" section from CAPE data
                 const payloads = data.CAPE?.payloads || [];
                 if (payloads.length > 0) {
@@ -717,7 +648,7 @@
                             </h4>
                             <div class="space-y-4">
                                 ${payloads.map(p => {
-                                    const cardHtml = `
+                        const cardHtml = `
                                     <div class="p-6 bg-black/50 rounded-xl border border-white/10 hover:border-indigo-500/60 transition-all shadow-lg mb-4 cursor-zoom-in group/zoom" 
                                          onclick="zoomForensicCard(this.outerHTML)">
                                         <div class="flex justify-between items-start mb-4 border-b border-white/5 pb-3">
@@ -748,8 +679,8 @@
                                         </div>
                                     </div>
                                     `;
-                                    return cardHtml;
-                                }).join('')}
+                        return cardHtml;
+                    }).join('')}
                             </div>
                             <div class="mt-4 p-3 bg-indigo-500/5 rounded border border-indigo-500/20 text-[10px] text-indigo-300/60 leading-relaxed italic">
                                 <i class="fas fa-info-circle mr-1"></i> These payloads were reconstructed from memory or temporary drops during analysis. They often represent the final, decrypted stage of the malware.
@@ -781,7 +712,7 @@
                         `;
                     }
                 });
-                
+
                 if (html === '<div class="space-y-6">') {
                     html += '<p class="text-gray-500 text-sm text-center py-20 italic">No significant behavioral artifacts extracted.</p>';
                 }
@@ -886,12 +817,12 @@
                             </h4>
                             <div class="space-y-2">
                                 ${techniques.map(t => {
-                                    const sigId = t.ttps?.[0] || 'T-Unknown';
-                                    const sig = signatures.find(s => s.name === t.signature);
-                                    const sevClass = (sig && sig.severity >= 3) ? 'border-red-500/40 bg-red-500/5 hover:bg-red-500/10' : 'border-indigo-500/20 bg-indigo-500/5 hover:bg-indigo-500/10';
-                                    const iconColor = (sig && sig.severity >= 3) ? 'text-red-400' : 'text-indigo-400';
-                                    
-                                    return `
+                        const sigId = t.ttps?.[0] || 'T-Unknown';
+                        const sig = signatures.find(s => s.name === t.signature);
+                        const sevClass = (sig && sig.severity >= 3) ? 'border-red-500/40 bg-red-500/5 hover:bg-red-500/10' : 'border-indigo-500/20 bg-indigo-500/5 hover:bg-indigo-500/10';
+                        const iconColor = (sig && sig.severity >= 3) ? 'text-red-400' : 'text-indigo-400';
+
+                        return `
                                         <div class="mitre-technique group p-3 rounded-lg border ${sevClass} cursor-pointer transition-all hover:scale-[1.02] active:scale-95" 
                                              onclick="showMitreDetails('${sigId}', '${(t.signature || 'Unknown').replace(/'/g, "\\'")}', '${tactic.replace(/'/g, "\\'")}')">
                                             <div class="flex justify-between items-start mb-1">
@@ -901,13 +832,13 @@
                                             <div class="text-white font-bold text-xs leading-snug pr-4">${t.signature || 'Unknown'}</div>
                                         </div>
                                     `;
-                                }).join('')}
+                    }).join('')}
                             </div>
                         </div>
                     `;
                 }
                 html += '</div>';
-                
+
                 // Details Panel (hidden by default)
                 html += `
                     <div id="mitre-drilldown-panel" class="hidden mt-8 pt-8 border-t border-gray-800">
@@ -926,7 +857,7 @@
 
                 container.innerHTML = html;
 
-                window.showMitreDetails = function(id, technique, tactic) {
+                window.showMitreDetails = function (id, technique, tactic) {
                     const grid = document.getElementById('mitre-grid-root');
                     const panel = document.getElementById('mitre-drilldown-panel');
                     const title = document.getElementById('mitre-drilldown-title');
@@ -935,9 +866,9 @@
 
                     title.innerText = technique.replace(/_/g, ' ');
                     subtitle.innerText = `${tactic.replace(/_/g, ' ')} | ${id}`;
-                    
+
                     const matchingSigs = signatures.filter(s => s.name === technique || (s.ttps && s.ttps.some(tt => tt.id === id)));
-                    
+
                     let sigHtml = '';
                     if (matchingSigs.length > 0) {
                         sigHtml = matchingSigs.map(s => {
@@ -973,7 +904,7 @@
                     panel.scrollIntoView({ behavior: 'smooth' });
                 };
 
-                window.hideMitreDetails = function() {
+                window.hideMitreDetails = function () {
                     const grid = document.getElementById('mitre-grid-root');
                     const panel = document.getElementById('mitre-drilldown-panel');
                     grid.classList.remove('hidden');
@@ -1065,7 +996,7 @@
                             const border = type.includes('CALL') ? 'border-indigo-500/50' : (type.includes('DETECTION') ? 'border-orange-500/50' : 'border-emerald-500/50');
                             const grad = type.includes('CALL') ? 'ev-header-gradient-indigo' : (type.includes('DETECTION') ? 'ev-header-gradient-orange' : 'ev-header-gradient-emerald');
                             const glow = type.includes('CALL') ? 'glow-indigo' : (type.includes('DETECTION') ? 'glow-orange' : 'glow-emerald');
-                            
+
                             marksHtml += `
                                 <div class="rounded-xl border ${border} ${glow} overflow-hidden transition-all duration-300">
                                     <div class="flex items-center justify-between p-5 ${grad} cursor-pointer hover:brightness-125 transition-all" onclick="toggleEvGroup('${groupId}')">
@@ -1081,30 +1012,30 @@
                                     </div>
                                     <div class="p-5 space-y-4 hidden bg-gray-900/60 backdrop-blur-md" id="${groupId}">
                                         ${items.map(m => {
-                                            const procInfo = m.process_context ? `<div class="text-xs text-indigo-300/80 mb-3 flex items-center gap-2 font-bold"><i class="fas fa-microchip"></i> ${m.process_context.process_name || ''} <span class="text-gray-600">|</span> PID: ${m.process_context.process_id || ''}</div>` : '';
-                                            const borderCol = type.includes('CALL') ? 'border-indigo-500/50' : (type.includes('DETECTION') ? 'border-orange-500/50' : 'border-emerald-500/50');
-                                            return `
+                                const procInfo = m.process_context ? `<div class="text-xs text-indigo-300/80 mb-3 flex items-center gap-2 font-bold"><i class="fas fa-microchip"></i> ${m.process_context.process_name || ''} <span class="text-gray-600">|</span> PID: ${m.process_context.process_id || ''}</div>` : '';
+                                const borderCol = type.includes('CALL') ? 'border-indigo-500/50' : (type.includes('DETECTION') ? 'border-orange-500/50' : 'border-emerald-500/50');
+                                return `
                                                 <div class="mark-item ${borderCol} p-4">
                                                     ${procInfo}
                                                     <div class="text-gray-300 text-xs font-mono space-y-2">
                                                         ${Object.entries(m).map(([k, v]) => {
-                                                            if (k === 'type' || k === 'category' || k === 'process_context') return '';
-                                                            const valStr = typeof v === 'object' ? JSON.stringify(v) : String(v);
-                                                            return `<div class="flex gap-4 items-baseline"><span class="text-gray-500 font-bold w-24 flex-shrink-0 uppercase text-[10px] tracking-tighter">${k}:</span> <span class="break-all text-gray-100">${valStr}</span></div>`;
-                                                        }).join('')}
+                                    if (k === 'type' || k === 'category' || k === 'process_context') return '';
+                                    const valStr = typeof v === 'object' ? JSON.stringify(v) : String(v);
+                                    return `<div class="flex gap-4 items-baseline"><span class="text-gray-500 font-bold w-24 flex-shrink-0 uppercase text-[10px] tracking-tighter">${k}:</span> <span class="break-all text-gray-100">${valStr}</span></div>`;
+                                }).join('')}
                                                     </div>
                                                 </div>
                                             `;
-                                        }).join('')}
+                            }).join('')}
                                     </div>
                                 </div>
                             `;
                         });
                         marksHtml += '</div>';
-                        
+
                         // Add the toggle script if not present
                         if (!window.toggleEvGroup) {
-                            window.toggleEvGroup = function(id) {
+                            window.toggleEvGroup = function (id) {
                                 const el = document.getElementById(id);
                                 const chev = document.getElementById(id + '-chevron');
                                 if (el.classList.contains('hidden')) {
@@ -1366,6 +1297,7 @@
             }
 
             // --- 3D VISUALIZATION LOGIC ---
+            let scene, camera, renderer, labelRenderer, controls, hostSystem, clock, infectionGraphGroup;
             let nodeMap = new Map();
             let networkNodeAngle = 0;
             const processColor = 0xff6b35, dnsColor = 0x4a9eff, ipColor = 0x6bd4ff; // Orange for processes, cyan for network
@@ -2666,13 +2598,6 @@
             window.handleManualNav = function (action) {
                 const currentTab = document.querySelector('.nav-tab.active')?.id.replace('nav-tab-', '');
 
-                if (currentTab === 'tree') {
-                    if (action === 'zoomIn') { pTreeScale = Math.min(3, pTreeScale + 0.1); updatePTreeZoom(); }
-                    else if (action === 'zoomOut') { pTreeScale = Math.max(0.3, pTreeScale - 0.1); updatePTreeZoom(); }
-                    else if (action === 'reset') { pTreeScale = 1; updatePTreeZoom(); }
-                    return;
-                }
-
                 if (currentTab === 'map' && leafletMap) {
                     const panStep = 100;
                     switch (action) {
@@ -2687,7 +2612,7 @@
                 } else if (currentTab === '3d' && controls) {
                     const panStep = 5;
                     const vector = new THREE.Vector3();
-                    
+
                     switch (action) {
                         case 'up':
                             vector.setFromMatrixColumn(camera.matrix, 1);
@@ -2730,3 +2655,4 @@
                 }
             };
         });
+    </script>
