@@ -600,6 +600,7 @@
             font-weight: 500;
             margin-left: auto;
         }
+
         ::-webkit-scrollbar {
             width: 6px;
             height: 6px;
@@ -664,17 +665,21 @@
 <body>
 
     <nav class="navbar">
-        <div class="logo">CAPE Superadmin</div>
+        <div class="logo">Superadmin</div>
         <div class="nav-actions">
-            <div style="display: flex; align-items: center; gap: 0.75rem; margin-right: 1rem; border-right: 1px solid var(--border); padding-right: 1.5rem;">
+            <div
+                style="display: flex; align-items: center; gap: 0.75rem; margin-right: 1rem; border-right: 1px solid var(--border); padding-right: 1.5rem;">
                 <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: 500;">Rate Limit (5/5hrs):</span>
                 <label style="position: relative; display: inline-block; width: 44px; height: 24px; margin: 0;">
                     <input type="checkbox" id="rateLimitToggle" style="opacity: 0; width: 0; height: 0;">
-                    <span class="slider" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--border); border-radius: 24px; transition: .3s;">
-                        <span class="slider-knob" style="position: absolute; content: ''; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; border-radius: 50%; transition: .3s;"></span>
+                    <span class="slider"
+                        style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--border); border-radius: 24px; transition: .3s;">
+                        <span class="slider-knob"
+                            style="position: absolute; content: ''; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; border-radius: 50%; transition: .3s;"></span>
                     </span>
                 </label>
-                <span id="rateLimitLabel" style="font-size: 0.75rem; font-weight: 600; color: var(--text-muted); min-width: 2rem;">OFF</span>
+                <span id="rateLimitLabel"
+                    style="font-size: 0.75rem; font-weight: 600; color: var(--text-muted); min-width: 2rem;">OFF</span>
             </div>
             <button class="btn btn-outline" onclick="window.location.href='/'">Upload Interface</button>
             <button class="btn btn-primary" id="refreshBtn">
@@ -1154,9 +1159,9 @@
         rateLimitToggle.addEventListener('change', async (e) => {
             // Revert UI optimistically, we'll update it based on server response
             e.preventDefault();
-            const wasEnabled = !e.target.checked; 
-            updateRateLimitUI(wasEnabled); 
-            
+            const wasEnabled = !e.target.checked;
+            updateRateLimitUI(wasEnabled);
+
             try {
                 const res = await fetch('/api/admin/toggle-restriction', {
                     method: 'POST',
