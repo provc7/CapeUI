@@ -1,102 +1,89 @@
-# CAPE API Interface
+# CapeUI
 
-A simple web interface for submitting files to the CAPE sandbox API for malware analysis.
+A comprehensive web interface for submitting and analyzing malware using the CAPE sandbox API, enriched with advanced querying, reporting, and AI assistance.
 
 ## Features
 
-- Clean, modern UI for file upload
-- Support for various file types (exe, dll, zip, apk, office documents, pdf, browsers)
-- Configurable timeout and priority settings
-- **Submission history sidebar** - View all your previous submissions
-- **Click to view status** - Click any submission to see detailed task status
-- Real-time status updates with color-coded badges
-- Persistent storage using localStorage
-- Backend proxy to avoid CORS issues
+- **Modern Web Interface**: Intuitive UI (`index.html`) for submitting files (EXE, DLL, ZIP, APK, Office, PDF, etc.) to CAPE.
+- **Submission History**: Persistent tracking of user submissions via MongoDB.
+- **Analysis Dashboard**: Dedicated view (`analysis.html`) for in-depth analysis of task reports, signatures, and IOCs.
+- **Visualizer**: Advanced JSON report visualizer (`visualiser.html`) to navigate complex analysis data interactively.
+- **Super Admin Dashboard**: Administrative panel (`superadmin.html`) to manage users, track site-wide submission statistics, and inspect Elasticsearch reports.
+- **Elasticsearch Integration**: Robust indexing of analysis reports for fast searching and statistical aggregation.
+- **CyberHelp Chatbot**: Integrated AI assistant utilizing Hugging Face Inference API for malware analysis guidance and queries.
+- **Malware Bazaar Integration**: Direct health checks and potential sample submissions.
 
 ## Installation
 
-1. Install Node.js (if you don't have it already)
-
+1. Install Node.js
 2. Install dependencies:
-```bash
-npm install
-```
-
-3. Configure environment (create a `.env` file in the project root):
-
-```
-MONGODB_URI=mongodb+srv://USER:PASS@HOST/DBNAME?retryWrites=true&w=majority
-JWT_SECRET=<generate_a_long_random_secret>
-PORT=3000
-CAPE_API_BASE=http://you_cape_ip:port
-```
+   ```bash
+   npm install
+   ```
+3. Configure the environment by creating a `.env` file based on `.env.example` or following the variables below:
+   ```env
+   MONGODB_URI=your_mongodb_connection_string
+   JWT_SECRET=your_jwt_secret
+   PORT=3000
+   HOST=0.0.0.0
+   CAPE_API_BASE=http://your_cape_ip:8000
+   CAPE_EXPLORER_HOST=0.0.0.0
+   CAPE_EXPLORER_PORT=9000
+   ADMIN_USERNAME=root
+   ADMIN_PASSWORD=your_admin_password
+   STUDENT_PASSWORD=your_default_student_password
+   ABUSE_CH_API_KEY=your_abuse_ch_api_key
+   ELASTICSEARCH_NODE=http://localhost:9200
+   ELASTICSEARCH_INDEX=student
+   ELASTICSEARCH_USERNAME=elastic
+   ELASTICSEARCH_PASSWORD=your_es_password
+   HF_API_TOKEN=your_huggingface_token
+   HF_MODEL=meta-llama/Llama-3.1-8B-Instruct
+   HF_API_URL=https://router.huggingface.co/v1/chat/completions
+   ```
 
 ## Usage
 
 1. Start the server:
-```bash
-npm start
-```
+   ```bash
+   npm start
+   ```
+   Or for development with auto-reload:
+   ```bash
+   npm run dev
+   ```
+2. Navigate to `http://localhost:3000`
+3. **Roles and Access**:
+   - **Users/Students**: Can submit files, view their own submission history, and analyze results.
+   - **Super Admin**: Can access `http://localhost:3000/superadmin.html` (requires Admin credentials) to oversee the platform and user activity.
 
-Or for development with auto-reload:
-```bash
-npm run dev
-```
+## Architecture
 
-2. Open your browser and navigate to:
-```
-http://localhost:3000
-```
+- **Frontend**: Vanilla HTML/JS/CSS focusing on dynamic UI updates without heavy frameworks.
+- **Backend Proxy**: Express.js server (`server.js`) securely routes requests to the CAPE Sandbox, Elasticsearch, and Hugging Face API to circumvent CORS and protect API keys.
+- **Database**: MongoDB handles user authentication, submission logs, and session management. Elasticsearch processes large analysis payloads for querying.
 
-3. Register or login using the auth bar at the top (email + password)
-4. Select a file, choose the package type, set timeout and priority, then click "Submit for Analysis"
-4. View your submission history in the left sidebar
-5. Click on any submission to view its current status and details
+## Core API Endpoints
 
-## Configuration
-
-The CAPE API endpoints are configured in `server.js`:
-
-```javascript
-const CAPE_API_BASE = 'http://your_cape_ip:port';
-const CAPE_API_UPLOAD_URL = `${CAPE_API_BASE}/apiv2/tasks/create/file/`;
-```
-
-You can modify this URL to point to your CAPE sandbox instance.
-
-## How It Works
-
-- The frontend (index.html) sends the file to the local proxy server
-- The backend (server.js) forwards the request to the CAPE API
-- This approach avoids CORS (Cross-Origin Resource Sharing) issues
+- `POST /api/upload`: Upload file to CAPE sandbox
+- `GET /api/submissions`: Retrieve user submission history
+- `GET /api/task/:taskId`: Get task status
+- `GET /api/task/:taskId/report`: Retrieve full CAPE analysis report
+- `POST /api/chatbot`: Interact with the AI assistant
+- `GET /api/admin/dashboard-stats`: Super admin statistics
+- `POST /api/malware-bazaar`: Query Malware Bazaar
 
 ## File Structure
 
 ```
 .
-├── index.html      # Frontend web interface
-├── server.js       # Backend proxy server
-├── package.json    # Node.js dependencies
-└── README.md       # This file
+├── index.html               # Main user submission interface
+├── analysis.html            # Detailed analysis report view
+├── visualiser.html          # Interactive JSON report visualizer
+├── superadmin.html          # Administrator dashboard
+├── server.js                # Core Node.js backend
+├── cape_reports_explorer.py # Python helper server for report exploration
+├── check_*.js               # Utility scripts for database and sanity checks
+├── .env                     # Configuration file
+└── package.json             # Dependencies
 ```
-
-## API Endpoints
-
-The backend provides the following endpoints:
-
-- `POST /api/upload` - Uploads a file to the CAPE sandbox
-  - Parameters:
-    - `file` - The file to upload
-    - `package` - Package type (exe, dll, zip, etc.)
-    - `timeout` - Analysis timeout in seconds
-    - `priority` - Task priority (1-10)
-
-- `GET /api/task/:taskId` - Fetches the status of a specific task
-  - Returns detailed task information including status, machine, platform, and options
-
-- `POST /api/auth/register` - Register a new user (JSON: `{ email, password }`)
-- `POST /api/auth/login` - Login and receive a JWT (JSON: `{ email, password }`)
-
-Protected routes require `Authorization: Bearer <token>`.
-
-# CapeUI
