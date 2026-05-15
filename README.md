@@ -55,7 +55,6 @@ A comprehensive web interface for submitting and analyzing malware using the CAP
 2. Navigate to `http://localhost:3000`
 3. **Roles and Access**:
    - **Users/Students**: Can submit files, view their own submission history, and analyze results.
-   - **Super Admin**: Can access `http://localhost:3000/superadmin.html` (requires Admin credentials) to oversee the platform and user activity.
 
 ## Architecture
 
@@ -70,7 +69,6 @@ A comprehensive web interface for submitting and analyzing malware using the CAP
 - `GET /api/task/:taskId`: Get task status
 - `GET /api/task/:taskId/report`: Retrieve full CAPE analysis report
 - `POST /api/chatbot`: Interact with the AI assistant
-- `GET /api/admin/dashboard-stats`: Super admin statistics
 - `POST /api/malware-bazaar`: Query Malware Bazaar
 
 ## File Structure
@@ -80,7 +78,6 @@ A comprehensive web interface for submitting and analyzing malware using the CAP
 ├── index.html               # Main user submission interface
 ├── analysis.html            # Detailed analysis report view
 ├── visualiser.html          # Interactive JSON report visualizer
-├── superadmin.html          # Administrator dashboard
 ├── server.js                # Core Node.js backend
 ├── cape_reports_explorer.py # Python helper server for report exploration
 ├── check_*.js               # Utility scripts for database and sanity checks
