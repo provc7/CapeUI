@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CAPE Sandbox File Upload</title>
+    <title>Sandbox File Upload</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -2115,14 +2115,14 @@
         <div class="brand">
             <div class="brand-mark" aria-hidden="true">C</div>
             <div class="brand-text">
-                <span class="brand-name">CapeUI</span>
-                <span class="brand-tag">Malware Analysis Console &middot; CAPE Sandbox</span>
+                <span class="brand-name">Malware Analysis Lab</span>
+                <span class="brand-tag">Malware Analysis Console </span>
             </div>
         </div>
         <div class="topbar-right">
             <div class="health-dots" id="healthDots" title="System health (refreshed every 30s)">
                 <span class="health-label">DB</span><span class="health-dot" data-svc="db"></span>
-                <span class="health-label">CAPE</span><span class="health-dot" data-svc="cape"></span>
+                <span class="health-label">Sandbox</span><span class="health-dot" data-svc="cape"></span>
                 <span class="health-label">AI</span><span class="health-dot" data-svc="chatbot"></span>
             </div>
             <button id="themeToggle" class="theme-toggle" title="Toggle dark mode (Ctrl+Shift+D)"
@@ -2171,7 +2171,7 @@
         <div id="authGate" class="auth-gate">
             <div class="auth-gate-card">
                 <div class="auth-gate-logo">C</div>
-                <h2>Welcome to CapeUI</h2>
+                <h2>Welcome to Malware Analysis Lab</h2>
                 <p>Sign in to access the malware analysis portal.</p>
                 <div class="auth-fields">
                     <input id="gateEmail" type="text" placeholder="Username or Roll Number">
@@ -2190,7 +2190,7 @@
         <div class="main-content">
             <div class="container">
                 <h1>Submit Sample for Analysis</h1>
-                <p class="subtitle">Drop a file below to run dynamic analysis in the CAPE sandbox.</p>
+                <p class="subtitle">Drop a file below to run dynamic analysis in the sandbox.</p>
 
                 <div class="stats-row" id="statsRow">
                     <div class="stat-card s-total">
@@ -2236,7 +2236,7 @@
                     <div class="form-group">
                         <label for="package">Analysis Package</label>
                         <select id="package" name="package" required>
-                            <option value="auto">auto (let CAPE decide)</option>
+                            <option value="auto">auto (let Sandbox decide)</option>
                             <option value="exe">exe — Windows executable</option>
                             <option value="dll">dll — Dynamic-link library</option>
                             <option value="zip">zip — Archive</option>
@@ -3034,7 +3034,7 @@
             // Disable submit button
             submitBtn.disabled = true;
             submitBtn.textContent = 'Submitting...';
-            showStatus('Uploading file and submitting to CAPE sandbox...', 'loading');
+            showStatus('Uploading file and submitting to Sandbox...', 'loading');
 
             try {
                 // Create form data
@@ -3057,7 +3057,7 @@
 
                 if (response.ok) {
                     // Log the full response for debugging
-                    console.log('CAPE API Response:', data);
+                    console.log('Sandbox API Response:', data);
 
                     // Extract task ID from response - handle various response formats
                     let taskId = null;
@@ -3089,7 +3089,7 @@
 
                     // Show success message
                     if (taskId) {
-                        showStatus(`Submitted! CAPE Task #${taskId} is queued.`, 'success');
+                        showStatus(`Submitted! Sandbox Task #${taskId} is queued.`, 'success');
                         toast.success('Task #' + taskId + ' submitted successfully!', { title: 'Submitted' });
                     } else {
                         showStatus(`Submitted for analysis (Task ID unavailable).`, 'success');
@@ -3273,7 +3273,7 @@
                     dot.title = label;
                 };
                 set('db', !!data.services?.db?.ok, 'DB: ' + (data.services?.db?.mode || 'n/a'));
-                set('cape', !!data.services?.cape?.ok, 'CAPE: ' + (data.services?.cape?.mode || 'n/a'));
+                set('cape', !!data.services?.cape?.ok, 'Sandbox: ' + (data.services?.cape?.mode || 'n/a'));
                 set('chatbot', !!data.services?.chatbot?.ok, 'AI: ' + (data.services?.chatbot?.model || 'no token'));
             } catch (_) { }
         }
@@ -3827,8 +3827,8 @@
             <div class="cb-title-wrap">
                 <div class="cb-avatar">CB</div>
                 <div>
-                    <div class="cb-title">CapeBot &middot; CyberHelp</div>
-                    <div class="cb-sub">Online &middot; CAPE / malware / cyber</div>
+                    <div class="cb-title">CappyBot &middot; CyberHelp</div>
+                    <div class="cb-sub">Online &middot; Sandbox / malware / cyber</div>
                 </div>
             </div>
             <div style="display:flex; align-items:center; gap:8px;">
@@ -3852,10 +3852,10 @@
         <div id="cb-chip-hint" class="cb-chip-hint">Click a chip after selecting a task to analyze its report.</div>
 
         <div id="cb-input-wrap">
-            <textarea id="cb-input" rows="1" placeholder="Ask about CAPE, malware, IOCs, MITRE..."></textarea>
+            <textarea id="cb-input" rows="1" placeholder="Ask about Sandbox, malware, IOCs, MITRE..."></textarea>
             <button id="cb-send">Send</button>
         </div>
-        <div id="cb-hint">Scope: CapeUI &middot; CAPE &middot; malware &middot; cybersecurity</div>
+        <div id="cb-hint">Scope: Sandbox &middot; Sandbox &middot; malware &middot; cybersecurity</div>
     </div>
 
     <script>
@@ -4004,7 +4004,7 @@
                 if (msgsEl.childElementCount === 0) {
                     const t = activeTaskId();
                     appendMsg('bot',
-                        'Hi! I am CapeBot. I help with CapeUI, CAPE sandbox, malware analysis, IOCs, MITRE ATT&CK, and general cybersecurity.' +
+                        'Hi! I am CappyBot. I help with Sandbox, malware analysis, IOCs, MITRE ATT&CK, and general cybersecurity.' +
                         (t
                             ? '\n\nI have task #' + t + ' loaded as context — try the Summary / IOCs / MITRE chips below, or just ask "summarize this report".'
                             : '\n\nTip: open a task from the sidebar to unlock per-report quick actions like Summary / IOCs / MITRE.'));
